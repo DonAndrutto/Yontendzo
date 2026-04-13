@@ -1,0 +1,2274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sa bche Explorer — Yonten Dzo (Complete)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tibetan:wght@400;700&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #faf8f4;
+      --surface: #ffffff;
+      --border: #e2d9c8;
+      --text: #1c1a17;
+      --text-muted: #6b5f50;
+      --accent: #8b2c2c;
+      --selected-bg: #fef5e7;
+      --selected-border: #c46a1a;
+      --match-bg: #fffde7;
+      --header-bg: #231208;
+      --header-text: #f5e6c8;
+      --controls-bg: #f0e9dd;
+      --font-size-tib: 15px;
+      --font-size-en: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh; font-size: 14px; line-height: 1.5;
+    }
+    .app-header {
+      background: var(--header-bg); color: var(--header-text);
+      padding: 14px 22px 12px; position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.35);
+    }
+    .header-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: #9a7a5a; margin-bottom: 3px; }
+    .header-tib { font-family: 'Noto Sans Tibetan', serif; font-size: 20px; line-height: 2.0; color: var(--header-text); display: block; }
+    .header-en { font-size: 12px; color: #c0996a; font-style: italic; display: block; margin-top: -4px; }
+    .controls {
+      display: flex; gap: 8px; align-items: center;
+      padding: 8px 22px; background: var(--controls-bg);
+      border-bottom: 1px solid var(--border); flex-wrap: wrap;
+    }
+    .search-wrap { position: relative; flex: 1; min-width: 180px; }
+    .search-icon { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); font-size: 13px; color: var(--text-muted); pointer-events: none; }
+    .search-box {
+      width: 100%; padding: 6px 10px 6px 30px; border: 1px solid var(--border);
+      border-radius: 6px; font-family: inherit; font-size: 13px; background: white; outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .search-box:focus { border-color: var(--selected-border); box-shadow: 0 0 0 2px rgba(196,106,26,0.18); }
+    .search-clear { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 14px; color: var(--text-muted); padding: 0; line-height: 1; display: none; }
+    .search-clear.visible { display: block; }
+    .btn { padding: 5px 12px; border: 1px solid var(--border); border-radius: 6px; background: white; font-family: inherit; font-size: 12px; cursor: pointer; color: var(--text); white-space: nowrap; transition: background 0.1s, border-color 0.1s; }
+    .btn:hover { background: var(--controls-bg); border-color: #c0a880; }
+    .btn:active { opacity: 0.8; }
+    .divider { width: 1px; height: 20px; background: var(--border); flex-shrink: 0; }
+    .search-count { font-size: 11px; color: var(--text-muted); white-space: nowrap; min-width: 60px; }
+    .breadcrumb-bar { padding: 6px 22px; background: #fffdf8; border-bottom: 1px solid var(--border); font-size: 12px; min-height: 32px; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+    .breadcrumb-bar.empty { color: #b8a890; font-style: italic; }
+    .crumb { cursor: pointer; color: #8b4c1a; font-weight: 500; padding: 1px 3px; border-radius: 3px; transition: background 0.1s; display: inline-flex; flex-direction: column; vertical-align: middle; }
+    .crumb:hover { background: #fce8cc; }
+    .crumb-tib { font-family: 'Noto Sans Tibetan', serif; font-size: 12px; line-height: 1.8; }
+    .crumb-en { font-size: 10px; color: #b09070; font-style: italic; font-weight: 400; line-height: 1.4; }
+    .crumb-sep { color: #cfc0a8; margin: 0 2px; align-self: flex-start; padding-top: 3px; }
+    .crumb-id { font-size: 10px; color: #b09070; font-weight: 600; margin-right: 3px; }
+    .tree-container { padding: 14px 16px 60px; max-width: 860px; }
+    .tree-node { position: relative; }
+    .node-row { display: flex; align-items: flex-start; gap: 2px; padding: 3px 6px 3px 0; border-radius: 6px; border-left: 3px solid transparent; cursor: pointer; transition: background 0.1s; margin-bottom: 1px; }
+    .node-row:hover { background: rgba(0,0,0,0.04); }
+    .node-row.selected { background: var(--selected-bg) !important; border-left-color: var(--selected-border) !important; }
+    .node-row.search-match { background: var(--match-bg); }
+    .toggle-btn { flex-shrink: 0; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #a09080; background: none; border: none; cursor: pointer; padding: 0; margin-top: 6px; border-radius: 3px; transition: background 0.1s, color 0.1s; }
+    .toggle-btn:hover { background: rgba(0,0,0,0.08); color: var(--text); }
+    .toggle-btn.leaf { cursor: default; color: transparent; pointer-events: none; }
+    .toggle-arrow { display: inline-block; transition: transform 0.15s; }
+    .toggle-arrow.open { transform: rotate(90deg); }
+    .node-content { flex: 1; min-width: 0; padding: 2px 0; }
+    .node-id { font-size: 10px; color: #b89870; font-weight: 600; letter-spacing: 0.04em; margin-right: 5px; font-variant-numeric: tabular-nums; }
+    .node-tib { font-family: 'Noto Sans Tibetan', serif; font-size: var(--font-size-tib); line-height: 2.0; color: var(--text); word-break: break-word; }
+    .node-en { font-size: var(--font-size-en); color: var(--text-muted); font-style: italic; display: block; margin-top: -3px; margin-left: 0; word-break: break-word; }
+    .hide-tib .node-tib { display: none; }
+    .hide-tib .crumb-tib, .hide-tib .crumb-id { display: none; }
+    .hide-en .node-en, .hide-en .crumb-en { display: none; }
+    .copy-path-btn { margin-left: auto; flex-shrink: 0; background: none; border: 1px solid transparent; cursor: pointer; color: #b09070; font-size: 13px; line-height: 1; padding: 2px 7px; border-radius: 4px; opacity: 0.55; transition: opacity 0.15s, background 0.15s, border-color 0.15s; display: flex; align-items: center; gap: 4px; }
+    .copy-path-btn:hover { opacity: 1; background: #fce8cc; border-color: #e8c898; }
+    .copy-path-btn.copied { opacity: 1; color: #5a8a3a; border-color: #9ac87a; background: #f0f8e8; }
+    .node-copy-btn { flex-shrink: 0; background: none; border: none; cursor: pointer; color: #b09070; font-size: 11px; padding: 1px 5px; border-radius: 3px; opacity: 0; align-self: flex-start; margin-top: 5px; transition: opacity 0.15s, background 0.15s, color 0.15s; }
+    .node-row:hover .node-copy-btn { opacity: 0.5; }
+    .node-copy-btn:hover { opacity: 1 !important; background: rgba(0,0,0,0.07); }
+    .node-copy-btn.copied { opacity: 1 !important; color: #5a8a3a; }
+    .copy-toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(10px); background: #2e1e0e; color: #f5e8d0; padding: 7px 18px; border-radius: 20px; font-size: 12px; pointer-events: none; opacity: 0; transition: opacity 0.18s, transform 0.18s; z-index: 9999; white-space: nowrap; }
+    .copy-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .lang-toggles { display: flex; gap: 2px; flex-shrink: 0; }
+    .lang-btn { padding: 4px 9px; border: 1px solid var(--border); border-radius: 5px; background: white; font-size: 11px; cursor: pointer; color: var(--text-muted); white-space: nowrap; transition: background 0.12s, color 0.12s, border-color 0.12s, opacity 0.12s; opacity: 0.5; font-family: inherit; }
+    .lang-btn.tib-btn { font-family: 'Noto Sans Tibetan', serif; font-size: 12px; line-height: 1.6; padding: 3px 9px; }
+    .lang-btn.active { background: var(--controls-bg); border-color: #c0a880; color: var(--text); opacity: 1; }
+    .lang-btn:hover { opacity: 1; }
+    .size-controls { display: flex; gap: 2px; flex-shrink: 0; align-items: center; }
+    .size-btn { width: 28px; height: 28px; padding: 0; font-size: 17px; line-height: 1; display: flex; align-items: center; justify-content: center; border-radius: 5px; }
+    .size-btn:disabled { opacity: 0.35; cursor: default; }
+    .children-wrap { padding-left: 22px; border-left: 1px dashed #ddd0b8; margin-left: 10px; overflow: hidden; }
+    .children-wrap.collapsed { display: none; }
+    .depth-0 > .node-row { border-left-color: #7c2d2d; }
+    .depth-1 > .node-row { border-left-color: #a04020; }
+    .depth-2 > .node-row { border-left-color: #c46a1a; }
+    .depth-3 > .node-row { border-left-color: #c49a0a; }
+    .depth-4 > .node-row { border-left-color: #7a9020; }
+    .depth-5 > .node-row { border-left-color: #2a7a50; }
+    .depth-6 > .node-row { border-left-color: #1a6888; }
+    .depth-7 > .node-row { border-left-color: #2a4a9a; }
+    .depth-8 > .node-row { border-left-color: #5a2a9a; }
+    .depth-9 > .node-row { border-left-color: #8a1a7a; }
+    .depth-10 > .node-row { border-left-color: #aa1a4a; }
+    .depth-11 > .node-row { border-left-color: #7c2d2d; }
+    mark { background: #ffe082; color: inherit; border-radius: 2px; padding: 0 1px; }
+    .node-hidden { display: none !important; }
+    .child-count { font-size: 10px; color: #b09070; background: #f0e8d8; border-radius: 8px; padding: 0 5px; margin-left: 4px; vertical-align: middle; font-style: normal; }
+    .intro-section { max-width: 860px; margin: 0; padding: 16px 22px; border-bottom: 1px solid var(--border); background: #fffdf8; }
+    .intro-toggle { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--accent); background: none; border: none; padding: 0; font-family: inherit; }
+    .intro-toggle:hover { text-decoration: underline; }
+    .intro-arrow { display: inline-block; font-size: 9px; transition: transform 0.15s; }
+    .intro-arrow.open { transform: rotate(90deg); }
+    .intro-body { margin-top: 10px; font-size: 13px; line-height: 1.7; color: var(--text-muted); display: none; }
+    .intro-body.visible { display: block; }
+    .intro-body p { margin-bottom: 8px; }
+    .intro-body .text-title { font-weight: 600; color: var(--text); }
+    @media (max-width: 600px) {
+      .app-header { padding: 12px 14px 10px; }
+      .controls { padding: 8px 14px; }
+      .breadcrumb-bar { padding: 6px 14px; }
+      .tree-container { padding: 10px 8px 40px; }
+      .intro-section { padding: 14px; }
+      .header-tib { font-size: 17px; }
+      .children-wrap { padding-left: 14px; margin-left: 6px; }
+    }
+    .tree-anchor { scroll-margin-top: 140px; }
+    .print-header { display: none; }
+    @media print {
+      @page { size: A4 portrait; margin: 18mm 16mm; }
+      .app-header, .controls, .breadcrumb-bar, .intro-section, .copy-toast, .node-copy-btn, .toggle-btn, .copy-path-btn { display: none !important; }
+      html, body { background: #fff !important; color: #000 !important; }
+      .print-header { display: block !important; padding-bottom: 10pt; margin-bottom: 12pt; border-bottom: 1.5pt solid #7c2d2d; page-break-after: avoid; }
+      .print-title-tib { font-family: 'Noto Sans Tibetan', serif; font-size: 15pt; line-height: 2.0; display: block; color: #231208; }
+      .print-title-en { font-size: 10pt; font-style: italic; color: #6b5f50; display: block; margin-top: 2pt; }
+      .print-breadcrumb { margin-top: 6pt; font-size: 9pt; color: #5a4a38; line-height: 1.5; }
+      .tree-container { padding: 0 !important; max-width: 100% !important; }
+      .node-row { page-break-inside: avoid; padding: 2pt 0 !important; border-radius: 0 !important; border-left-width: 2pt !important; border-left-style: solid !important; }
+      .node-row:hover { background: transparent !important; }
+      .node-row.selected { background: #fef0d8 !important; border-left-color: #c46a1a !important; border-left-width: 3pt !important; }
+      .children-wrap { padding-left: 14pt !important; margin-left: 6pt !important; border-left: 0.5pt dashed #ccc !important; }
+      .children-wrap.collapsed { display: none !important; }
+      .node-tib { font-family: 'Noto Sans Tibetan', serif; font-size: 11pt !important; line-height: 2.0 !important; color: #000 !important; }
+      .node-en { font-size: 9pt !important; color: #4a3a28 !important; }
+      .node-id { font-size: 8pt !important; color: #9a7a50 !important; }
+      .child-count { display: none !important; }
+      mark { background: #e0e0e0 !important; color: #000 !important; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+<div class="print-header" id="printHeader" aria-hidden="true">
+  <div class="print-doc-title" id="printDocTitle"></div>
+  <div class="print-breadcrumb" id="printBreadcrumb"></div>
+</div>
+<div class="app-header">
+  <div class="header-label">Sa bche Explorer · Yonten Dzo · Complete Outline by Patrul Rinpoche</div>
+  <span class="header-tib">ཡོན་ཏན་རིན་པོ་ཆེའི་མཛོད་ཀྱི་སྤྱི་དོན་ས་བཅད</span>
+  <span class="header-en">Structural Outline of the Treasury of Precious Qualities</span>
+</div>
+<div class="controls">
+  <div class="search-wrap">
+    <span class="search-icon">&#x1F50D;</span>
+    <input class="search-box" id="searchBox" type="text" placeholder="Search (diacritics optional)..." autocomplete="off" spellcheck="false">
+    <button class="search-clear" id="searchClear" title="Clear search">&#x2715;</button>
+  </div>
+  <span class="search-count" id="searchCount"></span>
+  <div class="divider"></div>
+  <button class="btn" id="btnExpandAll">Expand All</button>
+  <button class="btn" id="btnCollapseAll">Collapse All</button>
+  <div class="divider"></div>
+  <div class="lang-toggles">
+    <button class="lang-btn tib-btn active" id="btnTib" title="Toggle Tibetan">&#x0F56;&#x0F7C;&#x0F51;&#x0F0B;&#x0F61;&#x0F72;&#x0F42;</button>
+    <button class="lang-btn active" id="btnEng" title="Toggle English">ENG</button>
+  </div>
+  <div class="divider"></div>
+  <div class="size-controls">
+    <button class="btn size-btn" id="btnSizeDown" title="Decrease text size">&#x2212;</button>
+    <button class="btn size-btn" id="btnSizeUp" title="Increase text size">+</button>
+  </div>
+  <div class="divider"></div>
+  <button class="btn" id="btnPrint" title="Print / Save as PDF">Print</button>
+</div>
+<div class="breadcrumb-bar empty" id="breadcrumb">Click any node to mark your place</div>
+<div class="intro-section">
+  <button class="intro-toggle" id="introToggle">
+    <span class="intro-arrow" id="introArrow">&#x25B6;</span> About this text
+  </button>
+  <div class="intro-body" id="introBody">
+    <p><span class="text-title">&#x0F61;&#x0F7C;&#x0F53;&#x0F0B;&#x0F4F;&#x0F53;&#x0F0B;&#x0F58;&#x0F5B;&#x0F7C;&#x0F51; &middot; Yonten Dzo</span> (<em>Treasury of Precious Qualities</em>) by Jigme Lingpa (1730&ndash;1798) is a comprehensive overview of the entire Buddhist path according to the Nyingma tradition.</p>
+    <p>This explorer presents <strong>Patrul Rinpoche's complete structural outline</strong> (sa bche) of the entire text &mdash; all 13 chapters, covering the three types of individuals, the Six Paramitas, Secret Mantra Vajrayana, and Dzogchen.</p>
+    <p>The outline spans from the <strong>preamble</strong> through the <strong>freedoms and advantages</strong>, <strong>impermanence</strong>, <strong>karma</strong>, the <strong>Four Truths</strong>, <strong>Bodhicitta</strong>, the <strong>Six Perfections</strong> (including the full Wisdom chapter with the four philosophical schools), <strong>Secret Mantra</strong> with empowerments and generation/completion stages, <strong>Dzogchen</strong> ground-path-fruition, and the <strong>five kayas</strong> of the result.</p>
+    <p>Use the search bar to find topics across Tibetan and English &mdash; diacritics are optional. Click any node to see its position in the breadcrumb trail.</p>
+  </div>
+</div>
+<div class="tree-container" id="treeContainer"></div>
+<div class="copy-toast" id="copyToast"></div>
+<script>
+const DATA = {
+  "title_tib": "ཡོན་ཏན་རིན་པོ་ཆེའི་མཛོད་ཀྱི་སྤྱི་དོན་ས་བཅད",
+  "title_en": "Structural Outline of the Treasury of Precious Qualities — by Patrul Rinpoche",
+  "nodes": [
+    {
+      "id": "1",
+      "tib": "ཐོག་མར་དགེ་བ་ཀླད་ཀྱི་དོན",
+      "en": "The goodness in the beginning: the meaning of the preamble",
+      "children": [
+        {
+          "id": "1.1",
+          "tib": "མཚན་བརྗོད་པ",
+          "en": "Expressing the title",
+          "children": [
+            {
+              "id": "1.1.1",
+              "tib": "མཚན་རྒྱ་སྐད་ལྟར་སྨོས་པ",
+              "en": "Title according to the Indian language",
+              "children": []
+            },
+            {
+              "id": "1.1.2",
+              "tib": "མཚན་བོད་སྐད་ལྟར་སྨོས་པ",
+              "en": "Title according to the Tibetan language",
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "1.2",
+          "tib": "མཆོད་པར་བརྗོད་པ",
+          "en": "The expression of homage",
+          "children": [
+            {
+              "id": "1.2.1",
+              "tib": "མཚན་སྨོས་པའི་སྒོ་ནས་བསྡུས་ཏེ་མཆོད་པར་བརྗོད",
+              "en": "Brief homage by stating the names",
+              "children": []
+            },
+            {
+              "id": "1.2.2",
+              "tib": "ཡོན་ཏན་དྲན་པའི་སྒོ་ནས་རྒྱས་པར་མཆོད་པར་བརྗོད",
+              "en": "Extensive homage by recollecting their qualities",
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "1.3",
+          "tib": "རྩོམ་པར་དམ་བཅའ་བ",
+          "en": "The pledge to compose",
+          "children": [
+            {
+              "id": "1.3.1",
+              "tib": "དམ་པའི་ཆོས་འཛིན་པའི་ཕན་ཡོན་ལ་བསམས་ནས་རྩོམ་པར་དམ་བཅའ",
+              "en": "Pledge considering the benefits of upholding the sublime Dharma",
+              "children": []
+            },
+            {
+              "id": "1.3.2",
+              "tib": "དམ་པའི་ཆོས་མི་འཛིན་པའི་ཉེས་དམིགས་ལ་བསམས་ནས་རྩོམ་པར་དམ་བཅའ",
+              "en": "Pledge considering the disadvantages of not upholding the sublime Dharma",
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "tib": "བར་དུ་དགེ་བ་གཞུང་གི་དོན",
+      "en": "The goodness in the middle: the meaning of the main text",
+      "children": [
+        {
+          "id": "2.1",
+          "tib": "དལ་འབྱོར་རྙེད་པར་དཀའ་བ་བཤད་པ",
+          "en": "Difficulty of finding the freedoms and advantages (Chapter 1)",
+          "children": [
+            {
+              "id": "2.1.1",
+              "tib": "མི་ལུས་རྣམ་པར་དབྱེ་བ",
+              "en": "Categorizing the human body",
+              "children": []
+            },
+            {
+              "id": "2.1.2",
+              "tib": "འགལ་ཟླ་མི་ཁོམ་པ་བརྒྱད་བཤད་པ",
+              "en": "Explaining the eight opposing states with no opportunity",
+              "children": [
+                {
+                  "id": "2.1.2.1",
+                  "tib": "མདོར་བསྟན",
+                  "en": "Brief indication",
+                  "children": []
+                },
+                {
+                  "id": "2.1.2.2",
+                  "tib": "རྒྱས་པར་བཤད་པ",
+                  "en": "Extensive explanation",
+                  "children": [
+                    {
+                      "id": "2.1.2.2.1",
+                      "tib": "མི་མ་ཡིན་པའི་མི་ཁོམ་པ་བཞི་བཤད་པ",
+                      "en": "Four states with no opportunity that are not human",
+                      "children": [
+                        {
+                          "id": "2.1.2.2.1.1",
+                          "tib": "དམྱལ་བ",
+                          "en": "The hell realms",
+                          "children": []
+                        },
+                        {
+                          "id": "2.1.2.2.1.2",
+                          "tib": "ཡི་དྭགས",
+                          "en": "The pretas",
+                          "children": []
+                        },
+                        {
+                          "id": "2.1.2.2.1.3",
+                          "tib": "དུད་འགྲོ",
+                          "en": "Animals",
+                          "children": []
+                        },
+                        {
+                          "id": "2.1.2.2.1.4",
+                          "tib": "ལྷ་ཚེ་རིང་པོ",
+                          "en": "Long-lived gods",
+                          "children": []
+                        }
+                      ]
+                    },
+                    {
+                      "id": "2.1.2.2.2",
+                      "tib": "མིར་གྱུར་པའི་མི་ཁོམ་པ་བཞི་བཤད་པ",
+                      "en": "Four states with no opportunity that are human",
+                      "children": [
+                        {
+                          "id": "2.1.2.2.2.1",
+                          "tib": "ཀླ་ཀློ",
+                          "en": "Barbarians",
+                          "children": []
+                        },
+                        {
+                          "id": "2.1.2.2.2.2",
+                          "tib": "ལྐུག་པ",
+                          "en": "Mutes",
+                          "children": []
+                        },
+                        {
+                          "id": "2.1.2.2.2.3",
+                          "tib": "ལོག་ལྟ་ཅན",
+                          "en": "Those with wrong views",
+                          "children": []
+                        },
+                        {
+                          "id": "2.1.2.2.2.4",
+                          "tib": "མུན་པའི་བསྐལ་བ",
+                          "en": "The dark eon",
+                          "children": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "2.1.2.3",
+                  "tib": "མཇུག་བསྡུ་བ",
+                  "en": "Concluding the section",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": "2.1.3",
+              "tib": "དལ་འབྱོར་གྱི་རང་བཞིན་ངོས་བཟུང་བ",
+              "en": "Identifying the nature of the freedoms and advantages",
+              "children": [
+                {
+                  "id": "2.1.3.1",
+                  "tib": "རང་འབྱོར",
+                  "en": "Personal advantages",
+                  "children": []
+                },
+                {
+                  "id": "2.1.3.2",
+                  "tib": "གཞན་འབྱོར",
+                  "en": "Advantages from others",
+                  "children": []
+                },
+                {
+                  "id": "2.1.3.3",
+                  "tib": "གཉིས་ཀ་བ་སྡོམས་ཏེ་བསྟན",
+                  "en": "Summarizing both",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": "2.1.4",
+              "tib": "རྙེད་པར་དཀའ་བའི་རྒྱུ་མཚན་བཤད་པ",
+              "en": "Explaining the reasons it is difficult to find",
+              "children": []
+            },
+            {
+              "id": "2.1.5",
+              "tib": "གདམས་ངག་བརྗོད་པས་མཇུག་བསྡུ་བ",
+              "en": "Concluding by expressing instructions",
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "2.2",
+          "tib": "ཚེ་མི་རྟག་པ་བསྒོམ་པའི་ལེའུ",
+          "en": "Meditation on the impermanence of life (Chapter 2)",
+          "children": [
+            {
+              "id": "2.2.1",
+              "tib": "ཕྱི་སྣོད་དང་བཅས་པའི་འཇིག་རྟེན་ལ་བསམས་ནས་མི་རྟག་པ་བསྒོམ་པ",
+              "en": "Impermanence by considering the outer vessel-like world",
+              "children": []
+            },
+            {
+              "id": "2.2.2",
+              "tib": "བཅུད་ཀྱི་འགྲོ་བ་མི་རྟག་པར་བསྒོས་པ",
+              "en": "Impermanence by considering the inner contents, the beings",
+              "children": [
+                {
+                  "id": "2.2.2.1",
+                  "tib": "དམ་པའི་སྐྱེས་བུ་ལ་བསམས་ཏེ་མི་རྟག་པ་སྒོམ་པ",
+                  "en": "Impermanence by considering the holy beings",
+                  "children": []
+                },
+                {
+                  "id": "2.2.2.2",
+                  "tib": "སྐྱེ་དགུའི་བདག་པོ་ལ་བསམས་ཏེ་མི་རྟག་བསྒོམ་པ",
+                  "en": "Impermanence by considering the lords of beings",
+                  "children": []
+                },
+                {
+                  "id": "2.2.2.3",
+                  "tib": "འཆི་བའི་རང་བཞིན་ལ་བསམས་ཏེ་མི་རྟག་པ་སྒོམ་པ",
+                  "en": "Impermanence by considering the nature of death",
+                  "children": []
+                },
+                {
+                  "id": "2.2.2.4",
+                  "tib": "དཔེ་དོན་སྣ་ཚོགས་ལ་བསམས་ཏེ་མི་རྟག་པ་སྒོམ་པ",
+                  "en": "Impermanence by considering various examples and meanings",
+                  "children": [
+                    {
+                      "id": "2.2.2.4.1",
+                      "tib": "མི་རྟག་པ་བག་ལ་ཉལ་མངོན་དུ་སྟོན་པ",
+                      "en": "Manifestly revealing latent impermanence",
+                      "children": []
+                    },
+                    {
+                      "id": "2.2.2.4.2",
+                      "tib": "ཚེ་འགྲོ་བའི་དལ་མྱུར་གྱི་དཔེ་བཤད་པ",
+                      "en": "Examples of the swiftness and slowness of life passing",
+                      "children": []
+                    },
+                    {
+                      "id": "2.2.2.4.3",
+                      "tib": "འཁོར་བ་འཇིག་པའི་འཁྲུལ་འཁོར་ཆེན་པོ་བཞི་སྟོན་པ",
+                      "en": "The four great machines of destruction of Samsara",
+                      "children": []
+                    },
+                    {
+                      "id": "2.2.2.4.4",
+                      "tib": "འཆི་བའི་གནས་ཚུལ་ལ་བསམ་པ",
+                      "en": "Considering the situation of death",
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "2.3",
+          "tib": "སྐྱེས་བུ་གསུམ་གྱི་ལམ་རིམ་རྒྱ་ཆེར་བཤད་པ",
+          "en": "Stages of the path of the three types of individuals",
+          "children": [
+            {
+              "id": "2.3.1",
+              "tib": "རྒྱུ་འབྲས་ཀྱི་སྤང་བླང་བཤད་པ",
+              "en": "What to adopt and abandon regarding cause and effect (Chapter 3)",
+              "children": [
+                {
+                  "id": "2.3.1.1",
+                  "tib": "སྐྱེས་བུ་ཆུང་ངུའི་ལམ་དངོས་བཤད་པ",
+                  "en": "Actual path of the individual of lesser capacity",
+                  "children": [
+                    {
+                      "id": "2.3.1.1.1",
+                      "tib": "ལས་འབྲས་ཀྱི་རང་བཞིན་སྤྱིར་བཤད་པ",
+                      "en": "General nature of karmic cause and effect",
+                      "children": [
+                        {
+                          "id": "2.3.1.1.1.1",
+                          "tib": "ལས་འབྲས་ཆུད་མི་ཟ་བར་བསྟན་པ",
+                          "en": "Karmic results are infallible",
+                          "children": []
+                        },
+                        {
+                          "id": "2.3.1.1.1.2",
+                          "tib": "ལས་འབྲས་མཐུ་ཆེ་བར་བསྟན་པ",
+                          "en": "Karmic results are powerful",
+                          "children": []
+                        },
+                        {
+                          "id": "2.3.1.1.1.3",
+                          "tib": "ལས་འབྲས་གཞན་ལ་མི་འཕོ་བར་བསྟན་པ",
+                          "en": "Karmic results do not transfer to others",
+                          "children": []
+                        },
+                        {
+                          "id": "2.3.1.1.1.4",
+                          "tib": "འཇིག་རྟེན་པའི་ཆོས་བརྒྱད་དང་བཅུ་གསུམ་བཞག་པ",
+                          "en": "The eight worldly dharmas and the thirteen",
+                          "children": []
+                        },
+                        {
+                          "id": "2.3.1.1.1.5",
+                          "tib": "ལས་འབྲས་འཕེལ་ཆེ་བར་བཤད་པ",
+                          "en": "Karmic results multiply greatly",
+                          "children": []
+                        },
+                        {
+                          "id": "2.3.1.1.1.6",
+                          "tib": "ལས་དཀར་ནག་དང་ལྕི་ཡང་གི་ཁྱད་པར",
+                          "en": "Differences of heavy and light in white and black karma",
+                          "children": []
+                        },
+                        {
+                          "id": "2.3.1.1.1.7",
+                          "tib": "ལས་ཀྱིས་འཆར་གཞི་བཤད་པ",
+                          "en": "Basis of manifestation due to karma",
+                          "children": []
+                        }
+                      ]
+                    },
+                    {
+                      "id": "2.3.1.1.2",
+                      "tib": "དགེ་སྡིག་གི་ལས་རྒྱས་པར་བཤད་པ",
+                      "en": "Specific explanation of virtuous and non-virtuous karma",
+                      "children": [
+                        {
+                          "id": "2.3.1.1.2.1",
+                          "tib": "མི་དགེ་བ་བཤད་པ",
+                          "en": "Non-virtuous karma",
+                          "children": [
+                            {
+                              "id": "2.3.1.1.2.1.1",
+                              "tib": "དཀོན་མཆོག་གསུམ་ལ་འབྲེལ་བའི་ལས",
+                              "en": "Karma in relation to the Three Jewels",
+                              "children": []
+                            },
+                            {
+                              "id": "2.3.1.1.2.1.2",
+                              "tib": "དེ་ལས་གཞན་པའི་ལས",
+                              "en": "Karma other than that",
+                              "children": [
+                                {
+                                  "id": "2.3.1.1.2.1.2.1",
+                                  "tib": "སེམས་དང་སེམས་བྱུང་གི་ལས་སྤྱིར་བསྟན",
+                                  "en": "General indication of karma of mind and mental factors",
+                                  "children": []
+                                },
+                                {
+                                  "id": "2.3.1.1.2.1.2.2",
+                                  "tib": "སྤང་བྱའི་རྒྱུ་འབྲས་བྱེ་བྲག་ཏུ་བཤད",
+                                  "en": "Specific causes and results to be abandoned",
+                                  "children": [
+                                    {
+                                      "id": "2.3.1.1.2.1.2.2.1",
+                                      "tib": "རྒྱུ་བཤད་པ",
+                                      "en": "Explaining the causes",
+                                      "children": [
+                                        {
+                                          "id": "2.3.1.1.2.1.2.2.1.1",
+                                          "tib": "ལུས་ཀྱི་ལས",
+                                          "en": "Karma of the body",
+                                          "children": []
+                                        },
+                                        {
+                                          "id": "2.3.1.1.2.1.2.2.1.2",
+                                          "tib": "ངག་གི་ལས",
+                                          "en": "Karma of speech",
+                                          "children": []
+                                        },
+                                        {
+                                          "id": "2.3.1.1.2.1.2.2.1.3",
+                                          "tib": "ཡིད་ཀྱི་ལས",
+                                          "en": "Karma of mind",
+                                          "children": []
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "id": "2.3.1.1.2.1.2.2.2",
+                                      "tib": "འབྲས་བུ་བཤད་པ",
+                                      "en": "Explaining the results",
+                                      "children": [
+                                        {
+                                          "id": "2.3.1.1.2.1.2.2.2.1",
+                                          "tib": "རྣམ་སྨིན་གྱི་འབྲས་བུ",
+                                          "en": "Fully ripened result",
+                                          "children": []
+                                        },
+                                        {
+                                          "id": "2.3.1.1.2.1.2.2.2.2",
+                                          "tib": "རྒྱུ་མཐུན་གྱི་འབྲས་བུ",
+                                          "en": "Result corresponding to the cause",
+                                          "children": []
+                                        },
+                                        {
+                                          "id": "2.3.1.1.2.1.2.2.2.3",
+                                          "tib": "དབང་གི་འབྲས་བུ",
+                                          "en": "Conditioning result",
+                                          "children": []
+                                        },
+                                        {
+                                          "id": "2.3.1.1.2.1.2.2.2.4",
+                                          "tib": "སྐྱེས་བུ་བྱེད་པའི་འབྲས་བུ",
+                                          "en": "Proliferating result",
+                                          "children": []
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "id": "2.3.1.1.2.1.2.3",
+                                  "tib": "སྐབས་ཀྱི་མཇུག་བསྡུ་བ",
+                                  "en": "Concluding the section",
+                                  "children": []
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "id": "2.3.1.1.2.2",
+                          "tib": "དགེ་བའི་ལས་བཤད་པ",
+                          "en": "Virtuous karma",
+                          "children": [
+                            {
+                              "id": "2.3.1.1.2.2.1",
+                              "tib": "དགེ་བའི་ལས་དངོས",
+                              "en": "Actual virtuous karma",
+                              "children": []
+                            },
+                            {
+                              "id": "2.3.1.1.2.2.2",
+                              "tib": "སྐྱེས་བུ་ཆུང་ངུའི་ལམ་གྱི་དོན་བསྡུ",
+                              "en": "Summary of the path of the lesser individual",
+                              "children": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "2.3.1.2",
+                  "tib": "ཐབས་ཤེས་ཀྱིས་ཟིན་པས་ཉམས་སུ་ལེན་ཚུལ",
+                  "en": "How to practice embraced by skillful means and wisdom",
+                  "children": [
+                    {
+                      "id": "2.3.1.2.1",
+                      "tib": "ཐར་པ་ཆ་མཐུན་སྤྱིར་བཤད",
+                      "en": "Concordant parts of liberation in general",
+                      "children": []
+                    },
+                    {
+                      "id": "2.3.1.2.2",
+                      "tib": "ཐེག་ཆེན་ཐར་པ་ཆ་མཐུན་བྱེ་བྲག་ཏུ་བཤད",
+                      "en": "Mahayana concordant parts of liberation specifically",
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "2.3.2",
+              "tib": "བདེན་པ་བཞི་ལ་བླང་དོར་བྱེད་པ",
+              "en": "The Four Truths, emphasizing the suffering of Samsara (Chapter 4)",
+              "children": [
+                {
+                  "id": "2.3.2.1",
+                  "tib": "སྐྱེས་བུ་འབྲིང་གི་ལམ་དངོས་བཤད་པ",
+                  "en": "Actual path of the middling individual",
+                  "children": [
+                    {
+                      "id": "2.3.2.1.1",
+                      "tib": "བདེན་པ་བཞི་བཤད་པ",
+                      "en": "The Four Truths",
+                      "children": [
+                        {
+                          "id": "2.3.2.1.1.1",
+                          "tib": "མདོར་བསྟན་པ",
+                          "en": "Brief",
+                          "children": []
+                        },
+                        {
+                          "id": "2.3.2.1.1.2",
+                          "tib": "རྒྱས་པར་བཤད་པ",
+                          "en": "Extensive",
+                          "children": [
+                            {
+                              "id": "2.3.2.1.1.2.1",
+                              "tib": "སྡུག་བསྔལ་གྱི་བདེན་པ",
+                              "en": "Truth of suffering",
+                              "children": [
+                                {
+                                  "id": "2.3.2.1.1.2.1.1",
+                                  "tib": "འཁོར་བ་སྤྱིའི་སྡུག་བསྔལ",
+                                  "en": "General suffering of Samsara",
+                                  "children": [
+                                    {
+                                      "id": "2.3.2.1.1.2.1.1.1",
+                                      "tib": "སྡུག་བསྔལ་གྱི་རང་བཞིན་ཁྱབ་ཆེ་བ",
+                                      "en": "All-pervasiveness of suffering",
+                                      "children": []
+                                    },
+                                    {
+                                      "id": "2.3.2.1.1.2.1.1.2",
+                                      "tib": "སྡུག་བསྔལ་ཉེ་བར་ལེན་པའི་རྐྱེན",
+                                      "en": "Conditions for appropriating suffering",
+                                      "children": []
+                                    },
+                                    {
+                                      "id": "2.3.2.1.1.2.1.1.3",
+                                      "tib": "སྡུག་བསྔལ་གྱི་གནོད་པ་མཐུ་ཆེ",
+                                      "en": "Great power of the harm of suffering",
+                                      "children": []
+                                    },
+                                    {
+                                      "id": "2.3.2.1.1.2.1.1.4",
+                                      "tib": "སྡུག་བསྔལ་གྱི་རྣམ་གྲངས་ཡུན་རིང",
+                                      "en": "Long duration of the variations of suffering",
+                                      "children": []
+                                    }
+                                  ]
+                                },
+                                {
+                                  "id": "2.3.2.1.1.2.1.2",
+                                  "tib": "རིགས་དྲུག་སོ་སོའི་སྡུག་བསྔལ",
+                                  "en": "Suffering of each of the six classes of beings",
+                                  "children": [
+                                    {
+                                      "id": "2.3.2.1.1.2.1.2.1",
+                                      "tib": "ངན་སོང་གི་སྡུག་བསྔལ",
+                                      "en": "Suffering of the lower realms",
+                                      "children": [
+                                        {
+                                          "id": "2.3.2.1.1.2.1.2.1.1",
+                                          "tib": "ཚ་དམྱལ་བརྒྱད",
+                                          "en": "Eight hot hells",
+                                          "children": []
+                                        },
+                                        {
+                                          "id": "2.3.2.1.1.2.1.2.1.2",
+                                          "tib": "ཉེ་འཁོར་ལྷག་པ་བཅུ་དྲུག",
+                                          "en": "Sixteen neighboring and additional hells",
+                                          "children": []
+                                        },
+                                        {
+                                          "id": "2.3.2.1.1.2.1.2.1.3",
+                                          "tib": "གྲང་དམྱལ་བརྒྱད",
+                                          "en": "Eight cold hells",
+                                          "children": []
+                                        },
+                                        {
+                                          "id": "2.3.2.1.1.2.1.2.1.4",
+                                          "tib": "ཉི་ཚེ་བ",
+                                          "en": "Ephemeral hells",
+                                          "children": []
+                                        },
+                                        {
+                                          "id": "2.3.2.1.1.2.1.2.1.5",
+                                          "tib": "སྐབས་ཀྱི་དོན་བསྡུ",
+                                          "en": "Concluding the section",
+                                          "children": []
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "id": "2.3.2.1.1.2.1.2.2",
+                                      "tib": "མཐོ་རིས་གསུམ་གྱི་སྡུག་བསྔལ",
+                                      "en": "Suffering of the three higher realms",
+                                      "children": [
+                                        {
+                                          "id": "2.3.2.1.1.2.1.2.2.1",
+                                          "tib": "ལྷའི་སྡུག་བསྔལ",
+                                          "en": "Suffering of the gods",
+                                          "children": []
+                                        },
+                                        {
+                                          "id": "2.3.2.1.1.2.1.2.2.2",
+                                          "tib": "ལྷ་མིན་གྱི་སྡུག་བསྔལ",
+                                          "en": "Suffering of the asuras",
+                                          "children": []
+                                        },
+                                        {
+                                          "id": "2.3.2.1.1.2.1.2.2.3",
+                                          "tib": "མིའི་སྡུག་བསྔལ",
+                                          "en": "Suffering of humans",
+                                          "children": [
+                                            {
+                                              "id": "2.3.2.1.1.2.1.2.2.3.1",
+                                              "tib": "སྡུག་བསྔལ་གྱི་སྡུག་བསྔལ",
+                                              "en": "Suffering of suffering",
+                                              "children": []
+                                            },
+                                            {
+                                              "id": "2.3.2.1.1.2.1.2.2.3.2",
+                                              "tib": "འགྱུར་བའི་སྡུག་བསྔལ",
+                                              "en": "Suffering of change",
+                                              "children": []
+                                            },
+                                            {
+                                              "id": "2.3.2.1.1.2.1.2.2.3.3",
+                                              "tib": "འདུ་བྱེད་ཀྱི་སྡུག་བསྔལ",
+                                              "en": "All-pervasive suffering of conditioning",
+                                              "children": []
+                                            },
+                                            {
+                                              "id": "2.3.2.1.1.2.1.2.2.3.4",
+                                              "tib": "སྐྱེ་བའི་སྡུག་བསྔལ",
+                                              "en": "Suffering of birth",
+                                              "children": []
+                                            },
+                                            {
+                                              "id": "2.3.2.1.1.2.1.2.2.3.5",
+                                              "tib": "རྒ་བའི་སྡུག་བསྔལ",
+                                              "en": "Suffering of aging",
+                                              "children": []
+                                            },
+                                            {
+                                              "id": "2.3.2.1.1.2.1.2.2.3.6",
+                                              "tib": "ན་བའི་སྡུག་བསྔལ",
+                                              "en": "Suffering of sickness",
+                                              "children": []
+                                            },
+                                            {
+                                              "id": "2.3.2.1.1.2.1.2.2.3.7",
+                                              "tib": "འཆི་བའི་སྡུག་བསྔལ",
+                                              "en": "Suffering of death",
+                                              "children": []
+                                            },
+                                            {
+                                              "id": "2.3.2.1.1.2.1.2.2.3.8",
+                                              "tib": "དགྲ་སྡང་བ་དང་འཕྲད་པའི་སྡུག་བསྔལ",
+                                              "en": "Encountering hated enemies",
+                                              "children": []
+                                            },
+                                            {
+                                              "id": "2.3.2.1.1.2.1.2.2.3.9",
+                                              "tib": "གཉེན་བྱམས་པ་དང་བྲལ་བའི་སྡུག་བསྔལ",
+                                              "en": "Separating from loved ones",
+                                              "children": []
+                                            },
+                                            {
+                                              "id": "2.3.2.1.1.2.1.2.2.3.10",
+                                              "tib": "འདོད་དང་མི་འདོད་ལོག་པར་འབྱུང་བ",
+                                              "en": "Desiring and not obtaining / encountering the undesired",
+                                              "children": []
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "id": "2.3.2.1.1.2.2",
+                              "tib": "བདེན་པ་ལྷག་མ་གསུམ",
+                              "en": "The remaining three truths",
+                              "children": [
+                                {
+                                  "id": "2.3.2.1.1.2.2.1",
+                                  "tib": "ཀུན་འབྱུང་གི་བདེན་པ",
+                                  "en": "Truth of origin",
+                                  "children": []
+                                },
+                                {
+                                  "id": "2.3.2.1.1.2.2.2",
+                                  "tib": "ལམ་བདེན",
+                                  "en": "Truth of the path",
+                                  "children": []
+                                },
+                                {
+                                  "id": "2.3.2.1.1.2.2.3",
+                                  "tib": "འགོག་བདེན",
+                                  "en": "Truth of cessation",
+                                  "children": []
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "2.3.2.1.2",
+                      "tib": "རྟེན་འབྲེལ་ཡན་ལག་བཅུ་གཉིས",
+                      "en": "Twelve links of dependent origination",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "2.3.2.2",
+                  "tib": "དེ་ཉིད་སྐྱེ་མེད་དུ་ཤེས་པས་དོན་བསྡུ",
+                  "en": "Summarizing by knowing that itself to be unborn",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": "2.3.3",
+              "tib": "བྱང་ཆུབ་ཀྱི་སེམས་རྣམ་པ་གཉིས་བསྒོམ་པ",
+              "en": "Two types of Bodhicitta in the uncommon path of supreme capacity",
+              "children": [
+                {
+                  "id": "2.3.3.1",
+                  "tib": "འཁོར་ལོ་ཆེན་པོ་བཞི་བཤད་པའི་ལེའུ",
+                  "en": "The Four Great Wheels — preliminary steps (Chapter 5)",
+                  "children": [
+                    {
+                      "id": "2.3.3.1.1",
+                      "tib": "མདོར་བསྟན་པ",
+                      "en": "Brief",
+                      "children": []
+                    },
+                    {
+                      "id": "2.3.3.1.2",
+                      "tib": "རྒྱས་པར་བཤད་པ",
+                      "en": "Extensive",
+                      "children": [
+                        {
+                          "id": "2.3.3.1.2.1",
+                          "tib": "མཐུན་པའི་ཡུལ",
+                          "en": "The harmonious environment",
+                          "children": []
+                        },
+                        {
+                          "id": "2.3.3.1.2.2",
+                          "tib": "སྐྱེས་བུ་དམ་པ་བསྟེན་པ",
+                          "en": "Relying on a holy being",
+                          "children": [
+                            {
+                              "id": "2.3.3.1.2.2.1",
+                              "tib": "མདོར་བསྟན",
+                              "en": "Brief",
+                              "children": []
+                            },
+                            {
+                              "id": "2.3.3.1.2.2.2",
+                              "tib": "རྒྱས་པར་བཤད་པ",
+                              "en": "Extensive",
+                              "children": [
+                                {
+                                  "id": "2.3.3.1.2.2.2.1",
+                                  "tib": "མཚན་ཉིད་བཤད་པ",
+                                  "en": "Characteristics",
+                                  "children": [
+                                    {
+                                      "id": "2.3.3.1.2.2.2.1.1",
+                                      "tib": "བླ་མའི་མཚན་ཉིད",
+                                      "en": "Characteristics of the Guru",
+                                      "children": []
+                                    },
+                                    {
+                                      "id": "2.3.3.1.2.2.2.1.2",
+                                      "tib": "སློབ་མའི་མཚན་ཉིད",
+                                      "en": "Characteristics of the disciple",
+                                      "children": []
+                                    }
+                                  ]
+                                },
+                                {
+                                  "id": "2.3.3.1.2.2.2.2",
+                                  "tib": "སྐྱེས་བུ་དམ་པ་བསྟེན་ཚུལ",
+                                  "en": "How to rely on the holy being",
+                                  "children": []
+                                },
+                                {
+                                  "id": "2.3.3.1.2.2.2.3",
+                                  "tib": "བླ་མ་བསྟེན་པའི་ཕན་ཡོན",
+                                  "en": "Benefits of relying on the Guru",
+                                  "children": []
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "id": "2.3.3.1.2.3",
+                          "tib": "བདག་ཉིད་ལེགས་པར་སྨོན་པ",
+                          "en": "Making excellent aspirations for oneself",
+                          "children": []
+                        },
+                        {
+                          "id": "2.3.3.1.2.4",
+                          "tib": "བསོད་ནམས་སྐྱབས་འདུན",
+                          "en": "Aspiration towards the refuge of merit",
+                          "children": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "2.3.3.2",
+                  "tib": "སྐྱབས་སུ་འགྲོ་བ་བཤད་པའི་ལེའུ",
+                  "en": "Going for refuge (Chapter 6)",
+                  "children": [
+                    {
+                      "id": "2.3.3.2.1",
+                      "tib": "སྐྱབས་སུ་འགྲོ་དགོས་པའི་རྒྱུ་མཚན",
+                      "en": "Reasons for needing to go for refuge",
+                      "children": []
+                    },
+                    {
+                      "id": "2.3.3.2.2",
+                      "tib": "སྐྱབས་འགྲོ་དངོས་བཤད་པ",
+                      "en": "Actual going for refuge",
+                      "children": [
+                        {
+                          "id": "2.3.3.2.2.1",
+                          "tib": "དད་པ། སྐྱབས་འགྲོའི་རྒྱུ",
+                          "en": "Faith, the cause of taking refuge",
+                          "children": []
+                        },
+                        {
+                          "id": "2.3.3.2.2.2",
+                          "tib": "སྐྱབས་ཡུལ་ངོས་བཟུང",
+                          "en": "Identifying the objects of refuge",
+                          "children": []
+                        },
+                        {
+                          "id": "2.3.3.2.2.3",
+                          "tib": "སྐྱབས་འགྲོའི་དབྱེ་བ",
+                          "en": "Categories of going for refuge",
+                          "children": []
+                        },
+                        {
+                          "id": "2.3.3.2.2.4",
+                          "tib": "སྐྱབས་སུ་འགྲོ་ཚུལ",
+                          "en": "Manner of going for refuge",
+                          "children": []
+                        },
+                        {
+                          "id": "2.3.3.2.2.5",
+                          "tib": "ཕན་ཡོན",
+                          "en": "Benefits",
+                          "children": []
+                        },
+                        {
+                          "id": "2.3.3.2.2.6",
+                          "tib": "བསླབ་བྱ",
+                          "en": "Training",
+                          "children": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "2.3.3.3",
+                  "tib": "བྱང་ཆུབ་ཀྱི་སེམས་གཉིས་བསྒོམ་པ་དངོས",
+                  "en": "The actual path of the two types of Bodhicitta",
+                  "children": [
+                    {
+                      "id": "2.3.3.3.1",
+                      "tib": "རྒྱུ་མཚན་ཉིད་ཀྱི་ཐེག་པ་ལྟར་བཤད",
+                      "en": "Trunk of the path: causal philosophical vehicle",
+                      "children": [
+                        {
+                          "id": "2.3.3.3.1.1",
+                          "tib": "བློ་སྦྱོང་བ། ཚད་མེད་བཞི",
+                          "en": "Mind training: the Four Immeasurables (Chapter 7)",
+                          "children": [
+                            {
+                              "id": "2.3.3.3.1.1.1",
+                              "tib": "ཐེག་ཆེན་ལམ་མདོར་བསྡུ",
+                              "en": "General summary of the Mahayana path",
+                              "children": []
+                            },
+                            {
+                              "id": "2.3.3.3.1.1.2",
+                              "tib": "ཚད་མེད་བཞི་དངོས་བཤད",
+                              "en": "Actual Four Immeasurables",
+                              "children": []
+                            }
+                          ]
+                        },
+                        {
+                          "id": "2.3.3.3.1.2",
+                          "tib": "བྱང་ཆུབ་ཀྱི་སེམས་ཡོངས་སུ་བཟུང་བ",
+                          "en": "Fully embracing Bodhicitta (Chapter 8)",
+                          "children": [
+                            {
+                              "id": "2.3.3.3.1.2.1",
+                              "tib": "མདོར་བསྟན",
+                              "en": "Brief",
+                              "children": []
+                            },
+                            {
+                              "id": "2.3.3.3.1.2.2",
+                              "tib": "རྒྱས་པར་བཤད་པ",
+                              "en": "Extensive",
+                              "children": [
+                                {
+                                  "id": "2.3.3.3.1.2.2.1",
+                                  "tib": "བྱང་ཆུབ་སེམས་ཀྱི་ཕན་ཡོན",
+                                  "en": "Benefits of Bodhicitta",
+                                  "children": []
+                                },
+                                {
+                                  "id": "2.3.3.3.1.2.2.2",
+                                  "tib": "ངོ་བོ་ངོས་བཟུང",
+                                  "en": "Identifying the essence",
+                                  "children": []
+                                },
+                                {
+                                  "id": "2.3.3.3.1.2.2.3",
+                                  "tib": "དབྱེ་བ",
+                                  "en": "Categories",
+                                  "children": []
+                                },
+                                {
+                                  "id": "2.3.3.3.1.2.2.4",
+                                  "tib": "སེམས་བསྐྱེད་ཚུལ",
+                                  "en": "Manner of generating Bodhicitta",
+                                  "children": [
+                                    {
+                                      "id": "2.3.3.3.1.2.2.4.1",
+                                      "tib": "སྐྱེ་བའི་རྒྱུ",
+                                      "en": "The cause from which it arises",
+                                      "children": []
+                                    },
+                                    {
+                                      "id": "2.3.3.3.1.2.2.4.2",
+                                      "tib": "རྟེན་གྱི་གང་ཟག",
+                                      "en": "The individual who is the receptacle",
+                                      "children": []
+                                    },
+                                    {
+                                      "id": "2.3.3.3.1.2.2.4.3",
+                                      "tib": "ཆོ་ག་དངོས",
+                                      "en": "The actual ritual",
+                                      "children": [
+                                        {
+                                          "id": "2.3.3.3.1.2.2.4.3.1",
+                                          "tib": "སྦྱོར་བ",
+                                          "en": "Preparation",
+                                          "children": []
+                                        },
+                                        {
+                                          "id": "2.3.3.3.1.2.2.4.3.2",
+                                          "tib": "དངོས་གཞི",
+                                          "en": "Main part",
+                                          "children": []
+                                        },
+                                        {
+                                          "id": "2.3.3.3.1.2.2.4.3.3",
+                                          "tib": "རྗེས་ཀྱི་ཆོ་ག",
+                                          "en": "Concluding ritual",
+                                          "children": []
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "id": "2.3.3.3.1.3",
+                          "tib": "སྨོན་འཇུག་བསླབ་བྱའི་ལེའུ",
+                          "en": "Training: aspiring and engaging Bodhicitta (Chapter 9)",
+                          "children": [
+                            {
+                              "id": "2.3.3.3.1.3.1",
+                              "tib": "བསླབ་བྱ་སྲུང་ཐབས",
+                              "en": "Methods for guarding the training",
+                              "children": []
+                            },
+                            {
+                              "id": "2.3.3.3.1.3.2",
+                              "tib": "བསླབ་བྱ་དངོས",
+                              "en": "Actual training",
+                              "children": [
+                                {
+                                  "id": "2.3.3.3.1.3.2.1",
+                                  "tib": "སྤང་བའི་བསླབ་བྱ",
+                                  "en": "Training of abandonment",
+                                  "children": []
+                                },
+                                {
+                                  "id": "2.3.3.3.1.3.2.2",
+                                  "tib": "སྒྲུབ་པའི་བསླབ་བྱ",
+                                  "en": "Training of realization",
+                                  "children": [
+                                    {
+                                      "id": "2.3.3.3.1.3.2.2.1",
+                                      "tib": "སྨོན་པའི་བསླབ་བྱ",
+                                      "en": "Training of aspiration",
+                                      "children": []
+                                    },
+                                    {
+                                      "id": "2.3.3.3.1.3.2.2.2",
+                                      "tib": "འཇུག་པའི་བསླབ་བྱ",
+                                      "en": "Training of application: the Six Paramitas",
+                                      "children": [
+                                        {
+                                          "id": "2.3.3.3.1.3.2.2.2.1",
+                                          "tib": "སྦྱིན་པ",
+                                          "en": "Generosity (Dana)",
+                                          "children": []
+                                        },
+                                        {
+                                          "id": "2.3.3.3.1.3.2.2.2.2",
+                                          "tib": "ཚུལ་ཁྲིམས",
+                                          "en": "Discipline (Shila)",
+                                          "children": []
+                                        },
+                                        {
+                                          "id": "2.3.3.3.1.3.2.2.2.3",
+                                          "tib": "བཟོད་པ",
+                                          "en": "Patience (Kshanti)",
+                                          "children": []
+                                        },
+                                        {
+                                          "id": "2.3.3.3.1.3.2.2.2.4",
+                                          "tib": "བརྩོན་འགྲུས",
+                                          "en": "Diligence (Virya)",
+                                          "children": []
+                                        },
+                                        {
+                                          "id": "2.3.3.3.1.3.2.2.2.5",
+                                          "tib": "བསམ་གཏན",
+                                          "en": "Concentration (Dhyana)",
+                                          "children": []
+                                        },
+                                        {
+                                          "id": "2.3.3.3.1.3.2.2.2.6",
+                                          "tib": "ཤེས་རབ་ཀྱི་ཕ་རོལ་ཏུ་ཕྱིན་པ",
+                                          "en": "Wisdom (Prajna)",
+                                          "children": [
+                                            {
+                                              "id": "2.3.3.3.1.3.2.2.2.6.1",
+                                              "tib": "ཤེས་རབ་གསུམ་གྱི་རང་བཞིན་སྤྱིར་བསྟན",
+                                              "en": "General nature of three wisdoms",
+                                              "children": []
+                                            },
+                                            {
+                                              "id": "2.3.3.3.1.3.2.2.2.6.2",
+                                              "tib": "ཐོས་བསམ་སྒོམ་པའི་ཤེས་རབ་བྱེ་བྲག་ཏུ་བཤད",
+                                              "en": "Specific: hearing, contemplation, meditation",
+                                              "children": [
+                                                {
+                                                  "id": "2.3.3.3.1.3.2.2.2.6.2.1",
+                                                  "tib": "ཐོས་པའི་ཤེས་རབ",
+                                                  "en": "Prajna of Hearing",
+                                                  "children": [
+                                                    {
+                                                      "id": "2.3.3.3.1.3.2.2.2.6.2.1.1",
+                                                      "tib": "ཐོས་པ་གཙོ་ཆེ་བའི་རྒྱུ་མཚན",
+                                                      "en": "Reasons for hearing being most important",
+                                                      "children": []
+                                                    },
+                                                    {
+                                                      "id": "2.3.3.3.1.3.2.2.2.6.2.1.2",
+                                                      "tib": "ཐོས་པ་དངོས་བཤད",
+                                                      "en": "Actual hearing",
+                                                      "children": [
+                                                        {
+                                                          "id": "2.3.3.3.1.3.2.2.2.6.2.1.2.1",
+                                                          "tib": "འཇལ་བྱེད་རིན་ཆེན་ལྡེ་མིག",
+                                                          "en": "The Jewel Key: provisional/definitive, intentions/indirect",
+                                                          "children": []
+                                                        },
+                                                        {
+                                                          "id": "2.3.3.3.1.3.2.2.2.6.2.1.2.2",
+                                                          "tib": "གཞལ་བྱ་དམ་ཆོས་མཛོད",
+                                                          "en": "The Treasury: Two Truths and tenet systems",
+                                                          "children": [
+                                                            {
+                                                              "id": "2.3.3.3.1.3.2.2.2.6.2.1.2.2.1",
+                                                              "tib": "བདེན་གཉིས་སྤྱིར་བཤད",
+                                                              "en": "Two Truths in general",
+                                                              "children": []
+                                                            },
+                                                            {
+                                                              "id": "2.3.3.3.1.3.2.2.2.6.2.1.2.2.2",
+                                                              "tib": "གྲུབ་མཐའི་འདོད་གཞུང",
+                                                              "en": "Philosophical tenets",
+                                                              "children": [
+                                                                {
+                                                                  "id": "2.3.3.3.1.3.2.2.2.6.2.1.2.2.2.1",
+                                                                  "tib": "བྱེ་བྲག་སྨྲ་བ",
+                                                                  "en": "Vaibhashika",
+                                                                  "children": []
+                                                                },
+                                                                {
+                                                                  "id": "2.3.3.3.1.3.2.2.2.6.2.1.2.2.2.2",
+                                                                  "tib": "མདོ་སྡེ་པ",
+                                                                  "en": "Sautrantika",
+                                                                  "children": []
+                                                                },
+                                                                {
+                                                                  "id": "2.3.3.3.1.3.2.2.2.6.2.1.2.2.2.3",
+                                                                  "tib": "སེམས་ཙམ་པ",
+                                                                  "en": "Cittamatra",
+                                                                  "children": []
+                                                                },
+                                                                {
+                                                                  "id": "2.3.3.3.1.3.2.2.2.6.2.1.2.2.2.4",
+                                                                  "tib": "དབུ་མ་པ",
+                                                                  "en": "Madhyamaka",
+                                                                  "children": [
+                                                                    {
+                                                                      "id": "2.3.3.3.1.3.2.2.2.6.2.1.2.2.2.4.1",
+                                                                      "tib": "རང་རྒྱུད་པ",
+                                                                      "en": "Svatantrika",
+                                                                      "children": []
+                                                                    },
+                                                                    {
+                                                                      "id": "2.3.3.3.1.3.2.2.2.6.2.1.2.2.2.4.2",
+                                                                      "tib": "ཐལ་འགྱུར་བ",
+                                                                      "en": "Prasangika",
+                                                                      "children": []
+                                                                    }
+                                                                  ]
+                                                                }
+                                                              ]
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "id": "2.3.3.3.1.3.2.2.2.6.2.2",
+                                                  "tib": "བསམ་པའི་ཤེས་རབ",
+                                                  "en": "Prajna of Reflection",
+                                                  "children": [
+                                                    {
+                                                      "id": "2.3.3.3.1.3.2.2.2.6.2.2.1",
+                                                      "tib": "གཤིས་ཀྱི་རྟེན་འབྲེལ",
+                                                      "en": "Interdependence of the base",
+                                                      "children": []
+                                                    },
+                                                    {
+                                                      "id": "2.3.3.3.1.3.2.2.2.6.2.2.2",
+                                                      "tib": "འཁོར་བའི་རྟེན་འབྲེལ",
+                                                      "en": "Samsaric interdependence",
+                                                      "children": []
+                                                    },
+                                                    {
+                                                      "id": "2.3.3.3.1.3.2.2.2.6.2.2.3",
+                                                      "tib": "མྱང་འདས་ཀྱི་རྟེན་འབྲེལ",
+                                                      "en": "Nirvana-related interdependence",
+                                                      "children": []
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "id": "2.3.3.3.1.3.2.2.2.6.2.3",
+                                                  "tib": "སྒོམ་པའི་ཤེས་རབ",
+                                                  "en": "Prajna of Meditation",
+                                                  "children": [
+                                                    {
+                                                      "id": "2.3.3.3.1.3.2.2.2.6.2.3.1",
+                                                      "tib": "སྒོམ་པའི་ཤེས་རབ་དངོས",
+                                                      "en": "Actual Prajna of meditation",
+                                                      "children": []
+                                                    },
+                                                    {
+                                                      "id": "2.3.3.3.1.3.2.2.2.6.2.3.2",
+                                                      "tib": "ལམ་བགྲོད་ཚུལ",
+                                                      "en": "Mode of traversing the path",
+                                                      "children": []
+                                                    },
+                                                    {
+                                                      "id": "2.3.3.3.1.3.2.2.2.6.2.3.3",
+                                                      "tib": "འབྲས་བུའི་ཐོབ་ཚུལ",
+                                                      "en": "Mode of attaining the result",
+                                                      "children": []
+                                                    },
+                                                    {
+                                                      "id": "2.3.3.3.1.3.2.2.2.6.2.3.4",
+                                                      "tib": "ཕྱིན་དྲུག་གི་དོན",
+                                                      "en": "Summary of the Six Perfections",
+                                                      "children": []
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "2.3.3.3.2",
+                      "tib": "གསང་སྔགས་རྡོ་རྗེ་ཐེག་པ་ལྟར་བཤད",
+                      "en": "Hidden meaning: Secret Mantra Vajrayana (Chapter 10)",
+                      "children": [
+                        {
+                          "id": "2.3.3.3.2.1",
+                          "tib": "མདོ་སྔགས་ལམ་གྱི་ཁྱད་པར",
+                          "en": "Difference between Sutra and Mantra paths",
+                          "children": []
+                        },
+                        {
+                          "id": "2.3.3.3.2.2",
+                          "tib": "གསང་སྔགས་རྒྱུད་སྡེའི་དབྱེ་བ",
+                          "en": "Divisions of the Secret Mantra tantra classes",
+                          "children": [
+                            {
+                              "id": "2.3.3.3.2.2.1",
+                              "tib": "རྒྱུད་སྡེ་བཞིར་དབྱེ་བ",
+                              "en": "Generally divided into four classes",
+                              "children": []
+                            },
+                            {
+                              "id": "2.3.3.3.2.2.2",
+                              "tib": "ཕྱི་རྒྱུད་སྡེ་གསུམ",
+                              "en": "Three outer tantras",
+                              "children": []
+                            },
+                            {
+                              "id": "2.3.3.3.2.2.3",
+                              "tib": "ནང་རྒྱུད",
+                              "en": "Inner tantras",
+                              "children": []
+                            }
+                          ]
+                        },
+                        {
+                          "id": "2.3.3.3.2.3",
+                          "tib": "བླ་ན་མེད་པའི་རྒྱུད་སྡེ",
+                          "en": "Unsurpassed Vehicle (Anuttarayoga)",
+                          "children": [
+                            {
+                              "id": "2.3.3.3.2.3.1",
+                              "tib": "ལམ་གྱི་སྤྱི་ཆིངས་མདོར་བསྟན",
+                              "en": "Brief: general framework of the path",
+                              "children": []
+                            },
+                            {
+                              "id": "2.3.3.3.2.3.2",
+                              "tib": "ཉམས་ལེན་གྱི་ལམ་དངོས་རྒྱས་པར་བཤད",
+                              "en": "Extensive: actual path of practice",
+                              "children": [
+                                {
+                                  "id": "2.3.3.3.2.3.2.1",
+                                  "tib": "ཀུན་གཞི་རྒྱུ་རྒྱུད་དུ་ལྟ་སྒོམ་སྤྱོད་འབྲས",
+                                  "en": "View, meditation, conduct, result within the causal continuum",
+                                  "children": []
+                                },
+                                {
+                                  "id": "2.3.3.3.2.3.2.2",
+                                  "tib": "ལམ་ཐབས་རྒྱུད་དུ་སྨིན་གྲོལ་ཡན་ལག",
+                                  "en": "The method continuum: ripening, liberating, and branches",
+                                  "children": [
+                                    {
+                                      "id": "2.3.3.3.2.3.2.2.1",
+                                      "tib": "སྨིན་བྱེད་དབང་བསྐུར",
+                                      "en": "The ripening empowerments",
+                                      "children": [
+                                        {
+                                          "id": "2.3.3.3.2.3.2.2.1.1",
+                                          "tib": "དབང་ཐོབ་དགོས་པའི་རྒྱུ་མཚན",
+                                          "en": "Reasons for needing empowerment",
+                                          "children": []
+                                        },
+                                        {
+                                          "id": "2.3.3.3.2.3.2.2.1.2",
+                                          "tib": "སློབ་དཔོན་དང་སློབ་མའི་མཚན་ཉིད",
+                                          "en": "Characteristics of master and disciple",
+                                          "children": []
+                                        },
+                                        {
+                                          "id": "2.3.3.3.2.3.2.2.1.3",
+                                          "tib": "དབང་བསྐུར་བ་དངོས",
+                                          "en": "Actual empowerment",
+                                          "children": [
+                                            {
+                                              "id": "2.3.3.3.2.3.2.2.1.3.1",
+                                              "tib": "དབང་གི་ཡན་ལག",
+                                              "en": "Branches of empowerment",
+                                              "children": []
+                                            },
+                                            {
+                                              "id": "2.3.3.3.2.3.2.2.1.3.2",
+                                              "tib": "དབང་དངོས་གཞི",
+                                              "en": "Main empowerment",
+                                              "children": [
+                                                {
+                                                  "id": "2.3.3.3.2.3.2.2.1.3.2.1",
+                                                  "tib": "བུམ་དབང",
+                                                  "en": "Vase empowerment",
+                                                  "children": []
+                                                },
+                                                {
+                                                  "id": "2.3.3.3.2.3.2.2.1.3.2.2",
+                                                  "tib": "གསང་དབང",
+                                                  "en": "Secret empowerment",
+                                                  "children": []
+                                                },
+                                                {
+                                                  "id": "2.3.3.3.2.3.2.2.1.3.2.3",
+                                                  "tib": "ཤེར་དབང",
+                                                  "en": "Wisdom empowerment",
+                                                  "children": []
+                                                },
+                                                {
+                                                  "id": "2.3.3.3.2.3.2.2.1.3.2.4",
+                                                  "tib": "ཚིག་དབང",
+                                                  "en": "Word empowerment",
+                                                  "children": []
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "id": "2.3.3.3.2.3.2.2.2",
+                                      "tib": "གྲོལ་བྱེད་བསྐྱེད་རྫོགས་ཀྱི་ལམ",
+                                      "en": "The liberating path of generation and completion",
+                                      "children": [
+                                        {
+                                          "id": "2.3.3.3.2.3.2.2.2.1",
+                                          "tib": "བསྐྱེད་རིམ",
+                                          "en": "Generation stage (Kyerim)",
+                                          "children": [
+                                            {
+                                              "id": "2.3.3.3.2.3.2.2.2.1.1",
+                                              "tib": "དག་རྫོགས་སྨིན་གསུམ་སྤྱིར་བཤད",
+                                              "en": "General: purifying, perfecting, ripening",
+                                              "children": []
+                                            },
+                                            {
+                                              "id": "2.3.3.3.2.3.2.2.2.1.2",
+                                              "tib": "སྐྱེ་གནས་བཞིའི་བག་ཆགས་སྦྱོང",
+                                              "en": "Purifying habitual tendencies of four modes of birth",
+                                              "children": []
+                                            },
+                                            {
+                                              "id": "2.3.3.3.2.3.2.2.2.1.3",
+                                              "tib": "བསྐྱེད་གཞི་ཏིང་འཛིན་རྣམ་གསུམ",
+                                              "en": "Three samadhis, the basis of generation",
+                                              "children": []
+                                            },
+                                            {
+                                              "id": "2.3.3.3.2.3.2.2.2.1.4",
+                                              "tib": "ས་ལམ་བགྲོད་ཚུལ",
+                                              "en": "Traversing the stages and paths",
+                                              "children": []
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "id": "2.3.3.3.2.3.2.2.2.2",
+                                          "tib": "རྫོགས་རིམ",
+                                          "en": "Completion stage (Dzogrim)",
+                                          "children": [
+                                            {
+                                              "id": "2.3.3.3.2.3.2.2.2.2.1",
+                                              "tib": "སྣང་བཅས་ཀྱི་རྫོགས་རིམ",
+                                              "en": "With characteristics: vajra body, channels, winds, drops",
+                                              "children": []
+                                            },
+                                            {
+                                              "id": "2.3.3.3.2.3.2.2.2.2.2",
+                                              "tib": "སྣང་མེད་ཀྱི་རྫོགས་རིམ",
+                                              "en": "Without characteristics: signless completion",
+                                              "children": []
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "id": "2.3.3.3.2.3.2.2.3",
+                                      "tib": "དམ་ཚིག",
+                                      "en": "The Samayas (pledges)",
+                                      "children": [
+                                        {
+                                          "id": "2.3.3.3.2.3.2.2.3.1",
+                                          "tib": "དམ་ཚིག་གི་རྣམ་གྲངས",
+                                          "en": "Categories of samaya",
+                                          "children": [
+                                            {
+                                              "id": "2.3.3.3.2.3.2.2.3.1.1",
+                                              "tib": "བླ་མེད་སྤྱིའི་སྡོམ་པ",
+                                              "en": "General unsurpassed vows incl. 14 root downfalls",
+                                              "children": []
+                                            },
+                                            {
+                                              "id": "2.3.3.3.2.3.2.2.3.1.2",
+                                              "tib": "མདོ་སྒྱུ་སེམས་གསུམ་གྱི་ཁྱད་པར",
+                                              "en": "Specific: Sutra, Mayajala, and Mind traditions",
+                                              "children": []
+                                            },
+                                            {
+                                              "id": "2.3.3.3.2.3.2.2.3.1.3",
+                                              "tib": "བརྟུལ་ཞུགས་ཉེར་ལྔ་དང་རིགས་ལྔའི་སྡོམ་པ",
+                                              "en": "25 ascetic conducts and vows of the 5 families",
+                                              "children": []
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "id": "2.3.3.3.2.3.2.2.3.2",
+                                          "tib": "ཉམས་ན་ཕྱིར་བཅོས",
+                                          "en": "Restoring them if impaired",
+                                          "children": []
+                                        },
+                                        {
+                                          "id": "2.3.3.3.2.3.2.2.3.3",
+                                          "tib": "ཉམས་པའི་ཉེས་དམིགས",
+                                          "en": "Faults of impairment",
+                                          "children": []
+                                        },
+                                        {
+                                          "id": "2.3.3.3.2.3.2.2.3.4",
+                                          "tib": "བསྲུང་བའི་ཕན་ཡོན",
+                                          "en": "Benefits of guarding",
+                                          "children": []
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "2.3.3.3.3",
+                      "tib": "རང་བཞིན་རྫོགས་པ་ཆེན་པོ་ལྟར་བཤད",
+                      "en": "The short path: natural Great Completeness (Dzogchen)",
+                      "children": [
+                        {
+                          "id": "2.3.3.3.3.1",
+                          "tib": "གཞི་གཏན་ལ་དབབ་པ",
+                          "en": "Determining the ground (Chapter 11)",
+                          "children": [
+                            {
+                              "id": "2.3.3.3.3.1.1",
+                              "tib": "འཁོར་འདས་ཀྱི་སྤྱི་གཞི",
+                              "en": "Common ground of Samsara and Nirvana",
+                              "children": [
+                                {
+                                  "id": "2.3.3.3.3.1.1.1",
+                                  "tib": "གཞི་བཤད",
+                                  "en": "Explaining the ground",
+                                  "children": []
+                                },
+                                {
+                                  "id": "2.3.3.3.3.1.1.2",
+                                  "tib": "གཞི་སྣང",
+                                  "en": "Appearances of the ground (gzhi snang)",
+                                  "children": []
+                                }
+                              ]
+                            },
+                            {
+                              "id": "2.3.3.3.3.1.2",
+                              "tib": "ཀུན་ཏུ་བཟང་པོའི་གྲོལ་ཚུལ",
+                              "en": "Manner of Samantabhadra's liberation",
+                              "children": [
+                                {
+                                  "id": "2.3.3.3.3.1.2.1",
+                                  "tib": "ཆོས་སྐུའི་དབྱིངས་སུ་གྲོལ",
+                                  "en": "Liberation in Dharmakaya space",
+                                  "children": []
+                                },
+                                {
+                                  "id": "2.3.3.3.3.1.2.2",
+                                  "tib": "ལོངས་སྐུའི་ཞིང་ཁམས་བཀོད",
+                                  "en": "Displaying Sambhogakaya pure realms",
+                                  "children": []
+                                },
+                                {
+                                  "id": "2.3.3.3.3.1.2.3",
+                                  "tib": "སྤྲུལ་སྐུའི་འགྲོ་དོན་མཛད",
+                                  "en": "Nirmanakaya acting for beings",
+                                  "children": []
+                                }
+                              ]
+                            },
+                            {
+                              "id": "2.3.3.3.3.1.3",
+                              "tib": "མ་དག་པའི་སེམས་ཅན་གྱི་འཁྲུལ་ཚུལ",
+                              "en": "Manner of delusion of impure beings",
+                              "children": [
+                                {
+                                  "id": "2.3.3.3.3.1.3.1",
+                                  "tib": "འཁྲུལ་པའི་རྒྱུ་རྐྱེན",
+                                  "en": "Causes and conditions of delusion",
+                                  "children": []
+                                },
+                                {
+                                  "id": "2.3.3.3.3.1.3.2",
+                                  "tib": "འཁྲུལ་བའི་སྣང་ལུགས",
+                                  "en": "Manner of deluded appearances",
+                                  "children": []
+                                },
+                                {
+                                  "id": "2.3.3.3.3.1.3.3",
+                                  "tib": "སྣང་སེམས་ཀྱི་དབྱེ་བ",
+                                  "en": "Differences between appearance and mind",
+                                  "children": []
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "id": "2.3.3.3.3.2",
+                          "tib": "ལམ་ཉམས་སུ་བླང་ཚུལ",
+                          "en": "Practicing the path (Chapter 12)",
+                          "children": [
+                            {
+                              "id": "2.3.3.3.3.2.1",
+                              "tib": "ལམ་གྱི་ཁྱད་པར",
+                              "en": "Differences of the path",
+                              "children": [
+                                {
+                                  "id": "2.3.3.3.3.2.1.1",
+                                  "tib": "གཞན་ལས་འཕགས་པའི་ཁྱད་པར",
+                                  "en": "Supreme over others",
+                                  "children": []
+                                },
+                                {
+                                  "id": "2.3.3.3.3.2.1.2",
+                                  "tib": "ནང་གསེས་སྡེ་གསུམ་གྱི་ཁྱད་པར",
+                                  "en": "Inner differences of the three series",
+                                  "children": []
+                                }
+                              ]
+                            },
+                            {
+                              "id": "2.3.3.3.3.2.2",
+                              "tib": "ལམ་དངོས",
+                              "en": "Actual path",
+                              "children": [
+                                {
+                                  "id": "2.3.3.3.3.2.2.1",
+                                  "tib": "གྲོལ་ལུགས་ཀྱི་གདིང",
+                                  "en": "Confidence in the mode of liberation",
+                                  "children": []
+                                },
+                                {
+                                  "id": "2.3.3.3.3.2.2.2",
+                                  "tib": "ཤན་འབྱེད་ཀྱི་འཕྱོང",
+                                  "en": "Crucial points of distinguishing (shan 'byed)",
+                                  "children": [
+                                    {
+                                      "id": "2.3.3.3.3.2.2.2.1",
+                                      "tib": "སེམས་རིག་ཤན་འབྱེད",
+                                      "en": "1. Mind and Rigpa",
+                                      "children": []
+                                    },
+                                    {
+                                      "id": "2.3.3.3.3.2.2.2.2",
+                                      "tib": "གནས་པ་ངོ་བོའི་ཤན་འབྱེད",
+                                      "en": "2. Abiding and essence",
+                                      "children": []
+                                    },
+                                    {
+                                      "id": "2.3.3.3.3.2.2.2.3",
+                                      "tib": "འཕྲོ་བ་རྩལ་གྱི་ཤན་འབྱེད",
+                                      "en": "3. Proliferating and display",
+                                      "children": []
+                                    },
+                                    {
+                                      "id": "2.3.3.3.3.2.2.2.4",
+                                      "tib": "གྲོལ་ཚུལ་གནད་ཀྱི་ཤན་འབྱེད",
+                                      "en": "4. Crucial point of liberation",
+                                      "children": []
+                                    },
+                                    {
+                                      "id": "2.3.3.3.3.2.2.2.5",
+                                      "tib": "ཀུན་གཞི་ཆོས་སྐུའི་ཤན་འབྱེད",
+                                      "en": "5. Alaya and Dharmakaya",
+                                      "children": []
+                                    },
+                                    {
+                                      "id": "2.3.3.3.3.2.2.2.6",
+                                      "tib": "འཁྲུལ་གྲོལ་སྐབས་ཀྱི་ཤན་འབྱེད",
+                                      "en": "6. Time of delusion and liberation",
+                                      "children": []
+                                    },
+                                    {
+                                      "id": "2.3.3.3.3.2.2.2.7",
+                                      "tib": "གཞི་འབྲས་ལྷུན་གྲུབ་ཀྱི་ཤན་འབྱེད",
+                                      "en": "7. Spontaneous presence of ground and result",
+                                      "children": []
+                                    },
+                                    {
+                                      "id": "2.3.3.3.3.2.2.2.8",
+                                      "tib": "ལམ་འབྲས་ཀ་དག་གི་ཤན་འབྱེད",
+                                      "en": "8. Primordial purity of path and result",
+                                      "children": []
+                                    },
+                                    {
+                                      "id": "2.3.3.3.3.2.2.2.9",
+                                      "tib": "བར་དོ་ལྷ་ཡི་ཤན་འབྱེད",
+                                      "en": "9. Bardo and deity",
+                                      "children": []
+                                    },
+                                    {
+                                      "id": "2.3.3.3.3.2.2.2.10",
+                                      "tib": "དབུགས་འབྱིན་ཞིང་གི་ཤན་འབྱེད",
+                                      "en": "10. Realm of relief/liberation",
+                                      "children": []
+                                    }
+                                  ]
+                                },
+                                {
+                                  "id": "2.3.3.3.3.2.2.3",
+                                  "tib": "ཉམས་ལེན་གྱི་གནད",
+                                  "en": "Crucial points of practice",
+                                  "children": [
+                                    {
+                                      "id": "2.3.3.3.3.2.2.3.1",
+                                      "tib": "རིག་པ་རང་སྣང་གི་བློ་ཅན",
+                                      "en": "Practice for those with capacity for Rigpa's self-display",
+                                      "children": [
+                                        {
+                                          "id": "2.3.3.3.3.2.2.3.1.1",
+                                          "tib": "ཀ་དག་ཁྲེགས་ཆོད",
+                                          "en": "Primordially pure Trekcho",
+                                          "children": [
+                                            {
+                                              "id": "2.3.3.3.3.2.2.3.1.1.1",
+                                              "tib": "ལྟ་བ",
+                                              "en": "View",
+                                              "children": []
+                                            },
+                                            {
+                                              "id": "2.3.3.3.3.2.2.3.1.1.2",
+                                              "tib": "སྒོམ་པ",
+                                              "en": "Meditation",
+                                              "children": []
+                                            },
+                                            {
+                                              "id": "2.3.3.3.3.2.2.3.1.1.3",
+                                              "tib": "སྤྱོད་པ",
+                                              "en": "Action",
+                                              "children": []
+                                            },
+                                            {
+                                              "id": "2.3.3.3.3.2.2.3.1.1.4",
+                                              "tib": "འབྲས་བུ",
+                                              "en": "Result",
+                                              "children": []
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "id": "2.3.3.3.3.2.2.3.1.2",
+                                          "tib": "ལྷུན་གྲུབ་ཐོད་རྒལ",
+                                          "en": "Spontaneously present Togal",
+                                          "children": []
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "id": "2.3.3.3.3.2.2.3.2",
+                                      "tib": "སྣང་བ་ཡུལ་གྱི་བློ་ཅན",
+                                      "en": "Practice for those with capacity for objective appearances",
+                                      "children": [
+                                        {
+                                          "id": "2.3.3.3.3.2.2.3.2.1",
+                                          "tib": "ཞི་ལྷག་གི་སྐྱོང་ཚུལ",
+                                          "en": "Maintaining quiescence (Shamatha) and insight (Vipashyana)",
+                                          "children": []
+                                        },
+                                        {
+                                          "id": "2.3.3.3.3.2.2.3.2.2",
+                                          "tib": "རྣམ་རྟོག་ལམ་དུ་འཁྱེར",
+                                          "en": "Carrying concepts onto the path",
+                                          "children": []
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "id": "2.3.3.3.3.3",
+                          "tib": "འབྲས་བུ་ལྷུན་གྲུབ་ཆེན་པོའི་གོ་འཕང",
+                          "en": "Great spontaneous accomplishment of the result (Chapter 13)",
+                          "children": [
+                            {
+                              "id": "2.3.3.3.3.3.1",
+                              "tib": "འབྲས་བུ་གཞན་ནས་མི་འོང",
+                              "en": "The result does not come from elsewhere",
+                              "children": []
+                            },
+                            {
+                              "id": "2.3.3.3.3.3.2",
+                              "tib": "སྐུ་ལྔའི་རང་བཞིན་རྒྱས་པར་བཤད",
+                              "en": "Nature of the five kayas",
+                              "children": [
+                                {
+                                  "id": "2.3.3.3.3.3.2.1",
+                                  "tib": "དབྱིངས་ཀྱི་སྐུ་གསུམ",
+                                  "en": "Three kayas that shine inwardly in basic space",
+                                  "children": [
+                                    {
+                                      "id": "2.3.3.3.3.3.2.1.1",
+                                      "tib": "མི་འགྱུར་རྡོ་རྗེའི་སྐུ",
+                                      "en": "Unchanging vajra kaya",
+                                      "children": []
+                                    },
+                                    {
+                                      "id": "2.3.3.3.3.3.2.1.2",
+                                      "tib": "མངོན་པར་བྱང་ཆུབ",
+                                      "en": "Manifest Awakening",
+                                      "children": []
+                                    },
+                                    {
+                                      "id": "2.3.3.3.3.3.2.1.3",
+                                      "tib": "ཞི་བ་ཆོས་སྐུ",
+                                      "en": "Peaceful Dharmakaya",
+                                      "children": []
+                                    }
+                                  ]
+                                },
+                                {
+                                  "id": "2.3.3.3.3.3.2.2",
+                                  "tib": "ཡེ་ཤེས་ཕྱིར་གསལ་གྱི་སྐུ་གཉིས",
+                                  "en": "Two kayas that shine outwardly as primordial wisdom",
+                                  "children": [
+                                    {
+                                      "id": "2.3.3.3.3.3.2.2.1",
+                                      "tib": "ལོངས་སྐུ",
+                                      "en": "Sambhogakaya",
+                                      "children": []
+                                    },
+                                    {
+                                      "id": "2.3.3.3.3.3.2.2.2",
+                                      "tib": "སྤྲུལ་སྐུ",
+                                      "en": "Nirmanakaya",
+                                      "children": [
+                                        {
+                                          "id": "2.3.3.3.3.3.2.2.2.1",
+                                          "tib": "རང་བཞིན་སྤྲུལ་པ",
+                                          "en": "Natural Nirmanakaya",
+                                          "children": []
+                                        },
+                                        {
+                                          "id": "2.3.3.3.3.3.2.2.2.2",
+                                          "tib": "འགྲོ་འདུལ་སྤྲུལ་པ",
+                                          "en": "Nirmanakaya subduing beings",
+                                          "children": []
+                                        },
+                                        {
+                                          "id": "2.3.3.3.3.3.2.2.2.3",
+                                          "tib": "སྣ་ཚོགས་སྤྲུལ་པ",
+                                          "en": "Diverse Nirmanakaya",
+                                          "children": []
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "tib": "ཐ་མར་དགེ་བ་མཇུག་གི་དོན",
+      "en": "The goodness in the end: the meaning of the conclusion",
+      "children": [
+        {
+          "id": "3.1",
+          "tib": "བསྟན་བཅོས་རྩོམ་པའི་རྒྱུ",
+          "en": "The reason for composing the treatise",
+          "children": []
+        },
+        {
+          "id": "3.2",
+          "tib": "དེས་ཐོབ་དགེ་བ་བསྔོ་བ",
+          "en": "Dedicating the virtue obtained by that",
+          "children": []
+        },
+        {
+          "id": "3.3",
+          "tib": "མཇུག་མཛད་བྱང་བརྗོད་པ",
+          "en": "Stating the concluding colophon",
+          "children": []
+        }
+      ]
+    }
+  ]
+};
+
+const nodeIndex = {};
+function buildIndex(nodes, parentId, depth) {
+  for (const node of nodes) {
+    nodeIndex[node.id] = { node, parentId, depth };
+    if (node.children && node.children.length) buildIndex(node.children, node.id, depth + 1);
+  }
+}
+buildIndex(DATA.nodes, null, 0);
+
+const state = { expanded: new Set(), selected: null, query: '', showTib: true, showEn: true, textSize: 0 };
+Object.values(nodeIndex).forEach(({ node, depth }) => { if (depth <= 1) state.expanded.add(node.id); });
+
+const DEPTH_COLORS = ['#7c2d2d','#a04020','#c46a1a','#c49a0a','#7a9020','#2a7a50','#1a6888','#2a4a9a','#5a2a9a','#8a1a7a','#aa1a4a','#7c2d2d'];
+function depthColor(d) { return DEPTH_COLORS[Math.min(d, DEPTH_COLORS.length - 1)]; }
+
+function stripDiacritics(s) { return s.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
+
+function getMatchingIds(q) {
+  if (!q) return null;
+  const lq = stripDiacritics(q.toLowerCase());
+  const matches = new Set(), visible = new Set();
+  Object.values(nodeIndex).forEach(({ node }) => {
+    if (stripDiacritics(node.tib.toLowerCase()).includes(lq) || stripDiacritics(node.en.toLowerCase()).includes(lq) || node.id.toLowerCase().includes(lq)) matches.add(node.id);
+  });
+  matches.forEach(id => { visible.add(id); let cur = nodeIndex[id]; while (cur && cur.parentId) { visible.add(cur.parentId); cur = nodeIndex[cur.parentId]; } });
+  return { matches, visible };
+}
+
+function highlight(text, q) {
+  if (!q) return escHtml(text);
+  const strippedText = stripDiacritics(text), strippedQ = stripDiacritics(q);
+  const escapedQ = strippedQ.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const regex = new RegExp(escapedQ, 'gi');
+  const nfd = text.normalize('NFD');
+  const nfdToOrig = new Array(nfd.length); let nfdPos = 0;
+  for (let i = 0; i < text.length; i++) { const c = text[i].normalize('NFD'); for (let j = 0; j < c.length; j++) nfdToOrig[nfdPos + j] = i; nfdPos += c.length; }
+  let strippedToOrig = [];
+  for (let i = 0; i < nfd.length; i++) { const code = nfd.charCodeAt(i); if (code < 0x0300 || code > 0x036f) strippedToOrig.push(nfdToOrig[i]); }
+  const ranges = []; let m;
+  while ((m = regex.exec(strippedText)) !== null) { ranges.push([strippedToOrig[m.index], strippedToOrig[m.index + m[0].length - 1] + 1]); }
+  if (!ranges.length) return escHtml(text);
+  let result = '', last = 0;
+  for (const [s, e] of ranges) { result += escHtml(text.slice(last, s)) + '<mark>' + escHtml(text.slice(s, e)) + '</mark>'; last = e; }
+  return result + escHtml(text.slice(last));
+}
+
+function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function renderTree() {
+  const container = document.getElementById('treeContainer');
+  const sr = state.query ? getMatchingIds(state.query) : null;
+  container.innerHTML = '';
+  for (const node of DATA.nodes) { const el = renderNode(node, 0, sr); if (el) container.appendChild(el); }
+  const countEl = document.getElementById('searchCount');
+  if (sr) { const n = sr.matches.size; countEl.textContent = n === 0 ? 'No matches' : `${n} match${n !== 1 ? 'es' : ''}`; } else { countEl.textContent = ''; }
+}
+
+function renderNode(node, depth, sr) {
+  const actualDepth = nodeIndex[node.id] ? nodeIndex[node.id].depth : depth;
+  const hasChildren = node.children && node.children.length > 0;
+  const isExpanded = state.expanded.has(node.id);
+  const isSelected = state.selected === node.id;
+  const q = state.query;
+  if (sr && !sr.visible.has(node.id)) return null;
+  const isMatch = sr && sr.matches.has(node.id);
+  const wrapper = document.createElement('div');
+  wrapper.className = `tree-node depth-${actualDepth} tree-anchor`;
+  wrapper.dataset.id = node.id;
+  const row = document.createElement('div');
+  row.className = 'node-row' + (isSelected ? ' selected' : '') + (isMatch ? ' search-match' : '');
+  row.style.borderLeftColor = !isSelected ? depthColor(actualDepth) : '';
+  const toggleBtn = document.createElement('button');
+  toggleBtn.className = 'toggle-btn' + (hasChildren ? '' : ' leaf');
+  if (hasChildren) {
+    const arrow = document.createElement('span');
+    arrow.className = 'toggle-arrow' + (isExpanded ? ' open' : '');
+    arrow.textContent = '\u25B6';
+    toggleBtn.appendChild(arrow);
+    toggleBtn.addEventListener('click', e => { e.stopPropagation(); toggleExpand(node.id); });
+  }
+  const content = document.createElement('div');
+  content.className = 'node-content';
+  const tibSpan = document.createElement('span');
+  tibSpan.className = 'node-tib';
+  tibSpan.innerHTML = `<span class="node-id">${escHtml(node.id)}</span>` + highlight(node.tib, q);
+  const enSpan = document.createElement('span');
+  enSpan.className = 'node-en';
+  enSpan.innerHTML = highlight(node.en, q);
+  if (hasChildren) enSpan.innerHTML += ` <span class="child-count">${node.children.length}</span>`;
+  content.appendChild(tibSpan);
+  content.appendChild(enSpan);
+  row.appendChild(toggleBtn);
+  row.appendChild(content);
+  const nodeCopyBtn = document.createElement('button');
+  nodeCopyBtn.className = 'node-copy-btn';
+  nodeCopyBtn.title = 'Copy path';
+  nodeCopyBtn.innerHTML = '<svg width="11" height="11" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" stroke="currentColor" stroke-width="1.5"/></svg>';
+  nodeCopyBtn.addEventListener('click', e => { e.stopPropagation(); copyPath(node.id, nodeCopyBtn); });
+  row.appendChild(nodeCopyBtn);
+  row.addEventListener('click', () => selectNode(node.id));
+  wrapper.appendChild(row);
+  if (hasChildren) {
+    const childWrap = document.createElement('div');
+    childWrap.className = 'children-wrap' + (isExpanded || sr ? '' : ' collapsed');
+    for (const child of node.children) { const childEl = renderNode(child, actualDepth + 1, sr); if (childEl) childWrap.appendChild(childEl); }
+    wrapper.appendChild(childWrap);
+  }
+  return wrapper;
+}
+
+function toggleExpand(id) { if (state.expanded.has(id)) state.expanded.delete(id); else state.expanded.add(id); renderTree(); updateBreadcrumb(); }
+
+function selectNode(id) {
+  state.selected = (state.selected === id) ? null : id;
+  if (state.selected) { let cur = nodeIndex[id]; while (cur && cur.parentId) { state.expanded.add(cur.parentId); cur = nodeIndex[cur.parentId]; } }
+  renderTree(); updateBreadcrumb();
+  if (state.selected) { const el = document.querySelector(`[data-id="${CSS.escape(state.selected)}"]`); if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50); }
+}
+
+function getBreadcrumb(id) { const path = []; let cur = nodeIndex[id]; while (cur) { path.unshift(cur.node); cur = cur.parentId ? nodeIndex[cur.parentId] : null; } return path; }
+
+function buildPathText(id) {
+  const path = getBreadcrumb(id);
+  return path.map(n => { if (state.showTib && state.showEn) return `${n.tib} (${n.en})`; if (state.showTib) return n.tib; return n.en; }).join(' / ');
+}
+
+let _copyToastTimer = null;
+function copyPath(id, triggerEl) {
+  navigator.clipboard.writeText(buildPathText(id)).then(() => {
+    if (triggerEl) { triggerEl.classList.add('copied'); setTimeout(() => triggerEl.classList.remove('copied'), 1500); }
+    const toast = document.getElementById('copyToast'); toast.textContent = 'Path copied'; toast.classList.add('show');
+    clearTimeout(_copyToastTimer); _copyToastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+  });
+}
+
+function updateBreadcrumb() {
+  const bc = document.getElementById('breadcrumb');
+  if (!state.selected) { bc.className = 'breadcrumb-bar empty'; bc.innerHTML = 'Click any node to mark your place'; return; }
+  const path = getBreadcrumb(state.selected);
+  bc.className = 'breadcrumb-bar';
+  bc.innerHTML = path.map((node, i) => {
+    const isLast = i === path.length - 1;
+    return `<span class="crumb" data-crumb-id="${escHtml(node.id)}" title="${escHtml(node.en)}"><span class="crumb-top"><span class="crumb-id">${escHtml(node.id)}</span><span class="crumb-tib">${escHtml(node.tib)}</span></span><span class="crumb-en">${escHtml(node.en)}</span></span>${isLast ? '' : '<span class="crumb-sep">\u203A</span>'}`;
+  }).join('');
+  bc.querySelectorAll('.crumb').forEach(el => { el.addEventListener('click', () => selectNode(el.dataset.crumbId)); });
+  const copyBtn = document.createElement('button');
+  copyBtn.className = 'copy-path-btn'; copyBtn.title = 'Copy path';
+  copyBtn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" stroke="currentColor" stroke-width="1.5"/></svg>Copy';
+  copyBtn.addEventListener('click', e => { e.stopPropagation(); copyPath(state.selected, copyBtn); });
+  bc.appendChild(copyBtn);
+}
+
+function expandAll() { Object.keys(nodeIndex).forEach(id => state.expanded.add(id)); renderTree(); updateBreadcrumb(); }
+function collapseAll() { state.expanded.clear(); renderTree(); updateBreadcrumb(); }
+
+function applyLangFilter() {
+  document.documentElement.classList.toggle('hide-tib', !state.showTib);
+  document.documentElement.classList.toggle('hide-en', !state.showEn);
+  document.getElementById('btnTib').classList.toggle('active', state.showTib);
+  document.getElementById('btnEng').classList.toggle('active', state.showEn);
+}
+
+function applyTextSize() {
+  const root = document.documentElement;
+  root.style.setProperty('--font-size-tib', (15 + state.textSize * 2) + 'px');
+  root.style.setProperty('--font-size-en', (12 + state.textSize * 2) + 'px');
+  document.getElementById('btnSizeDown').disabled = state.textSize <= -2;
+  document.getElementById('btnSizeUp').disabled = state.textSize >= 4;
+}
+
+document.getElementById('btnTib').addEventListener('click', () => { state.showTib = !state.showTib; applyLangFilter(); });
+document.getElementById('btnEng').addEventListener('click', () => { state.showEn = !state.showEn; applyLangFilter(); });
+document.getElementById('btnSizeDown').addEventListener('click', () => { if (state.textSize > -2) { state.textSize--; applyTextSize(); } });
+document.getElementById('btnSizeUp').addEventListener('click', () => { if (state.textSize < 4) { state.textSize++; applyTextSize(); } });
+
+let searchTimer = null;
+document.getElementById('searchBox').addEventListener('input', e => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    state.query = e.target.value.trim();
+    document.getElementById('searchClear').classList.toggle('visible', state.query.length > 0);
+    renderTree(); updateBreadcrumb();
+  }, 180);
+});
+document.getElementById('searchClear').addEventListener('click', () => {
+  document.getElementById('searchBox').value = ''; state.query = '';
+  document.getElementById('searchClear').classList.remove('visible');
+  renderTree(); updateBreadcrumb();
+});
+document.getElementById('btnExpandAll').addEventListener('click', expandAll);
+document.getElementById('btnCollapseAll').addEventListener('click', collapseAll);
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (state.query) { document.getElementById('searchBox').value = ''; state.query = ''; document.getElementById('searchClear').classList.remove('visible'); renderTree(); }
+    else if (state.selected) { state.selected = null; renderTree(); updateBreadcrumb(); }
+  }
+  if ((e.key === 'f' || e.key === 'F') && (e.ctrlKey || e.metaKey)) { e.preventDefault(); document.getElementById('searchBox').focus(); }
+});
+
+document.getElementById('introToggle').addEventListener('click', () => {
+  const body = document.getElementById('introBody'), arrow = document.getElementById('introArrow');
+  const isOpen = body.classList.toggle('visible'); arrow.classList.toggle('open', isOpen);
+});
+
+function preparePrintHeader() {
+  const titleEl = document.getElementById('printDocTitle'); titleEl.innerHTML = '';
+  if (state.showTib) { const t = document.createElement('span'); t.className = 'print-title-tib'; t.textContent = DATA.title_tib; titleEl.appendChild(t); }
+  if (state.showEn) { const e = document.createElement('span'); e.className = 'print-title-en'; e.textContent = DATA.title_en; titleEl.appendChild(e); }
+  const bcEl = document.getElementById('printBreadcrumb');
+  if (!state.selected) { bcEl.textContent = ''; return; }
+  const path = getBreadcrumb(state.selected);
+  bcEl.textContent = path.map(n => { if (state.showTib && state.showEn) return `${n.id}  ${n.tib} (${n.en})`; if (state.showTib) return `${n.id}  ${n.tib}`; return `${n.id}  ${n.en}`; }).join('  \u203A  ');
+}
+
+document.getElementById('btnPrint').addEventListener('click', () => { preparePrintHeader(); window.print(); });
+
+renderTree(); updateBreadcrumb(); applyLangFilter(); applyTextSize();
+</script>
+</body>
+</html>
