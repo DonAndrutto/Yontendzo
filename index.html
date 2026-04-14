@@ -125,6 +125,69 @@
     .intro-body.visible { display: block; }
     .intro-body p { margin-bottom: 8px; }
     .intro-body .text-title { font-weight: 600; color: var(--text); }
+    .chapter-tag {
+      display: inline-block; font-weight: 600; font-style: normal; color: #4a2818;
+      background: #f7ecd6; padding: 0 6px; border-radius: 9px; margin-left: 4px;
+      font-size: 0.92em; letter-spacing: 0.01em; cursor: pointer; text-decoration: none;
+      transition: background 0.12s, color 0.12s;
+    }
+    .chapter-tag:hover { background: #f0d8a8; color: #2a1208; }
+    .chapter-tag:focus-visible { outline: 2px solid var(--selected-border); outline-offset: 1px; }
+    .app-header { position: relative; }
+    .lang-select { position: absolute; right: 18px; top: 14px; z-index: 110; }
+    .lang-select-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.08); color: var(--header-text);
+      border: 1px solid rgba(245,230,200,0.25); border-radius: 6px;
+      padding: 5px 9px; cursor: pointer; font-family: inherit; font-size: 12px;
+    }
+    .lang-select-btn:hover { background: rgba(255,255,255,0.16); }
+    .lang-flag { font-size: 18px; line-height: 1; }
+    .lang-code { letter-spacing: 0.06em; font-weight: 600; }
+    .lang-caret { font-size: 9px; opacity: 0.7; }
+    .lang-menu {
+      position: absolute; right: 0; top: calc(100% + 4px);
+      background: #fffdf8; color: var(--text);
+      border: 1px solid var(--border); border-radius: 6px; min-width: 170px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.25); list-style: none; padding: 4px 0; z-index: 200;
+    }
+    .lang-menu li {
+      display: flex; align-items: center; gap: 9px; padding: 6px 12px; cursor: pointer; font-size: 13px;
+    }
+    .lang-menu li:hover { background: #f7ecd6; }
+    .lang-menu li.active { background: #fef5e7; font-weight: 600; }
+    .lang-menu .menu-flag { font-size: 16px; }
+    .lang-menu .menu-pending { font-size: 10px; color: #b09070; margin-left: auto; font-style: italic; }
+    .root-text-section { max-width: 860px; margin: 0; padding: 14px 22px 60px; border-top: 2px solid var(--border); background: #fffdf8; }
+    .root-text-toggle { display: flex; align-items: center; gap: 8px; background: none; border: none; cursor: pointer; padding: 0; font-family: inherit; color: var(--accent); }
+    .root-text-toggle h2 { font-size: 16px; font-weight: 600; }
+    .root-text-toggle .rt-tib { font-family: 'Noto Sans Tibetan', serif; font-size: 18px; line-height: 1.4; }
+    .root-text-arrow { display: inline-block; font-size: 11px; transition: transform 0.15s; }
+    .root-text-arrow.open { transform: rotate(90deg); }
+    .root-text-body { margin-top: 14px; display: flex; flex-direction: column; gap: 10px; }
+    .rt-subsection { border: 1px solid var(--border); border-radius: 8px; background: white; overflow: hidden; scroll-margin-top: 160px; }
+    .rt-subsection-header { display: flex; align-items: center; gap: 8px; padding: 9px 12px; cursor: pointer; background: #f7ecd6; }
+    .rt-subsection-header:hover { background: #f0d8a8; }
+    .rt-subsection-arrow { font-size: 10px; transition: transform 0.15s; }
+    .rt-subsection-arrow.open { transform: rotate(90deg); }
+    .rt-subsection-title { font-weight: 600; font-size: 13px; color: var(--text); }
+    .rt-subsection-back { margin-left: auto; font-size: 11px; color: #8b4c1a; background: none; border: 1px solid transparent; padding: 2px 8px; border-radius: 5px; cursor: pointer; font-family: inherit; }
+    .rt-subsection-back:hover { background: #fce8cc; border-color: #e8c898; }
+    .rt-subsection-body { padding: 12px 14px; display: none; }
+    .rt-subsection.open .rt-subsection-body { display: block; }
+    .rt-slot { margin-bottom: 10px; }
+    .rt-slot:last-child { margin-bottom: 0; }
+    .rt-slot-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: #b09070; margin-bottom: 3px; font-weight: 600; }
+    .rt-slot-tib { font-family: 'Noto Sans Tibetan', serif; font-size: 16px; line-height: 2.0; color: var(--text); }
+    .rt-slot-text { font-size: 14px; line-height: 1.7; color: var(--text); }
+    .rt-slot-empty { font-style: italic; color: #b8a890; }
+    .hide-tib .rt-slot-tib-wrap { display: none; }
+    .hide-en .rt-slot-target { display: none; }
+    .rt-flash { animation: rtFlash 1.4s ease-out; }
+    @keyframes rtFlash {
+      0%   { background: #fff3c0; box-shadow: 0 0 0 3px #f0d090; }
+      100% { background: white;   box-shadow: 0 0 0 3px transparent; }
+    }
     @media (max-width: 600px) {
       .app-header { padding: 12px 14px 10px; }
       .controls { padding: 8px 14px; }
@@ -133,13 +196,20 @@
       .intro-section { padding: 14px; }
       .header-tib { font-size: 17px; }
       .children-wrap { padding-left: 14px; margin-left: 6px; }
+      .lang-select { right: 12px; top: 10px; }
+      .lang-code { display: none; }
+      .root-text-section { padding: 14px; }
     }
     .tree-anchor { scroll-margin-top: 140px; }
     .print-header { display: none; }
     @media print {
-      @page { size: A4 portrait; margin: 18mm 16mm; }
-      .app-header, .controls, .breadcrumb-bar, .intro-section, .copy-toast, .node-copy-btn, .toggle-btn, .copy-path-btn { display: none !important; }
+      /* @page margin: 0 causes most browsers (Chrome/Edge/Safari) to suppress
+         the built-in URL/date headers and footers. Firefox users may still need
+         to uncheck "Print headers and footers" in the print dialog. */
+      @page { size: A4 portrait; margin: 0; }
       html, body { background: #fff !important; color: #000 !important; }
+      body { padding: 18mm 16mm 18mm 16mm; }
+      .app-header, .controls, .breadcrumb-bar, .intro-section, .copy-toast, .node-copy-btn, .toggle-btn, .copy-path-btn, .lang-select { display: none !important; }
       .print-header { display: block !important; padding-bottom: 10pt; margin-bottom: 12pt; border-bottom: 1.5pt solid #7c2d2d; page-break-after: avoid; }
       .print-title-tib { font-family: 'Noto Sans Tibetan', serif; font-size: 15pt; line-height: 2.0; display: block; color: #231208; }
       .print-title-en { font-size: 10pt; font-style: italic; color: #6b5f50; display: block; margin-top: 2pt; }
@@ -154,6 +224,13 @@
       .node-en { font-size: 9pt !important; color: #4a3a28 !important; }
       .node-id { font-size: 8pt !important; color: #9a7a50 !important; }
       .child-count { display: none !important; }
+      .chapter-tag { background: transparent !important; color: #000 !important; padding: 0 !important; font-weight: 700 !important; text-decoration: none !important; }
+      .root-text-section { padding: 0 !important; max-width: 100% !important; border-top: 1pt solid #aaa !important; margin-top: 14pt !important; }
+      .root-text-toggle { color: #000 !important; }
+      .rt-subsection { page-break-inside: avoid; border: 0.5pt solid #bbb !important; }
+      .rt-subsection-header { background: #f0e8d8 !important; }
+      .rt-subsection-body { display: block !important; padding: 8pt 10pt !important; }
+      .rt-subsection-back { display: none !important; }
       mark { background: #e0e0e0 !important; color: #000 !important; }
       * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     }
@@ -168,6 +245,14 @@
   <div class="header-label">Sa bche Explorer · Yonten Dzo · Complete Outline by Patrul Rinpoche</div>
   <span class="header-tib">ཡོན་ཏན་རིན་པོ་ཆེའི་མཛོད་ཀྱི་སྤྱི་དོན་ས་བཅད</span>
   <span class="header-en">Structural Outline of the Treasury of Precious Qualities</span>
+  <div class="lang-select" id="langSelect">
+    <button class="lang-select-btn" id="langSelectBtn" title="Change language" aria-haspopup="true" aria-expanded="false">
+      <span class="lang-flag" id="langFlag">&#x1F1EC;&#x1F1E7;</span>
+      <span class="lang-code" id="langCode">ENG</span>
+      <span class="lang-caret">&#x25BE;</span>
+    </button>
+    <ul class="lang-menu" id="langMenu" role="menu" hidden></ul>
+  </div>
 </div>
 <div class="controls">
   <div class="search-wrap">
@@ -205,6 +290,13 @@
   </div>
 </div>
 <div class="tree-container" id="treeContainer"></div>
+<section class="root-text-section" id="rootTextSection" aria-labelledby="rootTextHeading">
+  <button class="root-text-toggle" id="rootTextToggle" aria-expanded="false">
+    <span class="root-text-arrow" id="rootTextArrow">&#x25B6;</span>
+    <h2 id="rootTextHeading">Root Text &middot; <span class="rt-tib">&#x0F42;&#x0F5E;&#x0F74;&#x0F44;&#x0F0B;&#x0F51;&#x0F7C;&#x0F53;</span></h2>
+  </button>
+  <div class="root-text-body" id="rootTextBody" hidden></div>
+</section>
 <div class="copy-toast" id="copyToast"></div>
 <script>
 const DATA = {
@@ -2051,6 +2143,30 @@ const DATA = {
   ]
 };
 
+// --- Translations overlay ---
+// Keys are tree-node IDs; values are partial maps of {lang: text}.
+// Missing keys/langs fall back to node.en. Tibetan is NEVER overridden here.
+const TRANSLATIONS = {
+  // Example once provided by the user:
+  // "2.1": { pl: "...", ru: "...", de: "...", fr: "..." },
+};
+
+const LANGS = [
+  { code: 'en', label: 'ENG', name: 'English',  flag: '\uD83C\uDDEC\uD83C\uDDE7' }, // GB
+  { code: 'pl', label: 'POL', name: 'Polski',   flag: '\uD83C\uDDF5\uD83C\uDDF1' }, // PL
+  { code: 'ru', label: 'RUS', name: 'Русский',  flag: '\uD83C\uDDF7\uD83C\uDDFA' }, // RU
+  { code: 'de', label: 'GER', name: 'Deutsch',  flag: '\uD83C\uDDE9\uD83C\uDDEA' }, // DE
+  { code: 'fr', label: 'FRE', name: 'Français', flag: '\uD83C\uDDEB\uD83C\uDDF7' }, // FR
+];
+const LANG_BY_CODE = Object.fromEntries(LANGS.map(l => [l.code, l]));
+
+function getLabel(node) {
+  const lang = state.targetLang || 'en';
+  if (lang === 'en') return node.en;
+  const t = TRANSLATIONS[node.id] && TRANSLATIONS[node.id][lang];
+  return t || node.en; // graceful fallback to English
+}
+
 const nodeIndex = {};
 function buildIndex(nodes, parentId, depth) {
   for (const node of nodes) {
@@ -2060,8 +2176,36 @@ function buildIndex(nodes, parentId, depth) {
 }
 buildIndex(DATA.nodes, null, 0);
 
-const state = { expanded: new Set(), selected: null, query: '', showTib: true, showEn: true, textSize: 0 };
-Object.values(nodeIndex).forEach(({ node, depth }) => { if (depth <= 1) state.expanded.add(node.id); });
+// Map "1".."13" -> tree node id, derived from the (Chapter N) marker.
+const CHAPTER_RE = /\(Chapter\s+(\d+)\)/i;
+const CHAPTER_NODE_BY_NUM = {};
+Object.values(nodeIndex).forEach(({ node }) => {
+  const m = node.en.match(CHAPTER_RE);
+  if (m) CHAPTER_NODE_BY_NUM[m[1]] = node.id;
+});
+
+const state = {
+  expanded: new Set(),
+  selected: null,
+  query: '',
+  showTib: true,
+  showTarget: true,              // controls visibility of the active target language
+  targetLang: 'en',              // currently selected target language
+  rootTextOpen: false,           // root text section collapsed by default
+  rootTextChaptersOpen: new Set(),
+  textSize: 0
+};
+// Default expansion: reveal every chapter row by expanding each chapter's ancestors.
+// Chapter nodes themselves stay collapsed — their sub-topics are hidden until clicked.
+Object.values(CHAPTER_NODE_BY_NUM).forEach(id => {
+  let cur = nodeIndex[id];
+  while (cur && cur.parentId) {
+    state.expanded.add(cur.parentId);
+    cur = nodeIndex[cur.parentId];
+  }
+});
+// Always expand the three top-level sections for orientation.
+Object.values(nodeIndex).forEach(({ node, depth }) => { if (depth === 0) state.expanded.add(node.id); });
 
 const DEPTH_COLORS = ['#7c2d2d','#a04020','#c46a1a','#c49a0a','#7a9020','#2a7a50','#1a6888','#2a4a9a','#5a2a9a','#8a1a7a','#aa1a4a','#7c2d2d'];
 function depthColor(d) { return DEPTH_COLORS[Math.min(d, DEPTH_COLORS.length - 1)]; }
@@ -2073,7 +2217,7 @@ function getMatchingIds(q) {
   const lq = stripDiacritics(q.toLowerCase());
   const matches = new Set(), visible = new Set();
   Object.values(nodeIndex).forEach(({ node }) => {
-    if (stripDiacritics(node.tib.toLowerCase()).includes(lq) || stripDiacritics(node.en.toLowerCase()).includes(lq) || node.id.toLowerCase().includes(lq)) matches.add(node.id);
+    if (stripDiacritics(node.tib.toLowerCase()).includes(lq) || stripDiacritics(node.en.toLowerCase()).includes(lq) || stripDiacritics(getLabel(node).toLowerCase()).includes(lq) || node.id.toLowerCase().includes(lq)) matches.add(node.id);
   });
   matches.forEach(id => { visible.add(id); let cur = nodeIndex[id]; while (cur && cur.parentId) { visible.add(cur.parentId); cur = nodeIndex[cur.parentId]; } });
   return { matches, visible };
@@ -2098,6 +2242,15 @@ function highlight(text, q) {
 }
 
 function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// Wrap "(Chapter N)" in a styled, clickable tag. Operates on already-escaped/highlighted HTML.
+// If a search query splits the literal string with <mark>, the regex simply does not match
+// and the label degrades gracefully to plain text — that is acceptable.
+function wrapChapterTags(html) {
+  return html.replace(/\(Chapter\s+(\d+)\)/g, (full, n) =>
+    `<a class="chapter-tag" href="#rt-chapter-${n}" data-chapter="${n}" role="button" tabindex="0">${full}</a>`
+  );
+}
 
 function renderTree() {
   const container = document.getElementById('treeContainer');
@@ -2138,7 +2291,7 @@ function renderNode(node, depth, sr) {
   tibSpan.innerHTML = `<span class="node-id">${escHtml(node.id)}</span>` + highlight(node.tib, q);
   const enSpan = document.createElement('span');
   enSpan.className = 'node-en';
-  enSpan.innerHTML = highlight(node.en, q);
+  enSpan.innerHTML = wrapChapterTags(highlight(getLabel(node), q));
   if (hasChildren) enSpan.innerHTML += ` <span class="child-count">${node.children.length}</span>`;
   content.appendChild(tibSpan);
   content.appendChild(enSpan);
@@ -2174,7 +2327,7 @@ function getBreadcrumb(id) { const path = []; let cur = nodeIndex[id]; while (cu
 
 function buildPathText(id) {
   const path = getBreadcrumb(id);
-  return path.map(n => { if (state.showTib && state.showEn) return `${n.tib} (${n.en})`; if (state.showTib) return n.tib; return n.en; }).join(' / ');
+  return path.map(n => { if (state.showTib && state.showTarget) return `${n.tib} (${getLabel(n)})`; if (state.showTib) return n.tib; return getLabel(n); }).join(' / ');
 }
 
 let _copyToastTimer = null;
@@ -2193,7 +2346,7 @@ function updateBreadcrumb() {
   bc.className = 'breadcrumb-bar';
   bc.innerHTML = path.map((node, i) => {
     const isLast = i === path.length - 1;
-    return `<span class="crumb" data-crumb-id="${escHtml(node.id)}" title="${escHtml(node.en)}"><span class="crumb-top"><span class="crumb-id">${escHtml(node.id)}</span><span class="crumb-tib">${escHtml(node.tib)}</span></span><span class="crumb-en">${escHtml(node.en)}</span></span>${isLast ? '' : '<span class="crumb-sep">\u203A</span>'}`;
+    return `<span class="crumb" data-crumb-id="${escHtml(node.id)}" title="${escHtml(getLabel(node))}"><span class="crumb-top"><span class="crumb-id">${escHtml(node.id)}</span><span class="crumb-tib">${escHtml(node.tib)}</span></span><span class="crumb-en">${escHtml(getLabel(node))}</span></span>${isLast ? '' : '<span class="crumb-sep">\u203A</span>'}`;
   }).join('');
   bc.querySelectorAll('.crumb').forEach(el => { el.addEventListener('click', () => selectNode(el.dataset.crumbId)); });
   const copyBtn = document.createElement('button');
@@ -2208,9 +2361,9 @@ function collapseAll() { state.expanded.clear(); renderTree(); updateBreadcrumb(
 
 function applyLangFilter() {
   document.documentElement.classList.toggle('hide-tib', !state.showTib);
-  document.documentElement.classList.toggle('hide-en', !state.showEn);
+  document.documentElement.classList.toggle('hide-en', !state.showTarget); // CSS class semantically "hide target language"
   document.getElementById('btnTib').classList.toggle('active', state.showTib);
-  document.getElementById('btnEng').classList.toggle('active', state.showEn);
+  document.getElementById('btnEng').classList.toggle('active', state.showTarget);
 }
 
 function applyTextSize() {
@@ -2222,7 +2375,7 @@ function applyTextSize() {
 }
 
 document.getElementById('btnTib').addEventListener('click', () => { state.showTib = !state.showTib; applyLangFilter(); });
-document.getElementById('btnEng').addEventListener('click', () => { state.showEn = !state.showEn; applyLangFilter(); });
+document.getElementById('btnEng').addEventListener('click', () => { state.showTarget = !state.showTarget; applyLangFilter(); });
 document.getElementById('btnSizeDown').addEventListener('click', () => { if (state.textSize > -2) { state.textSize--; applyTextSize(); } });
 document.getElementById('btnSizeUp').addEventListener('click', () => { if (state.textSize < 4) { state.textSize++; applyTextSize(); } });
 
@@ -2259,16 +2412,195 @@ document.getElementById('introToggle').addEventListener('click', () => {
 function preparePrintHeader() {
   const titleEl = document.getElementById('printDocTitle'); titleEl.innerHTML = '';
   if (state.showTib) { const t = document.createElement('span'); t.className = 'print-title-tib'; t.textContent = DATA.title_tib; titleEl.appendChild(t); }
-  if (state.showEn) { const e = document.createElement('span'); e.className = 'print-title-en'; e.textContent = DATA.title_en; titleEl.appendChild(e); }
+  if (state.showTarget) { const e = document.createElement('span'); e.className = 'print-title-en'; e.textContent = DATA.title_en; titleEl.appendChild(e); }
   const bcEl = document.getElementById('printBreadcrumb');
   if (!state.selected) { bcEl.textContent = ''; return; }
   const path = getBreadcrumb(state.selected);
-  bcEl.textContent = path.map(n => { if (state.showTib && state.showEn) return `${n.id}  ${n.tib} (${n.en})`; if (state.showTib) return `${n.id}  ${n.tib}`; return `${n.id}  ${n.en}`; }).join('  \u203A  ');
+  bcEl.textContent = path.map(n => { if (state.showTib && state.showTarget) return `${n.id}  ${n.tib} (${getLabel(n)})`; if (state.showTib) return `${n.id}  ${n.tib}`; return `${n.id}  ${getLabel(n)}`; }).join('  \u203A  ');
 }
 
 document.getElementById('btnPrint').addEventListener('click', () => { preparePrintHeader(); window.print(); });
 
-renderTree(); updateBreadcrumb(); applyLangFilter(); applyTextSize();
+// --- Root text section ---
+// Empty strings render as "Text will appear here" placeholders. Per-language slots
+// ready to be populated later. Tibetan always renders alongside the selected target.
+function blankSlot() { return { tib: '', en: '', pl: '', ru: '', de: '', fr: '' }; }
+const ROOT_TEXT = {
+  prologue: Object.assign({ key: 'prologue', label: 'Prologue', anchor: 'rt-prologue', treeNodeId: '1' }, blankSlot()),
+  chapters: Array.from({ length: 13 }, (_, i) => Object.assign({
+    key: `chapter-${i + 1}`,
+    label: `Chapter ${i + 1}`,
+    anchor: `rt-chapter-${i + 1}`,
+    treeNodeId: CHAPTER_NODE_BY_NUM[String(i + 1)] || null
+  }, blankSlot())),
+  colophon: Object.assign({ key: 'colophon', label: 'Colophon', anchor: 'rt-colophon', treeNodeId: '3.3' }, blankSlot()),
+};
+
+function rootTextSubsections() {
+  return [ROOT_TEXT.prologue, ...ROOT_TEXT.chapters, ROOT_TEXT.colophon];
+}
+
+function renderRootText() {
+  const body = document.getElementById('rootTextBody');
+  if (!body) return;
+  const lang = state.targetLang || 'en';
+  const langName = (LANG_BY_CODE[lang] && LANG_BY_CODE[lang].name) || 'English';
+  body.innerHTML = rootTextSubsections().map(sec => {
+    const isOpen = state.rootTextChaptersOpen.has(sec.key);
+    const tibText = sec.tib;
+    const tgtText = sec[lang] || '';
+    const tibBlock = `
+      <div class="rt-slot rt-slot-tib-wrap">
+        <div class="rt-slot-label">&#x0F56;&#x0F7C;&#x0F51;&#x0F0B;&#x0F61;&#x0F72;&#x0F42; &middot; Tibetan</div>
+        <div class="rt-slot-tib ${tibText ? '' : 'rt-slot-empty'}">${tibText ? escHtml(tibText) : 'Text will appear here'}</div>
+      </div>`;
+    const tgtBlock = `
+      <div class="rt-slot rt-slot-target">
+        <div class="rt-slot-label">${escHtml(langName)}</div>
+        <div class="rt-slot-text ${tgtText ? '' : 'rt-slot-empty'}">${tgtText ? escHtml(tgtText) : 'Text will appear here'}</div>
+      </div>`;
+    const backBtn = sec.treeNodeId
+      ? `<button class="rt-subsection-back" data-tree-id="${escHtml(sec.treeNodeId)}" title="Jump to outline node">&#x2190; Outline</button>`
+      : '';
+    return `
+      <article class="rt-subsection ${isOpen ? 'open' : ''}" id="${sec.anchor}" data-key="${sec.key}">
+        <header class="rt-subsection-header" data-key="${sec.key}">
+          <span class="rt-subsection-arrow ${isOpen ? 'open' : ''}">&#x25B6;</span>
+          <span class="rt-subsection-title">${escHtml(sec.label)}</span>
+          ${backBtn}
+        </header>
+        <div class="rt-subsection-body">
+          ${tibBlock}
+          ${tgtBlock}
+        </div>
+      </article>`;
+  }).join('');
+
+  body.querySelectorAll('.rt-subsection-header').forEach(h => {
+    h.addEventListener('click', e => {
+      if (e.target.closest('.rt-subsection-back')) return;
+      const key = h.dataset.key;
+      if (state.rootTextChaptersOpen.has(key)) state.rootTextChaptersOpen.delete(key);
+      else state.rootTextChaptersOpen.add(key);
+      renderRootText();
+    });
+  });
+  body.querySelectorAll('.rt-subsection-back').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const id = btn.dataset.treeId;
+      if (id && nodeIndex[id]) {
+        selectNode(id);
+        requestAnimationFrame(() => {
+          const el = document.querySelector(`[data-id="${CSS.escape(id)}"]`);
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+      }
+    });
+  });
+}
+
+function openRootTextSection() {
+  if (state.rootTextOpen) return;
+  state.rootTextOpen = true;
+  document.getElementById('rootTextBody').hidden = false;
+  document.getElementById('rootTextArrow').classList.add('open');
+  document.getElementById('rootTextToggle').setAttribute('aria-expanded', 'true');
+}
+
+function jumpToRootChapter(n) {
+  openRootTextSection();
+  state.rootTextChaptersOpen.add(`chapter-${n}`);
+  renderRootText();
+  requestAnimationFrame(() => {
+    const el = document.getElementById(`rt-chapter-${n}`);
+    if (!el) return;
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    el.classList.remove('rt-flash');
+    void el.offsetWidth; // force reflow to restart animation
+    el.classList.add('rt-flash');
+  });
+}
+
+document.getElementById('rootTextToggle').addEventListener('click', () => {
+  state.rootTextOpen = !state.rootTextOpen;
+  document.getElementById('rootTextBody').hidden = !state.rootTextOpen;
+  document.getElementById('rootTextArrow').classList.toggle('open', state.rootTextOpen);
+  document.getElementById('rootTextToggle').setAttribute('aria-expanded', String(state.rootTextOpen));
+  if (state.rootTextOpen) renderRootText();
+});
+
+// Delegated click handler for chapter-tag links inside the tree.
+document.getElementById('treeContainer').addEventListener('click', e => {
+  const tag = e.target.closest('.chapter-tag');
+  if (!tag) return;
+  e.preventDefault();
+  e.stopPropagation(); // prevent selectNode firing on the row
+  const n = tag.dataset.chapter;
+  if (n) jumpToRootChapter(n);
+});
+document.getElementById('treeContainer').addEventListener('keydown', e => {
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.classList && e.target.classList.contains('chapter-tag')) {
+    e.preventDefault();
+    jumpToRootChapter(e.target.dataset.chapter);
+  }
+});
+
+// --- Language selector ---
+function buildLangMenu() {
+  const menu = document.getElementById('langMenu');
+  menu.innerHTML = LANGS.map(l => {
+    const hasAny = l.code === 'en' || Object.values(TRANSLATIONS).some(t => t && t[l.code]);
+    return `<li role="menuitem" data-lang="${l.code}" class="${l.code === state.targetLang ? 'active' : ''}">
+      <span class="menu-flag">${l.flag}</span><span>${escHtml(l.name)}</span>
+      ${hasAny ? '' : '<span class="menu-pending">pending</span>'}
+    </li>`;
+  }).join('');
+  menu.querySelectorAll('li').forEach(li => {
+    li.addEventListener('click', () => { setTargetLang(li.dataset.lang); closeLangMenu(); });
+  });
+}
+function openLangMenu() {
+  document.getElementById('langMenu').hidden = false;
+  document.getElementById('langSelectBtn').setAttribute('aria-expanded', 'true');
+}
+function closeLangMenu() {
+  document.getElementById('langMenu').hidden = true;
+  document.getElementById('langSelectBtn').setAttribute('aria-expanded', 'false');
+}
+function setTargetLang(code) {
+  if (!LANG_BY_CODE[code]) return;
+  state.targetLang = code;
+  try { localStorage.setItem('ydz.targetLang', code); } catch (_) {}
+  const l = LANG_BY_CODE[code];
+  document.getElementById('langFlag').textContent = l.flag;
+  document.getElementById('langCode').textContent = l.label;
+  const btnEng = document.getElementById('btnEng');
+  btnEng.textContent = l.label;
+  btnEng.title = `Toggle ${l.name}`;
+  buildLangMenu();
+  renderTree();
+  updateBreadcrumb();
+  renderRootText();
+}
+document.getElementById('langSelectBtn').addEventListener('click', e => {
+  e.stopPropagation();
+  const hidden = document.getElementById('langMenu').hidden;
+  if (hidden) openLangMenu(); else closeLangMenu();
+});
+document.addEventListener('click', e => {
+  if (!document.getElementById('langSelect').contains(e.target)) closeLangMenu();
+});
+try {
+  const saved = localStorage.getItem('ydz.targetLang');
+  if (saved && LANG_BY_CODE[saved]) state.targetLang = saved;
+} catch (_) {}
+
+// setTargetLang syncs the language-selector DOM and triggers renderTree,
+// updateBreadcrumb, and renderRootText — so it handles the full initial render.
+setTargetLang(state.targetLang);
+applyLangFilter();
+applyTextSize();
 </script>
 </body>
 </html>
