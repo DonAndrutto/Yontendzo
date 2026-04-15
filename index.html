@@ -3310,6 +3310,7 @@
         collapseAll: "Collapse All",
         printBtn: "Print",
         donateBtn: "Donate",
+        backToOutline: "Outline",
         emptyBreadcrumb: "Click any node to mark your place",
         structuralOutline: "Structural Outline",
         rootText: "Root Text",
@@ -3341,6 +3342,7 @@
         collapseAll: "Zwiń wszystko",
         printBtn: "Drukuj",
         donateBtn: "Wpłać",
+        backToOutline: "Zarys",
         emptyBreadcrumb: "Kliknij dowolny węzeł, aby zaznaczyć swoje miejsce",
         structuralOutline: "Zarys strukturalny",
         rootText: "Tekst rdzenny",
@@ -3372,6 +3374,7 @@
         collapseAll: "Свернуть все",
         printBtn: "Печать",
         donateBtn: "Помочь",
+        backToOutline: "К плану",
         emptyBreadcrumb: "Нажмите на любой узел, чтобы отметить место",
         structuralOutline: "Структурный план",
         rootText: "Коренной текст",
@@ -3388,6 +3391,7 @@
         collapseAll: "Alle einklappen",
         printBtn: "Drucken",
         donateBtn: "Spenden",
+        backToOutline: "Gliederung",
         emptyBreadcrumb: "Klicken Sie auf einen Knoten, um Ihren Platz zu markieren",
         structuralOutline: "Strukturelle Gliederung",
         rootText: "Wurzeltext",
@@ -3404,6 +3408,7 @@
         collapseAll: "Tout réduire",
         printBtn: "Imprimer",
         donateBtn: "Donner",
+        backToOutline: "Plan",
         emptyBreadcrumb: "Cliquez sur un nœud pour marquer votre place",
         structuralOutline: "Plan structurel",
         rootText: "Texte racine",
@@ -12342,7 +12347,7 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
           : `<div class="rt-slot-empty">Text will appear here</div>`;
 
         const backBtn = sec.treeNodeId
-          ? `<button class="rt-subsection-back" data-tree-id="${escHtml(sec.treeNodeId)}" title="Jump to outline node">&#x2190; Outline</button>`
+          ? `<button class="rt-subsection-back" data-tree-id="${escHtml(sec.treeNodeId)}" title="Jump to outline node">&#x2190; ${escHtml(UI_STRINGS[lang]?.backToOutline || UI_STRINGS.en.backToOutline)}</button>`
           : '';
 
         return `
