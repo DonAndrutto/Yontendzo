@@ -3307,7 +3307,11 @@
 
     function selectNode(id) {
       state.selected = (state.selected === id) ? null : id;
-      if (state.selected) { let cur = nodeIndex[id]; while (cur && cur.parentId) { state.expanded.add(cur.parentId); cur = nodeIndex[cur.parentId]; } }
+      if (state.selected) {
+        ensureTreeSectionOpen();
+        let cur = nodeIndex[id];
+        while (cur && cur.parentId) { state.expanded.add(cur.parentId); cur = nodeIndex[cur.parentId]; }
+      }
       renderTree(); updateBreadcrumb();
       if (state.selected) { const el = document.querySelector(`[data-id="${CSS.escape(state.selected)}"]`); if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50); }
     }
