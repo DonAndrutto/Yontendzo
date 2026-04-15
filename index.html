@@ -12722,14 +12722,19 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
 
     function jumpToRootChapter(n) {
       openRootTextSection();
-      state.rootTextChaptersOpen.add(`chapter-${n}`);
+      const isNum = !isNaN(n);
+      const key = isNum ? `chapter-${n}` : n;
+      const anchorId = isNum ? `rt-chapter-${n}` : `rt-${n}`;
+
+      state.rootTextChaptersOpen.add(key);
       renderRootText();
+
       requestAnimationFrame(() => {
-        const el = document.getElementById(`rt-chapter-${n}`);
+        const el = document.getElementById(anchorId);
         if (!el) return;
         el.scrollIntoView({ behavior: 'smooth', block: 'start' });
         el.classList.remove('rt-flash');
-        void el.offsetWidth; // force reflow to restart animation
+        void el.offsetWidth; // force reflow
         el.classList.add('rt-flash');
       });
     }
