@@ -11703,11 +11703,27 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
     };
 
     function blankSlot() { return { tib: '', en: '', pl: '', ru: '', de: '', fr: '' }; }
+    const CHAPTER_TITLES = [
+      "The Value of Human Existence",
+      "Impermanence",
+      "The Law of Karma",
+      "The Sufferings of Samsara",
+      "The Four Wheels",
+      "Refuge",
+      "The Four Boundless Attitudes",
+      "The Vow of Bodhichitta",
+      "The Bodhisattva Precepts",
+      "The Pitaka of the Vidyadharas",
+      "The Ground of Great Completeness",
+      "The Extraordinary Path of Practice of the Great Completeness",
+      "The Ultimate Result, the Kayas and Wisdoms"
+    ];
+
     const ROOT_TEXT = {
       prologue: Object.assign({ key: 'prologue', label: 'Prologue', anchor: 'rt-prologue', treeNodeId: '1' }, RT_SLOTS.prologue || blankSlot()),
       chapters: Array.from({ length: 13 }, (_, i) => Object.assign({
         key: `chapter-${i + 1}`,
-        label: `Chapter ${i + 1}`,
+        label: `Chapter ${i + 1}: ${CHAPTER_TITLES[i]}`,
         anchor: `rt-chapter-${i + 1}`,
         treeNodeId: CHAPTER_NODE_BY_NUM[String(i + 1)] || null
       }, RT_SLOTS[`chapter-${i + 1}`] || blankSlot())),
