@@ -825,44 +825,36 @@
       border-color: #e8c898;
     }
 
-    .rt-subsection-body {
-      padding: 12px 14px;
-      display: none;
-    }
-
     .rt-subsection.open .rt-subsection-body {
       display: block;
     }
 
-    .rt-slot {
-      margin-bottom: 10px;
+    .rt-stanza-pair {
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     }
 
-    .rt-slot:last-child {
+    .rt-stanza-pair:last-child {
+      border-bottom: none;
       margin-bottom: 0;
+      padding-bottom: 0;
     }
 
-    .rt-slot-label {
-      font-size: var(--font-size-rt-label, 9px);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: #b09070;
-      margin-bottom: 3px;
-      font-weight: 600;
-    }
-
-    .rt-slot-tib {
+    .rt-stanza-tib {
       font-family: 'Noto Sans Tibetan', serif;
       font-size: var(--font-size-rt-tib, 16px);
       line-height: 2.0;
       color: var(--text);
       white-space: pre-line;
+      margin-bottom: 8px;
     }
 
-    .rt-slot-text {
+    .rt-stanza-en {
       font-size: var(--font-size-rt-en, 14px);
-      line-height: 1.7;
-      color: var(--text);
+      line-height: 1.6;
+      color: var(--text-muted);
+      font-style: italic;
       white-space: pre-line;
     }
 
@@ -8190,14 +8182,14 @@ Such is dependent arising in the inner sense.
 Nirvana, which arises in dependence,
 Rests in both the paths and their result.
 To speak then of these paths: When ignorance,
+150
 The root of the twelve links arranged in forward order
 Leading to samsara,
-
-150
 Is vanquished through wisdom of awareness,
 Conditioning factors and the other links
 Are, in their order, also overturned,
 Thus severing the root of all existence.
+
 
 151
 Those who understand the nature
@@ -11696,38 +11688,70 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
       return [ROOT_TEXT.prologue, ...ROOT_TEXT.chapters, ROOT_TEXT.colophon];
     }
 
+    function zipStanzas(tib, en) {
+      if (!tib && !en) return [];
+      const split = (t) => {
+        if (!t) return [];
+        const lines = t.trim().split(/\n/);
+        const res = [];
+        let current = null;
+        for (const line of lines) {
+          const l = line.trim();
+          if (/^\d+$/.test(l)) {
+            if (current) res.push(current);
+            current = { num: l, content: [] };
+          } else if (current) {
+            current.content.push(line);
+          } else {
+            // Unexpected content before first number
+            current = { num: '', content: [line] };
+          }
+        }
+        if (current) res.push(current);
+        return res;
+      };
+      const tS = split(tib);
+      const eS = split(en);
+      const map = new Map();
+      tS.forEach(s => map.set(s.num, { num: s.num, tib: s.content.join('\n'), en: '' }));
+      eS.forEach(s => {
+        if (map.has(s.num)) map.get(s.num).en = s.content.join('\n');
+        else map.set(s.num, { num: s.num, tib: '', en: s.content.join('\n') });
+      });
+      return Array.from(map.values()).sort((a,b) => (parseInt(a.num)||0) - (parseInt(b.num)||0));
+    }
+
     function renderRootText() {
       const body = document.getElementById('rootTextBody');
       if (!body) return;
       const lang = state.targetLang || 'en';
-      const langName = (LANG_BY_CODE[lang] && LANG_BY_CODE[lang].name) || 'English';
+      
       body.innerHTML = rootTextSubsections().map(sec => {
         const isOpen = state.rootTextChaptersOpen.has(sec.key);
-        const tibText = sec.tib;
-        const tgtText = sec[lang] || '';
-        const tibBlock = `
-      <div class="rt-slot rt-slot-tib-wrap">
-        <div class="rt-slot-label">&#x0F56;&#x0F7C;&#x0F51;&#x0F0B;&#x0F61;&#x0F72;&#x0F42; &middot; Tibetan</div>
-        <div class="rt-slot-tib ${tibText ? '' : 'rt-slot-empty'}">${tibText ? escHtml(tibText) : 'Text will appear here'}</div>
-      </div>`;
-        const tgtBlock = `
-      <div class="rt-slot rt-slot-target">
-        <div class="rt-slot-label">${escHtml(langName)}</div>
-        <div class="rt-slot-text ${tgtText ? '' : 'rt-slot-empty'}">${tgtText ? escHtml(tgtText) : 'Text will appear here'}</div>
-      </div>`;
+        const zipped = zipStanzas(sec.tib, sec[lang]);
+        
+        const content = zipped.length > 0 
+          ? zipped.map(p => `
+            <div class="rt-stanza-pair">
+              <div class="rt-stanza-tib"><strong>${escHtml(p.num)}</strong> ${p.tib ? escHtml(p.tib) : ''}</div>
+              <div class="rt-stanza-en">${p.en ? escHtml(p.en) : ''}</div>
+            </div>
+          `).join('')
+          : `<div class="rt-slot-empty">Text will appear here</div>`;
+
         const backBtn = sec.treeNodeId
           ? `<button class="rt-subsection-back" data-tree-id="${escHtml(sec.treeNodeId)}" title="Jump to outline node">&#x2190; Outline</button>`
           : '';
+
         return `
       <article class="rt-subsection ${isOpen ? 'open' : ''}" id="${sec.anchor}" data-key="${sec.key}">
         <header class="rt-subsection-header" data-key="${sec.key}">
           <span class="rt-subsection-arrow ${isOpen ? 'open' : ''}">&#x25B6;</span>
-          <span class="rt-subsection-title">${escHtml(sec.label)}</span>
+          <span class="ts-label">${escHtml(sec.label)}</span>
           ${backBtn}
         </header>
         <div class="rt-subsection-body">
-          ${tibBlock}
-          ${tgtBlock}
+          ${content}
         </div>
       </article>`;
       }).join('');
