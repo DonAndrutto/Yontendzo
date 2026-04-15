@@ -3800,10 +3800,21 @@
     // Wrap "(Chapter N)" in a styled, clickable tag. Operates on already-escaped/highlighted HTML.
     // If a search query splits the literal string with <mark>, the regex simply does not match
     // and the label degrades gracefully to plain text — that is acceptable.
-    function wrapChapterTags(html) {
-      return html.replace(/\(Chapter\s+(\d+)\)/g, (full, n) =>
+    // Wrap "(Chapter N)" or "(Rozdział N)" in a styled, clickable tag.
+    // Also wraps the entire text for Node 1 (Preamble) and Node 3 (Conclusion).
+    function wrapChapterTags(html, nodeId) {
+      // 1. Chapters
+      html = html.replace(/\((?:Chapter|Rozdział)\s+(\d+)\)/gi, (full, n) =>
         `<a class="chapter-tag" href="#rt-chapter-${n}" data-chapter="${n}" role="button" tabindex="0">${full}</a>`
       );
+      // 2. Headings for Node 1 (Preamble) and Node 3 (End/Colophon)
+      if (nodeId === '1') {
+        return `<a class="chapter-tag" href="#rt-preamble" data-chapter="preamble" role="button" tabindex="0">${html}</a>`;
+      }
+      if (nodeId === '3') {
+        return `<a class="chapter-tag" href="#rt-colophon" data-chapter="colophon" role="button" tabindex="0">${html}</a>`;
+      }
+      return html;
     }
 
     function renderTree() {
@@ -3845,7 +3856,7 @@
       tibSpan.innerHTML = `<span class="node-id">${escHtml(node.id)}</span>` + highlight(node.tib, q);
       const enSpan = document.createElement('span');
       enSpan.className = 'node-en';
-      enSpan.innerHTML = wrapChapterTags(highlight(getLabel(node), q));
+      enSpan.innerHTML = wrapChapterTags(highlight(getLabel(node), q), node.id);
       if (hasChildren) enSpan.innerHTML += ` <span class="child-count">${node.children.length}</span>`;
       content.appendChild(tibSpan);
       content.appendChild(enSpan);
