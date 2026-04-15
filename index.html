@@ -24,6 +24,10 @@
       --controls-bg: #f0e9dd;
       --font-size-tib: 15px;
       --font-size-en: 12px;
+      --font-size-rt-tib: 16px;
+      --font-size-rt-en: 14px;
+      --font-size-rt-title: 13px;
+      --font-size-rt-label: 9px;
     }
 
     * {
@@ -819,7 +823,7 @@
 
     .rt-subsection-title {
       font-weight: 600;
-      font-size: 13px;
+      font-size: var(--font-size-rt-title, 13px);
       color: var(--text);
     }
 
@@ -858,7 +862,7 @@
     }
 
     .rt-slot-label {
-      font-size: 9px;
+      font-size: var(--font-size-rt-label, 9px);
       text-transform: uppercase;
       letter-spacing: 0.1em;
       color: #b09070;
@@ -3376,6 +3380,8 @@
       root.style.setProperty('--font-size-en', (12 + state.textSize * 2) + 'px');
       root.style.setProperty('--font-size-rt-tib', (16 + state.textSize * 2) + 'px');
       root.style.setProperty('--font-size-rt-en', (14 + state.textSize * 2) + 'px');
+      root.style.setProperty('--font-size-rt-title', (13 + state.textSize) + 'px');
+      root.style.setProperty('--font-size-rt-label', (9 + state.textSize) + 'px');
       document.getElementById('btnSizeDown').disabled = state.textSize <= -2;
       document.getElementById('btnSizeUp').disabled = state.textSize >= 4;
     }
