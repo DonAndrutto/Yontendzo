@@ -675,11 +675,60 @@
       position: relative;
     }
 
-    .lang-select {
+    .header-actions {
       position: absolute;
       right: 18px;
       top: 14px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
       z-index: 110;
+    }
+
+    .lang-select {
+      position: relative;
+    }
+
+    .donate-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      padding: 5px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #fc8181;
+      border: 1px solid rgba(245, 230, 200, 0.25);
+      transition: all 0.2s;
+      position: relative;
+      text-decoration: none;
+    }
+
+    .donate-btn:hover {
+      background: rgba(255, 255, 255, 0.16);
+      color: #feb2b2;
+    }
+
+    .donate-tooltip {
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-top: 8px;
+      padding: 4px 8px;
+      font-size: 11px;
+      line-height: 1;
+      color: white;
+      background: #292524;
+      border-radius: 4px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .donate-btn:hover .donate-tooltip {
+      opacity: 1;
     }
 
     .lang-select-btn {
@@ -992,9 +1041,10 @@
         margin-left: 6px;
       }
 
-      .lang-select {
+      .header-actions {
         right: 12px;
         top: 10px;
+        gap: 8px;
       }
 
       .lang-code {
@@ -1170,14 +1220,24 @@
       <div class="header-label">Sa bche Explorer · Yonten Dzo · Complete Outline by Patrul Rinpoche</div>
       <span class="header-tib">ཡོན་ཏན་རིན་པོ་ཆེའི་མཛོད་ཀྱི་སྤྱི་དོན་ས་བཅད།</span>
       <span class="header-en">Structural Outline of the Treasury of Precious Qualities</span>
-      <div class="lang-select" id="langSelect">
-        <button class="lang-select-btn" id="langSelectBtn" title="Change language" aria-haspopup="true"
-          aria-expanded="false">
-          <span class="lang-flag" id="langFlag">&#x1F1EC;&#x1F1E7;</span>
-          <span class="lang-code" id="langCode">ENG</span>
-          <span class="lang-caret">&#x25BE;</span>
-        </button>
-        <ul class="lang-menu" id="langMenu" role="menu" hidden></ul>
+      <div class="header-actions">
+        <a href="https://www.paypal.com/donate/?business=JZS5LVZKPPY5J&no_recurring=0&item_name=Help+fund+Dharma+translation+projects.&currency_code=USD"
+          target="_blank" rel="noopener noreferrer" class="donate-btn" aria-label="Donate">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z"></path>
+          </svg>
+          <span class="donate-tooltip">Donate</span>
+        </a>
+        <div class="lang-select" id="langSelect">
+          <button class="lang-select-btn" id="langSelectBtn" title="Change language" aria-haspopup="true"
+            aria-expanded="false">
+            <span class="lang-flag" id="langFlag">&#x1F1EC;&#x1F1E7;</span>
+            <span class="lang-code" id="langCode">ENG</span>
+            <span class="lang-caret">&#x25BE;</span>
+          </button>
+          <ul class="lang-menu" id="langMenu" role="menu" hidden></ul>
+        </div>
       </div>
     </div>
     <div class="controls">
