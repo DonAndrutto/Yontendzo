@@ -1194,9 +1194,9 @@
   </div>
   <div class="sticky-header">
     <div class="app-header">
-      <div class="header-label">Sa bche Explorer · Yonten Dzo · Complete Outline by Patrul Rinpoche</div>
+      <div class="header-label" id="appHeaderLabel">Sa bche Explorer · Yonten Dzo · Complete Outline by Patrul Rinpoche</div>
       <span class="header-tib">ཡོན་ཏན་རིན་པོ་ཆེའི་མཛོད་ཀྱི་སྤྱི་དོན་ས་བཅད།</span>
-      <span class="header-en">Structural Outline of the Treasury of Precious Qualities</span>
+      <span class="header-en" id="appSubtitle">Structural Outline of the Treasury of Precious Qualities</span>
       <div class="header-actions">
         <div class="lang-select" id="langSelect">
           <button class="lang-select-btn" id="langSelectBtn" title="Change language" aria-haspopup="true"
@@ -1210,7 +1210,9 @@
           target="_blank" rel="noopener noreferrer" class="donate-btn" aria-label="Donate">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
             stroke="#fc8181" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z"></path>
+            <path
+              d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z">
+            </path>
           </svg>
           Donate
         </a>
@@ -1241,7 +1243,7 @@
   </div>
   <div class="intro-section">
     <button class="intro-toggle" id="introToggle" aria-expanded="false">
-      <span class="intro-arrow" id="introArrow">&#x25B6;</span> About this text
+      <span class="intro-arrow" id="introArrow">&#x25B6;</span> <span id="aboutLabel">About this text</span>
     </button>
     <div class="intro-body" id="introBody">
       <p><span
@@ -1266,7 +1268,7 @@
     <div class="section-header-wrap">
       <button class="tree-section-toggle" id="treeSectionToggle" aria-expanded="true">
         <span class="tree-section-arrow open" id="treeSectionArrow">&#x25B6;</span>
-        <span class="ts-label">Structural Outline</span>
+        <span class="ts-label" id="treeSectionLabel">Structural Outline</span>
         <span class="ts-middot">&middot;</span>
         <span class="ts-tib">ས་བཅད</span>
       </button>
@@ -1283,7 +1285,7 @@
     <div class="section-header-wrap">
       <button class="tree-section-toggle" id="rootTextToggle" aria-expanded="false">
         <span class="tree-section-arrow" id="rootTextArrow">&#x25B6;</span>
-        <span class="ts-label">Root Text</span>
+        <span class="ts-label" id="rootTextLabel">Root Text</span>
         <span class="ts-middot">&middot;</span>
         <span class="ts-tib">གཞུང་དོན</span>
       </button>
@@ -3140,20 +3142,127 @@
       ]
     };
 
-    // --- Translations overlay ---
-    // Keys are tree-node IDs; values are partial maps of {lang: text}.
-    // Missing keys/langs fall back to node.en. Tibetan is NEVER overridden here.
     const TRANSLATIONS = {
-      // Example once provided by the user:
+      // Keys are tree-node IDs; values are partial maps of {lang: text}.
+      // Missing keys/langs fall back to node.en. Tibetan is NEVER overridden here.
+      // Example:
       // "2.1": { pl: "...", ru: "...", de: "...", fr: "..." },
     };
 
+    const UI_STRINGS = {
+      en: {
+        searchPlaceholder: "Search (diacritics optional)...",
+        aboutToggle: "About this text",
+        expandAll: "Expand All",
+        collapseAll: "Collapse All",
+        printBtn: "Print",
+        emptyBreadcrumb: "Click any node to mark your place",
+        structuralOutline: "Structural Outline",
+        rootText: "Root Text",
+        appHeaderLabel: "Sa bche Explorer · Yonten Dzo · Complete Outline by Patrul Rinpoche",
+        appSubtitle: "Structural Outline of the Treasury of Precious Qualities",
+        prologue: "Prologue",
+        chapterPrefix: "Chapter",
+        colophon: "Colophon",
+        chapterTitles: [
+          "The Value of Human Existence",
+          "Impermanence",
+          "The Law of Karma",
+          "The Sufferings of Samsara",
+          "The Four Wheels",
+          "Refuge",
+          "The Four Boundless Attitudes",
+          "The Vow of Bodhichitta",
+          "The Bodhisattva Precepts",
+          "The Pitaka of the Vidyadharas",
+          "The Ground of Great Completeness",
+          "The Extraordinary Path of Practice of the Great Completeness",
+          "The Ultimate Result, the Kayas and Wisdoms"
+        ]
+      },
+      pl: {
+        searchPlaceholder: "Szukaj (znaki diakrytyczne opcjonalne)...",
+        aboutToggle: "O tym tekście",
+        expandAll: "Rozwiń wszystko",
+        collapseAll: "Zwiń wszystko",
+        printBtn: "Drukuj",
+        emptyBreadcrumb: "Kliknij dowolny węzeł, aby zaznaczyć swoje miejsce",
+        structuralOutline: "Zarys strukturalny",
+        rootText: "Tekst rdzenny",
+        appHeaderLabel: "EKSPLORATOR SA BCZE · JONTEN DZO · PEŁNY ZARYS AUTORSTWA PATRULA RINPOCZE",
+        appSubtitle: "Zarys Strukturalny Skarbnicy Cennych Właściwości",
+        prologue: "Prolog",
+        chapterPrefix: "ROZDZIAŁ",
+        colophon: "Kolofon",
+        chapterTitles: [
+          "Wartość ludzkiego istnienia",
+          "Nietrwałość",
+          "Prawo karmy",
+          "Cierpienia samsary",
+          "Cztery koła",
+          "Schronienie",
+          "Cztery bezmierne postawy",
+          "Ślubowanie bodhićitty",
+          "Wskazania bodhisattwy",
+          "Piṭaka widjadhārów",
+          "Podstawa Wielkiej Doskonałości",
+          "Niezwykła ścieżka praktyki Wielkiej Doskonałości",
+          "Ostateczny owoc — kaje i mądrości"
+        ]
+      },
+      ru: {
+        searchPlaceholder: "Поиск (диакритика необязательна)...",
+        aboutToggle: "Об этом тексте",
+        expandAll: "Развернуть все",
+        collapseAll: "Свернуть все",
+        printBtn: "Печать",
+        emptyBreadcrumb: "Нажмите на любой узел, чтобы отметить место",
+        structuralOutline: "Структурный план",
+        rootText: "Коренной текст",
+        appHeaderLabel: "ОБОЗРЕВАТЕЛЬ СА ЧЕ · ЙОНТЕН ДЗО · ПОЛНАЯ СТРУКТУРА ПАТРУЛА РИНПОЧЕ",
+        appSubtitle: "Структурный план Сокровищницы Драгоценных Качеств",
+        prologue: "Пролог",
+        chapterPrefix: "ГЛАВА",
+        colophon: "Колофон"
+      },
+      de: {
+        searchPlaceholder: "Suche (Diakritika optional)...",
+        aboutToggle: "Über diesen Text",
+        expandAll: "Alle ausklappen",
+        collapseAll: "Alle einklappen",
+        printBtn: "Drucken",
+        emptyBreadcrumb: "Klicken Sie auf einen Knoten, um Ihren Platz zu markieren",
+        structuralOutline: "Strukturelle Gliederung",
+        rootText: "Wurzeltext",
+        appHeaderLabel: "SA BCHE EXPLORER · YÖNTEN DZÖ · VOLLSTÄNDIGE GLIEDERUNG VON PATRUL RINPOCHE",
+        appSubtitle: "Strukturelle Gliederung der Schatzkammer der Kostbaren Eigenschaften",
+        prologue: "Prolog",
+        chapterPrefix: "KAPITEL",
+        colophon: "Kolophon"
+      },
+      fr: {
+        searchPlaceholder: "Rechercher (diacritiques facultatifs)...",
+        aboutToggle: "À propos de ce texte",
+        expandAll: "Tout développer",
+        collapseAll: "Tout réduire",
+        printBtn: "Imprimer",
+        emptyBreadcrumb: "Cliquez sur un nœud pour marquer votre place",
+        structuralOutline: "Plan structurel",
+        rootText: "Texte racine",
+        appHeaderLabel: "EXPLORATEUR SA BCHE · YÖNTEN DZÖ · PLAN COMPLET PAR PATRUL RINPOCHÉ",
+        appSubtitle: "Plan structurel du Trésor des Précieuses Qualités",
+        prologue: "Prologue",
+        chapterPrefix: "CHAPITRE",
+        colophon: "Colophon"
+      }
+    };
+
     const LANGS = [
-      { code: 'en', label: 'ENG', name: 'English', flag: '\uD83C\uDDEC\uD83C\uDDE7' }, // GB
-      { code: 'pl', label: 'POL', name: 'Polski', flag: '\uD83C\uDDF5\uD83C\uDDF1' }, // PL
-      { code: 'ru', label: 'RUS', name: 'Русский', flag: '\uD83C\uDDF7\uD83C\uDDFA' }, // RU
-      { code: 'de', label: 'GER', name: 'Deutsch', flag: '\uD83C\uDDE9\uD83C\uDDEA' }, // DE
-      { code: 'fr', label: 'FRE', name: 'Français', flag: '\uD83C\uDDEB\uD83C\uDDF7' }, // FR
+      { code: 'en', label: 'ENG', name: 'English', flag: '\uD83C\uDDEC\uD83C\uDDE7', pending: 'pending' },
+      { code: 'pl', label: 'POL', name: 'Polski', flag: '\uD83C\uDDF5\uD83C\uDDF1', pending: 'Wkrótce' },
+      { code: 'ru', label: 'RUS', name: 'Русский', flag: '\uD83C\uDDF7\uD83C\uDDFA', pending: 'Скоро' },
+      { code: 'de', label: 'GER', name: 'Deutsch', flag: '\uD83C\uDDE9\uD83C\uDDEA', pending: 'Demnächst' },
+      { code: 'fr', label: 'FRE', name: 'Français', flag: '\uD83C\uDDEB\uD83C\uDDF7', pending: 'Bientôt' },
     ];
     const LANG_BY_CODE = Object.fromEntries(LANGS.map(l => [l.code, l]));
 
@@ -12005,6 +12114,20 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
       colophon: Object.assign({ key: 'colophon', label: 'Colophon', anchor: 'rt-colophon', treeNodeId: '3.3' }, RT_SLOTS.colophon || blankSlot()),
     };
 
+    function getRTLabel(sec) {
+      const lang = state.targetLang || 'en';
+      const ui = UI_STRINGS[lang] || UI_STRINGS.en;
+      if (sec.key === 'prologue') return ui.prologue;
+      if (sec.key === 'colophon') return ui.colophon;
+      if (sec.key.startsWith('chapter-')) {
+        const n = parseInt(sec.key.replace('chapter-', ''));
+        const title = ui.chapterTitles[n - 1] || '';
+        if (lang === 'en') return `Chapter ${n}: ${title}`;
+        return `${ui.chapterPrefix} ${n} ${title}`;
+      }
+      return sec.label;
+    }
+
     function rootTextSubsections() {
       return [ROOT_TEXT.prologue, ...ROOT_TEXT.chapters, ROOT_TEXT.colophon];
     }
@@ -12068,7 +12191,7 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
       <article class="rt-subsection ${isOpen ? 'open' : ''}" id="${sec.anchor}" data-key="${sec.key}">
         <header class="rt-subsection-header" data-key="${sec.key}">
           <span class="rt-subsection-arrow ${isOpen ? 'open' : ''}">&#x25B6;</span>
-          <span class="ts-label">${escHtml(sec.label)}</span>
+          <span class="ts-label">${escHtml(getRTLabel(sec))}</span>
           ${backBtn}
         </header>
         <div class="rt-subsection-body">
@@ -12154,7 +12277,7 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
         const hasAny = l.code === 'en' || Object.values(TRANSLATIONS).some(t => t && t[l.code]);
         return `<li role="menuitem" data-lang="${l.code}" class="${l.code === state.targetLang ? 'active' : ''}">
       <span class="menu-flag">${l.flag}</span><span>${escHtml(l.name)}</span>
-      ${hasAny ? '' : '<span class="menu-pending">pending</span>'}
+      ${hasAny ? '' : `<span class="menu-pending">${escHtml(l.pending)}</span>`}
     </li>`;
       }).join('');
       menu.querySelectorAll('li').forEach(li => {
@@ -12169,6 +12292,49 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
       document.getElementById('langMenu').hidden = true;
       document.getElementById('langSelectBtn').setAttribute('aria-expanded', 'false');
     }
+    function updateUILanguage() {
+      const lang = state.targetLang || 'en';
+      const ui = Object.assign({}, UI_STRINGS.en, UI_STRINGS[lang] || {});
+
+      const searchBox = document.getElementById('searchBox');
+      if (searchBox) searchBox.placeholder = ui.searchPlaceholder;
+
+      const aboutLabel = document.getElementById('aboutLabel');
+      if (aboutLabel) aboutLabel.textContent = ui.aboutToggle;
+
+      const btnPrint = document.getElementById('btnPrint');
+      if (btnPrint) btnPrint.textContent = ui.printBtn;
+
+      const treeSectionLabel = document.getElementById('treeSectionLabel');
+      if (treeSectionLabel) treeSectionLabel.textContent = ui.structuralOutline;
+
+      const rootTextLabel = document.getElementById('rootTextLabel');
+      if (rootTextLabel) rootTextLabel.textContent = ui.rootText;
+
+      const appHeaderLabel = document.getElementById('appHeaderLabel');
+      if (appHeaderLabel) appHeaderLabel.textContent = ui.appHeaderLabel;
+
+      const appSubtitle = document.getElementById('appSubtitle');
+      if (appSubtitle) appSubtitle.textContent = ui.appSubtitle;
+
+      const expandBtns = ['btnTreeExpandAll', 'btnRootExpandAll'];
+      expandBtns.forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) btn.textContent = ui.expandAll;
+      });
+
+      const collapseBtns = ['btnTreeCollapseAll', 'btnRootCollapseAll'];
+      collapseBtns.forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) btn.textContent = ui.collapseAll;
+      });
+
+      const breadcrumb = document.getElementById('breadcrumb');
+      if (breadcrumb && breadcrumb.classList.contains('empty')) {
+        breadcrumb.textContent = ui.emptyBreadcrumb;
+      }
+    }
+
     function setTargetLang(code) {
       if (!LANG_BY_CODE[code]) return;
       state.targetLang = code;
@@ -12179,6 +12345,8 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
       const btnEng = document.getElementById('btnEng');
       btnEng.textContent = l.label;
       btnEng.title = `Toggle ${l.name}`;
+
+      updateUILanguage();
       buildLangMenu();
       renderTree();
       updateBreadcrumb();
