@@ -766,15 +766,15 @@
     }
 
     .root-text-body {
-      padding: 0 22px 60px;
+      padding: 0 0 60px;
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
 
     .rt-subsection {
-      border: 1px solid var(--border);
-      border-radius: 8px;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
       background: white;
       overflow: hidden;
       scroll-margin-top: 160px;
@@ -784,7 +784,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 9px 12px;
+      padding: 12px 22px;
       cursor: pointer;
       background: #f7ecd6;
     }
@@ -823,6 +823,11 @@
     .rt-subsection-back:hover {
       background: #fce8cc;
       border-color: #e8c898;
+    }
+
+    .rt-subsection-body {
+      display: none;
+      padding: 16px 22px;
     }
 
     .rt-subsection.open .rt-subsection-body {
@@ -933,11 +938,11 @@
       color: #b8a890;
     }
 
-    .hide-tib .rt-slot-tib-wrap {
+    .hide-tib .rt-stanza-tib {
       display: none;
     }
 
-    .hide-en .rt-slot-target {
+    .hide-en .rt-stanza-en {
       display: none;
     }
 
@@ -997,7 +1002,7 @@
       }
 
       .root-text-body {
-        padding: 4px 14px 40px;
+        padding: 4px 0 40px;
       }
 
       .section-header-wrap {
@@ -1139,31 +1144,6 @@
       }
 
       .root-text-section {
-        padding: 0 !important;
-        max-width: 100% !important;
-        border-top: 1pt solid #aaa !important;
-        margin-top: 14pt !important;
-      }
-
-      .root-text-toggle {
-        color: #000 !important;
-      }
-
-      .rt-subsection {
-        page-break-inside: avoid;
-        border: 0.5pt solid #bbb !important;
-      }
-
-      .rt-subsection-header {
-        background: #f0e8d8 !important;
-      }
-
-      .rt-subsection-body {
-        display: block !important;
-        padding: 8pt 10pt !important;
-      }
-
-      .rt-subsection-back {
         display: none !important;
       }
 
@@ -3757,134 +3737,176 @@ And karma brings the bardo's deep, black night.`,
         tib: `1
 །།དེ་ལྟར་འཇིག་རྟེན་ཕ་རོལ་སོན་པ་རྣམས། །གོ་འཕང་གང་གི་ཐ་གུས་འདོགས་པའི་ཚུལ། 
 །དགེ་སྤྱད་སྡིག་གོམས་ཁོ་ནས་ཉེ་བར་ལེན། །ཀུན་རྫོབ་བདེན་པ་བསླུ་བ་མེད་པ་ཡིན།
+
 2
 །གང་ཞིག་ས་བོན་རྣམ་པ་སྣ་ཚོགས་མཐུ། །ཞིང་པ་རྣམས་ཀྱི་ཐོག་ལ་གསལ་བ་བཞིན། 
 །སྐྱེ་བ་གཞན་དུ་འདྲིས་ཤིང་གོམས་བྱས་པའི། །ལས་ཚུལ་མང་པོས་འགྲོ་འདི་སྣ་ཚོགས་བྱས།
+
 3
 །ས་བླ་མཐོན་པོར་གཤེགས་པའི་མཁའ་ལྡིང་གི །གྲིབ་མ་རེ་ཞིག་བལྟ་བར་མི་མངོན་ཡང་། 
 །གཟུགས་ཅན་ཉིད་དང་འདུ་འབྲལ་སྤངས་པ་བཞིན། །ཚོགས་ཤིང་དུས་ལ་བབས་ཚེ་ལྷག་པར་མངོན།
+
 4
 །བསོད་ནམས་མ་ཡིན་བྱ་བ་རྟ་གདོང་མེས། །མཐོ་རིས་རྒྱ་མཚོའི་རླབས་ཀྱང་སྐེམས་ནུས་ཤིང་། 
 །རྣམ་མཁྱེན་གྲུ་གཟིངས་བཤིག་པའི་དཔེ་དང་དོན། །ལས་བརྒྱ་པ་དང་རྒྱ་ཆེར་རོལ་པས་བསྟན།
+
 5
 །མནར་ལ་ཤིན་ཏུ་བརྟུལ་ཕོད་ངན་སོང་གིས། །དགེ་བཅུའི་དཔུང་པ་བཙན་པའི་དཔའ་བོའི་ཡུལ། 
 །གཡུལ་གྱི་ཕྲུ་མས་བཏབ་པ་མ་མཆིས་ཏེ། །དམ་བཅའ་ཉམས་པ་མཐའ་དག་ཁྱོད་དབང་སོང་།
+
 6
 །ལ་ལའི་ཚུལ་ཁྲིམས་ལ་ལའི་ཚེ་དང་སྲོག །ལ་ལའི་དཀའ་ཐུབ་ལ་ལའི་ཆོས་དང་ནོར། 
 །ལ་ལའི་ངོ་ཚ་ལ་ལའི་ཁྲེལ་ཡོད་རྣམས། །སྡིག་པའི་ཆེད་དུ་གཏོང་བ་ཤིན་ཏུ་མང་།
+
 7
 །གང་ཕྱིར་ཡོན་གནས་ཉེ་དུ་འཁོར་འབངས་དང་། །ཡུལ་ཁམས་བསྲུང་བའི་སླད་དུ་སྟོབས་ཆེན་གྱི། 
 །སྡིག་པའི་གཉིས་འཐུང་དཀྲིས་པ་བཏང་ནའང་། །རྣམ་སྨིན་བགོ་བཤའ་བྱ་རུ་མེད་པ་ཡིན།
+
 8
 །རྙེད་ལ་བརྐམ་ཞིང་བདེ་བ་འབའ་ཞིག་སྲེད། །སྙན་པ་ལྷུར་ལེན་བསྟོད་ན་ཁེངས་འགྱུར་ལ། 
 །གང་ལས་ཅིག་ཤོས་བཞི་ཡིས་སྨ་བབ་པའི། །བྱིས་པ་འདི་དག་འཇིག་རྟེན་ཆོས་ཀྱིས་བསླུས།
+
 9
 །རིགས་གཟུགས་དབང་ཐང་ལ་སོགས་འཕང་བསྟོད་ཅིང་། །སྙོམ་ལས་འཕྱེ་བའི་ཕག་ཏུ་ཡིབས་པ་དང་། 
 །མངོན་པའི་ང་རྒྱལ་མ་རུངས་སློང་བ་རྣམས། །དཀའ་ཐུབ་དཔལ་ལ་སྡང་བའི་སྲིན་པོར་འགྱུར།
+
 10
 །བརྐམ་ཆགས་སེམས་ཀྱི་ནུས་པ་བརྟན་པོ་ཡིས། །ཟིལ་གྱིས་ནོན་པའི་གཡོ་སྒྱུའི་འཁྲི་ཤིང་གིས། 
 །གཞན་དག་རྨོངས་བྱས་བདག་ཉིད་བསྲུང་ནའང་། །གནོད་ཆེན་དེ་ནི་རང་གི་ཁོངས་སུ་ཞུགས།
+
 11
 །འཁོར་བར་འདུ་བྱེད་དཀར་ནག་ལས་འབྲས་གཉིས། །ས་བོན་ཉུང་ངུ་ལས་ཀྱང་འབྲས་བུའི་གཟུགས། 
 །སྦོམ་པོར་བསྐྱེད་ལ་མི་དབང་ང་ལས་ནུ། །སྲན་རྡོག་བདུན་ལས་འཁོར་ལོས་སྒྱུར་བ་བཞིན།
+
 12
 །གང་ཞིག་ས་བོན་ཡུངས་འབྲུ་ཙམ་པའི་ཤིང་། །ཨ་ཤོ་ཏ་ཡི་འབྲས་བུ་ལོ་དུས་སུ། 
 །ཡལ་ག་རེ་ལའང་དཔག་ཚད་ཙམ་འཕེལ་བས༑ །དགེ་སྡིག་གཟུགས་བརྙན་འཕེལ་བའི་དཔེར་མི་ཕོད།
+
 13
 །གང་ལ་བྱེད་པོ་མ་མཆིས་རང་བཞིན་མིན། །དཀར་ནག་ཚོས་ཀྱིས་བཙོས་པའི་ཀུན་སློང་གིས། 
 །ལས་དང་དེ་ཡི་འབྲས་བུ་ཆེན་བྱས། །སྦྱོར་རྗེས་གཉིས་དང་མི་ལྡན་ནུས་པ་ཆུང་།
+
 14
 །རྩ་བ་སྨན་དུ་མཆིས་ན་མྱུ་གུའང་སྨན། །རྩ་བ་དུག་ཡིན་མྱུ་གུ་སྨོས་ཅི་དགོས༑ 
 །བསམ་པ་དགེ་དང་མི་དགེའི་འཕེན་བྱེད་ལས། །དགེ་སྡིག་གཟུགས་བརྙན་ཆེ་ཆུང་རྗེས་མི་འགྲོ།
+
 15
 །འདི་ལྟར་རྟག་དང་མངོན་ཞེན་གཉེན་པོ་མེད། །ཡོན་ཏན་གཙོ་ལྡན་གཞི་ལས་བྱུང་བའི་ལས། 
 །རྣམ་པ་ལྔ་པོ་དགེ་སྡིག་ལྕི་ཡང་གི །ཉེ་བར་ལེན་པའི་རྣམ་རིག་ལགས་པར་གསུངས།
+
 16
 །ཀུན་གྱི་རྟེན་བྱེད་ཀུན་གཞི་ལུང་མ་བསྟན། །དེ་ལས་ཡིད་དང་ཡུལ་ལྔའི་ཤེས་པ་ལངས། 
 །ཀུན་ལ་ཁྱབ་བྱེད་མ་རིག་གདོན་ཆེན་གྱིས། །ཉོན་མོངས་གསུམ་བཟུང་འཁོར་བར་མཐོ་དམན་བྱས།
+
 17
 །ཇི་ལྟར་མེ་ནི་འབར་ཞིང་བསྲེག་པ་ཡི། །གཉེན་པོར་ཆས་པ་ཆུ་ལས་གཞན་མེད་ན། 
 །དཀོན་མཆོག་གསུམ་པོ་བསླུས་ཤིང་སྤངས་པ་ཡི། །སྡིག་ཆེན་དེ་ལ་དོ་ཟླ་རྙེད་པ་མིན།
+
 18
 །དེ་ལས་གཞན་དུ་འགྲོ་བའི་ཀུན་རྟོག་ལ། །རང་བཞིན་འབྲེལ་གྱུར་སེམས་དང་སེམས་བྱུང་ལས། 
 །མཐའ་དག་བློ་ཡིས་ཐུག་པ་མ་མཆིས་ཀྱང་། །ལུས་ངག་ཡིད་ལ་རྟེན་དང་བརྟེན་པ་ཅན། 
 །སྤང་བྱའི་རྒྱུ་འབྲས་རྣམ་པ་བཅུར་གནས་པའི།
+
 19
 །ལུས་ཀྱི་གསུམ་པོ་སྲོག་གཅོད་མ་བྱིན་བླང་། །ལོག་པར་གཡེམ་ལས་དང་པོ་སྲོག་གཅོད་ནི། 
 །འདུ་ཤེས་མ་འཁྲུལ་གཞན་སྲོག་བསམ་བཞིན་གཅོད། །ཕྱོགས་མཐུན་བརྡེག་བཙོག་ལ་སོགས་འཚེ་བ་བགྱིད།
+
 20
 །མ་བྱིན་བླང་པ་གཞན་ནོར་ཤེས་བཞིན་བརྐུ། །ཕྱོགས་མཐུན་གཡོ་དང་སྒྱུ་ཡིས་ལེན་པ་དང་། 
 །འདོད་ལོག་གླ་རྔན་ཐོབ་ལ་རེག་པ་སྤྲོད། །ཕྱོགས་མཐུན་བགྲོད་བྱ་མ་ཡིན་འཁྲིག་པའི་ཆོས།
+
 21
 །ངག་གི་བཞི་ནི་བརྫུན་སྨྲས་གཞན་དག་འཁྲུལ། །ཕྱོགས་མཐུན་འདུ་ཤེས་བསླད་ནས་གཞན་སེམས་བསླུ། 
 །ཕྲ་མ་མཐུན་ནམ་བཏང་སྙོམས་གནས་པ་འདྲལ། །ཕྱོགས་མཐུན་སྐྱོན་ཚིག་གཞན་བཟློས་འཁོན་དུ་འཆོས།
+
 22
 །ངག་འཁྱལ་བྲེ་མོའི་གཏམ་ལས་ཆགས་སྡང་བསྐྱེད། །ཕྱོགས་མཐུན་དམག་དང་ཆོམ་རྐུན་འབྲེལ་མེད་གཏམ། 
 །ཚིག་རྩུབ་ཕ་རོལ་སྙིང་ལ་འབིགས་པ་སྟེ། །ཕྱོགས་མཐུན་གཞན་ཡིད་མི་བདེའི་རྐྱེན་དང་སྤྲོད།
+
 23
 །ཡིད་ཀྱི་གསུམ་ལས་དང་པོ་བརྣབ་སེམས་ནི། །གཞན་འབྱོར་དཔལ་ལ་བརྔམས་ཤིང་བདག་གིར་བྱེད། 
 །ཕྱོགས་མཐུན་ཕ་རོལ་རྫས་ལ་བརྐམ་ཞིང་མྱང་།
+
 24
 །གནོད་སེམས་གཞན་ལ་ཁོང་འཁྲུག་འཚེ་བ་སློང་། །ཕྱོགས་མཐུན་ཕན་པས་འབྲེལ་ལ་འདུ་འབྲལ་བསྒོམ། 
 །ལོག་ལྟ་རྒྱུ་འབྲས་མེད་དང་རྟག་ཆད་བལྟ། །ཕྱོགས་མཐུན་མེད་ལ་སྒྲོ་འདོགས་ཡོད་ལ་བསྐུར༑
+
 25
 །ཀུན་ལ་འབྲས་བུ་བཞི་བཞིར་སྨིན་པའི་ཚུལ། །རྣམ་སྨིན་རྒྱུ་མཐུན་དབང་དང་བྱེད་པ་ལས།
+
 26
 །རྣམ་སྨིན་འབྲས་བུ་ཆོས་ལྔ་ལྡན་ནམ་མིན། །ཀུན་སློང་གསུམ་གྱི་ཆུང་ངུས་དུད་འགྲོ་དང་། 
 །འབྲིང་གི་ཡི་དྭགས་ཆེན་པོས་དམྱལ་བར་འཕེན།
+
 27
 །རྒྱུ་མཐུན་འབྲས་བུ་རྣམ་པ་གཉིས་གྲུབ་སྟེ། །བྱེད་པ་རྒྱུ་མཐུན་བྱེད་ལས་མཐུན་པར་སྐྱེ། 
 །མྱོང་བ་རྒྱུ་མཐུན་མཐོ་རིས་ཐོབ་གྱུར་ཀྱང་། །རིམ་བཞིན་མི་དགེ་བཅུ་ལ་གཉིས་གཉིས་ལྡན།
+
 28
 །འཚོ་བ་ཐུང་ལ་ནད་ཀྱང་རྣམ་གྲངས་མང་། །ཡོ་བྱད་ཉུང་ཞིང་དགྲ་དང་ཐུན་མོང་ཅན། 
 །ཁྱིམ་ཐབ་མི་མཛེས་དགྲ་ཟླར་འབྲེལ་བ་དང་།
+
 29
 །བསྐུར་བས་གདུང་ཞིང་གཞན་གྱིས་བསླུ་བ་མང་། །འཁོར་གཡོག་ངན་ཞིང་འདུམ་པར་དཀའ་བ་དང་། 
 །ཚིག་བཟུང་མི་འོས་ཡིད་ཆེས་གཞན་པ་དང་། །མི་སྙན་མང་ཐོས་འཐབ་མོའི་ཚིག་ཏུ་འདྲུལ།
+
 30
 །ཆོག་མི་ཤེས་དང་འདོད་པས་གདུང་བ་དང་། །གནོད་པ་འདུ་ཞིང་ཕན་པ་འདྲལ་བ་དང་། 
 །ལྟ་བ་ངན་དང་གཡོ་སྒྱུས་འཁྲུགས་པའོ།
+
 31
 །དབང་གི་འབྲས་བུ་ཡུལ་དང་རྟེན་ཅིང་འབྲེལ། །སྲོག་གཅོད་སྡིག་ཏོའི་ཁུར་གྱིས་ནོན་པ་དེ། 
 །ས་ཕྱོགས་བག་ཆུང་སྨན་ཤིང་མེ་ཏོག་ཉུང་། །ལོ་འབྲས་བཟའ་བཏུང་མཐུ་ཉམས་འཇུ་དཀའ་ཞིང་། 
 །སྲོག་ལ་ཡ་ངའི་གནས་སུ་ཕྱིན་པར་འགྱུར།
+
 32
 །མ་བྱིན་བླངས་པས་མྱུ་གུ་འཇོམས་པ་སླ། །བཟའ་ཤིང་ཡོད་ཀྱང་འབྲས་བུས་རྣམ་པར་སྨད༑ 
 །སད་ཀྱིས་གདུང་ཞིང་སེར་པས་རྣམ་པར་འཐག །མུ་གེའི་སྡུག་བསྔལ་སྙིང་ལ་འཕོ་བར་སྐྱེ།
+
 33
 །ལོག་པར་གཡེམ་པས་བཤང་གཅིའི་འདམ་རྫབ་ཁྲོད། །དྲི་ངའི་ཚོར་བ་རྩུབ་མོས་དབུགས་མི་ཕྱིན། 
 །མི་གཙང་ལྗན་ལྗིན་དོག་ཅིང་ཉམས་མི་དགའི། །ཡུལ་དུ་སྐྱེ་བའི་འཁྲི་ཤིང་དབང་མེད་འཛུགས།
+
 34
 །རྫུན་གྱིས་འབྱོར་པ་གཡོ་ཞིང་ཡུལ་མི་མཐུན། །གཞན་གྱིས་བསླུ་དང་འཇིགས་པས་བརྟབས་ཤིང་སྐྲག 
 །ཕྲ་མས་ས་ཕྱོགས་ངམ་གྲོག་གཅོང་རོང་ཅན། །བགྲོད་དཀའ་མཐོ་དམན་ཅན་གྱི་ཡུལ་ལ་གནས།
+
 35
 །བརྗོད་པ་རྩུབ་མོས་རྡོ་གསེག་ཚེར་མ་ཅན། །སྡོང་དུམ་འབྲས་ངན་རྩུབ་དང་ཉམས་མི་བདེ། 
 །ཚྭ་སྒོ་ཅན་དང་རྡུལ་མང་ཉལ་ཉིལ་ཁྲོད། །ཡིད་མི་བདེ་བའི་ཚོར་བ་ཉམས་སུ་མྱོང་༑ 
 །བཀྱལ་ཀས་སོ་ནམ་ངལ་བ་འབྲས་མེད་ཅིང། །དུས་ཀྱི་རྗེས་སུ་མི་འགྲོ་མི་བརྟན་འགྱུར།
+
 36
 །བརྣབ་སེམས་སྤུན་དང་འབྲས་བུ་གོ་ལྡོག་ཅིང་། །གནས་དུས་གདུག་པས་སྐབས་བཙལ་མཐོང་བར་སྐྱེ། 
 །གནོད་སེམས་སྡིག་སྤྱོད་རྒྱལ་པོ་དང་འབྲེལ་ཞིང་། །ཆོམ་རྐུན་སྦྲུལ་གདུག་མི་རྒོད་གཅན་གཟན་རྩུབ། 
 །ལོ་ཏོག་འབྲས་བུའི་རོ་ཡང་ཚ་ཞིང་ཁ༑ །རང་བཞིན་གནོད་པས་བཀང་བའི་ཡུལ་དུ་སྐྱེ།
+
 37
 །ལོག་ལྟས་རིན་པོ་ཆེ་སོགས་ཕུན་ཚོགས་ཀྱི། །འབྱོར་པས་ཀུན་ནས་སྤོང་ཞིང་སྨན་ཤིང་ཉུང་། 
 །མེ་ཏོག་འབྲས་བུ་དག་ཀྱང་མཐུ་ཆུང་ལ། །སྐྱབས་དང་སྐྱོབ་པ་དཔུང་གཉེན་མེད་པར་སྐྱེ།
+
 38
 །སྐྱེས་བུ་བྱེད་པའི་འབྲས་བུ་གང་བྱས་ལས། །མང་པོར་འཕེལ་བས་སྡུག་བསྔལ་མཐའ་དག་བསྐྱེད། 
 །འདི་ལྟར་མུན་པ་ལས་ཀྱང་མུན་ནག་ཅན། །འཁོར་བའི་བཙོན་ར་ཤིན་ཏུ་བརྣག་དཀའ་བར། 
 །ཉེར་ལེན་ཕུང་བོའི་སྟེང་དུ་སྡུག་བསྔལ་དབལ། །བཟོད་དཀའི་ཚོར་བ་ཐོབ་འདི་སྡིག་པས་བྱས༑
+
 39
 །དེ་ཕྱིར་མ་དག་གཞན་དབང་གནས་སྐབས་ན། །མཐོ་རིས་འཕེན་བྱེད་དགེ་བའི་ལས་ལམ་བཅུ། 
 །མི་དགེ་བཅུ་ལས་ཕྱི་རོལ་ཕྱོགས་པ་ཡི། །དགེ་བའི་ལས་བཅུ་ཡང་དག་བསྙེན་པར་མཛོད།
+
 40
 །དེ་བསྙེན་པ་ལས་བསོད་ནམས་ཆ་མཐུན་བཅུས། །བདེ་འགྲོར་འཕེན་ཅིང་མི་དགེ་རྣམ་པ་བཅུས། 
 །ངན་འགྲོར་འཕེན་པའི་དཀར་ནག་རྒྱུ་འབྲས་ལ། །བླང་དོར་བགྱིད་པ་སྐྱེས་བུ་ཆུང་ངུའི་ལམ།
+
 41
 །ཐར་པའི་ཆ་མཐུན་ཟག་མེད་དམ་པའི་རྒྱུ། །དགེ་བཅུ་བསམ་གཏན་གཟུགས་མེད་སྦྱིན་སོགས་དྲུག 
 །ཚོགས་སྦྱོར་མཐོང་བསྒོམ་མི་སློབ་ལམ་ལྔས་བསྡུས།
+
 42
 །དེའང་བདག་མེད་གཉིས་ཀྱི་དོན་རྟོགས་ནས། །ཐབས་ཤེས་ཟུང་འབྲེལ་དགེ་བ་གསེར་འགྱུར་རྩིས། 
 །སྲིད་དང་ཞི་བར་འགལ་བའི་ལྕགས་ཁམས་ལ༑ །ཐེབས་པས་མི་གནས་ཡེ་ཤེས་རྒྱལ་བའི་ཁམས། 
 །གྲུབ་པ་འཇིག་རྟེན་འདས་པའི་དགེ་བ་ཡིན།
+
 43
 །ལམ་དུས་དམིགས་པར་བཅས་པ་བསོད་ནམས་ཚོགས། །དམིགས་མེད་ཡེ་ཤེས་ཚོགས་ཏེ་ཟུང་འཇུག་གིས། 
 །སྒྲིབ་པ་གཉིས་སྦྱང་སྐུ་གཉིས་མངོན་དུ་འཐོབ། །དག་པའི་རྒྱུ་འབྲས་ཟབ་མོའི་རྟེན་འབྲེལ་ལགས།`,
@@ -5013,6 +5035,7 @@ Earnestly caught up in Dharma, he should have but few activities.
 Toward samsara he must feel great weariness, inspiring this in others.
 He must be skilled in means and have the blessings of the lineage.
 Rely on such a master and attainments will be swift.
+
 16
 But there are teachers of the path who are like wooden millstones.
 They care about their lineage no different from a Brahmin priest,
@@ -5043,6 +5066,7 @@ By failing to subject such teachers, therefore, to a stringent test,
 Those who place their faith in them will waste their stock of merit.
 The finding of this time of freedom will be just as when, mistakenly,
 One takes a dangerous serpent for the shadow of a tree.
+
 21
 But teachers who are rich with every perfect quality,
 Who from the sphere of all the Buddhas' primal wisdom and compassion
@@ -5072,6 +5096,7 @@ They are the parents of all living beings, loving them with equal love,
 And like a running river is their great and swift compassion.
 In joy they are unchanging like Sumeru, king of mountains;
 With untroubled equanimity, they are like clouds of rain.
+
 26
 Such teachers are the peers of all the Buddhas.
 Even their assailants are connected to the path of bliss.
@@ -5102,6 +5127,7 @@ Some, even when the master's present, wish to be away.
 And yet wherever they may go, they're caught by sinful ways.
 When told to stay in solitude, their Dharma practice falls apart.
 They are like tips of kusha waving in the wind.
+
 31
 Some with evil natures, with deceiving, twisted tongues
 Approach their teacher like a musk-deer.
@@ -5146,6 +5172,7 @@ Like servants, they should heed instructions.
 They should rid themselves of pride, like those who sweep the streets,
 And give up arrogance, like bulls with broken horns.
 The teacher should be followed thus, for so the texts declare.
+
 38
 Riches, if you have them,
 Offer to your teacher, the fourth jewel,
@@ -5246,6 +5273,7 @@ As much as you consort with them, the storm of sin will rage.
 How stupid then to keep such evil friends,
 Who trample down the harvest of your virtue.
 For by these demon hordes you are brought low!
+
 52
 Frequenting, therefore, virtuous teachers and good friends,
 You will gain perfect fortune in this very life.
@@ -5867,173 +5895,226 @@ Let us train ourselves in virtue that destroys impurity.`
       },
 
       'chapter-8': {
-        tib: `1 །།རྙེད་པ་གང་གི་དོན་ལ་ཡོན་གྱི་མཆོག །ཚད་མེད་རྣམ་བཞིའི་ཐོབ་པའི་བྱང་ཆུབ་སེམས། 
+        tib: `1
+།།རྙེད་པ་གང་གི་དོན་ལ་ཡོན་གྱི་མཆོག །ཚད་མེད་རྣམ་བཞིའི་ཐོབ་པའི་བྱང་ཆུབ་སེམས། 
 །སྨོན་འཇུག་ཤིང་རྟའི་སྒྱུ་ཐབས་ལ་དྲངས་པས༑ །ཞི་བདེའི་ལྟ་བ་ངན་པ་ཉམས་པར་བྱེད།
 
-2 །སྡིག་སྡུག་འཁོར་བའི་བཙོན་རར་བཅིངས་རྣམས་ཀྱང་། །བྱང་ཆུབ་སེམས་བསྐྱེད་མོད་ལ་རྒྱལ་སྲས་ཀྱི། 
+2
+།སྡིག་སྡུག་འཁོར་བའི་བཙོན་རར་བཅིངས་རྣམས་ཀྱང་། །བྱང་ཆུབ་སེམས་བསྐྱེད་མོད་ལ་རྒྱལ་སྲས་ཀྱི། 
 །མིང་གི་ཅོད་པན་འཐོབ་ལ་རབ་དགའ་ནས། །འཇིག་རྟེན་ལྷ་མིར་བཅས་ཀྱང་སྟི་སྟང་བྱེད།
 
-3 །ལས་ཉོན་མུན་ནག་འཁྲིགས་པའི་སྤྲིན་བར་ནས། །གཏུམ་པའི་གློག་འོད་འཁྱུག་ལྟའི་དགེ་བ་ལ། 
+3
+།ལས་ཉོན་མུན་ནག་འཁྲིགས་པའི་སྤྲིན་བར་ནས། །གཏུམ་པའི་གློག་འོད་འཁྱུག་ལྟའི་དགེ་བ་ལ། 
 །སྐབས་འགར་གོམས་པའི་བསོད་ནམས་ཙམ་པོ་བ། །ཆུ་ཤིང་བཞིན་དུ་འབྲས་བུས་རྩ་བ་སྨད།
 
-4 །ས་གཞི་བཟང་པོས་བསྟེན་པའི་ཞིང་ས་ལ། །དགེ་བའི་ལོ་ཏོག་ཕུན་སུམ་ཚོགས་པ་ལྟར། 
+4
+།ས་གཞི་བཟང་པོས་བསྟེན་པའི་ཞིང་ས་ལ། །དགེ་བའི་ལོ་ཏོག་ཕུན་སུམ་ཚོགས་པ་ལྟར། 
 །བྱང་ཆུབ་སེམས་ཀྱི་ལྗོན་ཤིང་སྲིད་པ་ན། །འབྲས་བུ་མང་ཞིང་ཞི་བའི་བར་དུ་འཕེལ།
 
-5 །ལས་ཉོན་འདུ་བྱེད་སྡུག་བསྔལ་ཀུན་གྱི་སྣོད། །འཁོར་བའི་རྒྱ་མཚོ་རྣམ་རྟོག་རྦ་རླབས་ཅན། 
+5
+།ལས་ཉོན་འདུ་བྱེད་སྡུག་བསྔལ་ཀུན་གྱི་སྣོད། །འཁོར་བའི་རྒྱ་མཚོ་རྣམ་རྟོག་རྦ་རླབས་ཅན། 
 །སེམས་ཅན་རྣམས་ཀྱི་ཁྱིམ་ལྟར་རབ་བཟུང་ལས། །གདོན་པའི་སྙིང་སྟོབས་ཆེན་པོ་སེམས་བསྐྱེད་ཡིན།
 
-6 །གང་ལ་རང་དོན་སེམས་པ་ཡོད་མ་ཡིན། །བཀྲེས་པ་ཟས་དང་སྐོམ་པ་ཆུར་གདུང་བཞིན། 
+6
+།གང་ལ་རང་དོན་སེམས་པ་ཡོད་མ་ཡིན། །བཀྲེས་པ་ཟས་དང་སྐོམ་པ་ཆུར་གདུང་བཞིན། 
 །སེམས་ཅན་འབའ་ཞིག་དོན་དུ་རྣམ་མཁྱེན་གྱི། །གོ་འཕང་གཉེར་ལ་བྱང་ཆུབ་སེམས་ཞེས་གྲགས།
 
-7 །དེའང་འབྲས་བུར་དམ་འཆའ་སྨོན་པའི་སེམས། །བསླབ་བྱ་བདག་གཞན་མཉམ་དང་བརྗེ་བ་དང་།
+7
+།དེའང་འབྲས་བུར་དམ་འཆའ་སྨོན་པའི་སེམས། །བསླབ་བྱ་བདག་གཞན་མཉམ་དང་བརྗེ་བ་དང་།
 །བདག་བས་གཞན་གཅེས་གསུམ་དུ་བཞག་པའང་། །བསླབ་པའི་མདོ་བསྡུས་ཡིན་གྱི་དེའི་ངོ་བོ། 
 །བྱམས་སོགས་ཚད་མེད་བཞི་ལ་ཡང་དག་གནས༑
 
-8 །རྒྱུ་ལ་དམ་འཆའ་འཇུག་པའི་སེམས་ཡིན་ཏེ། །དེ་ཡི་བསླབ་བྱ་ཕ་རོལ་ཕྱིན་པ་དྲུག 
+8
+།རྒྱུ་ལ་དམ་འཆའ་འཇུག་པའི་སེམས་ཡིན་ཏེ། །དེ་ཡི་བསླབ་བྱ་ཕ་རོལ་ཕྱིན་པ་དྲུག 
 །སྤྱོད་ཡུལ་ཡོངས་སུ་དག་པ་རྣམས་ལ་བསྟེན།
 
-9 །དབྱེ་བའི་སྒོ་ནས་སྐྱེ་འཕགས་སེམས་བསྐྱེད་གཉིས། །བསླབ་པ་གསུམ་ལ་ལྟོས་པའི་སེམས་བསྐྱེད་གསུམ།
+9
+།དབྱེ་བའི་སྒོ་ནས་སྐྱེ་འཕགས་སེམས་བསྐྱེད་གཉིས། །བསླབ་པ་གསུམ་ལ་ལྟོས་པའི་སེམས་བསྐྱེད་གསུམ།
 
-10 །ཁྱད་པར་ཚོགས་སྦྱོར་ལམ་ན་མོས་པས་སྤྱོད། །དང་པོའི་ས་ནས་བདུན་པར་ལྷག་བསམ་དག 
+10
+།ཁྱད་པར་ཚོགས་སྦྱོར་ལམ་ན་མོས་པས་སྤྱོད། །དང་པོའི་ས་ནས་བདུན་པར་ལྷག་བསམ་དག 
 །དག་ས་གསུམ་ན་རྣམ་པར་སྨིན་པ་དང་། །སངས་རྒྱས་ས་ན་སྒྲིབ་པ་སྤངས་ཏེ་བཞི།
 
-11 །དེ་བཞིན་ལམ་ལྔའི་རྗེས་འགྲོ་སེམས་བསྐྱེད་ལྔ། །ཕ་རོལ་ཕྱིན་པ་དྲུག་ལྟོས་དེ་སྙེད་གྲངས། 
+11
+།དེ་བཞིན་ལམ་ལྔའི་རྗེས་འགྲོ་སེམས་བསྐྱེད་ལྔ། །ཕ་རོལ་ཕྱིན་པ་དྲུག་ལྟོས་དེ་སྙེད་གྲངས། 
 །ས་མཚམས་དབྱེ་བ་ཉི་ཤུ་རྩ་གཉིས་སོགས། །བསམ་པས་སྨོན་དང་འཇུག་པས་ཁྱབ་ལ་འདུ།
 
-12 །གང་ཞིག་རང་ཉིད་ལེགས་པ་དོན་གཉེར་ནས། །ཏག་ཏུ་གཅོད་པ་མེད་པའི་སྒོ་འཕར་ནང་། 
+12
+།གང་ཞིག་རང་ཉིད་ལེགས་པ་དོན་གཉེར་ནས། །ཏག་ཏུ་གཅོད་པ་མེད་པའི་སྒོ་འཕར་ནང་། 
 །སློང་བའི་ཡིད་ལ་འཁྲུགས་པ་མི་སྟེར་བ། །དེ་ལ་གཏན་པ་མེད་པའི་མཆོད་སྦྱིན་ཞེས།
 
-13 །བསྔགས་པར་འོས་ན་མཐའ་དག་སེམས་ཅན་དོན། །ཕན་པའི་སྨོན་སེམས་ཐང་ཅིག་སྐྱེས་པས་ཀྱང་། 
+13
+།བསྔགས་པར་འོས་ན་མཐའ་དག་སེམས་ཅན་དོན། །ཕན་པའི་སྨོན་སེམས་ཐང་ཅིག་སྐྱེས་པས་ཀྱང་། 
 །ངན་སོང་སྒོ་གཅོད་ལྷ་མིའི་གནས་རིགས་སུ། །བདེ་བ་བསྟེན་པའི་ཡོན་ཏན་ཟད་མི་ཤེས།
 
-14 །ཁྱད་པར་འཇུག་པའི་ཡོན་ཏན་མཐའ་ཡས་ཏེ། །དངོས་སུ་སྦྱོར་བས་ཁྱབ་པའི་ཆོ་ག་ལ། 
+14
+།ཁྱད་པར་འཇུག་པའི་ཡོན་ཏན་མཐའ་ཡས་ཏེ། །དངོས་སུ་སྦྱོར་བས་ཁྱབ་པའི་ཆོ་ག་ལ། 
 །གང་ནས་བཟུང་སྟེ་ལྡོག་པ་མེད་པའི་སེམས། །འགྲོ་སྒྲོལ་དམ་བཅའ་ཤིན་ཏུ་ཡིད་བརྟན་པ། 
 །དེ་ནས་བཟུང་སྟེ་བག་མེད་གཉིད་ལོག་ཀྱང་། །བསོད་ནམས་རྒྱུན་ཆགས་ཉིད་དུ་འབྲེལ་འགྱུར་བ། 
 །སྤྱོད་པའི་ས་ལས་འཐད་པ་དང་བཅས་བཤད།
 
-15 །བསྐལ་པ་མང་པོའི་ཚོགས་ཀྱང་འདུམས་པར་འགྱུར། །ཕྱུགས་དང་གླང་པོ་ཤིང་རྟ་ཉི་ཟླ་སོགས། 
+15
+།བསྐལ་པ་མང་པོའི་ཚོགས་ཀྱང་འདུམས་པར་འགྱུར། །ཕྱུགས་དང་གླང་པོ་ཤིང་རྟ་ཉི་ཟླ་སོགས། 
 །བགྲོད་པའི་བརྟུལ་ཞུགས་མྱུར་བུལ་མཐའ་ཡས་ལྟར། །བློ་སྟོབས་ཆེན་པོའི་ཐབས་བརྩོན་ཤེས་རབ་ཀྱིས།
 །གྲངས་མེད་གསུམ་གྱི་དམ་བཞག་འཇིག་པ་ཡིན།
 
-16 །ཇི་ལྟར་ས་བོན་ས་ལ་ལྷུང་བ་བཞིན། །སེམས་མཆོག་བསྐྱེད་པ་མི་གཙོ་སྐྱེས་པ་གཙོ། 
+16
+།ཇི་ལྟར་ས་བོན་ས་ལ་ལྷུང་བ་བཞིན། །སེམས་མཆོག་བསྐྱེད་པ་མི་གཙོ་སྐྱེས་པ་གཙོ། 
 །སྟོབས་གསུམ་ལས་ནི་བྱང་ཆུབ་སེམས་སྐྱེ་བས། །སྙིང་རྗེ་ཆེ་དང་ཚོགས་བསག་སྐྱབས་སུ་འགྲོ། 
 །བསམ་དང་སྦྱོར་བ་རྒྱུ་ཡི་སྟོབས་སུ་བཤད།
 
-17 །རྟེན་གྱི་གང་ཟག་རྣམ་པ་གཉིས་བསྟན་ཏེ། །སོ་ཐར་རིགས་བདུན་གང་རུང་སྡོམ་ལྡན་ནམ། 
+17
+།རྟེན་གྱི་གང་ཟག་རྣམ་པ་གཉིས་བསྟན་ཏེ། །སོ་ཐར་རིགས་བདུན་གང་རུང་སྡོམ་ལྡན་ནམ། 
 །དཀོན་མཆོག་ཏཱ་ལར་བསམ་པའི་རྟེན་གཙོ་བའི། །རྗེས་ཕྱོགས་དབུ་མའི་ལམ་སྲོལ་འཇུག་པ་ཡངས།
 །ཚོགས་བསག་པ་ནི་ལྷག་པར་སྐྱེ་བའི་ཐབས།
 
-18 །རྒྱུ་ནི་ཀུན་ཀྱང་བདེ་གཤེགས་སྙིང་པོ་ཅན། །རྐྱེན་ནི་དགེ་བའི་བཤེས་ལ་རབ་བརྟེན་པས། 
+18
+།རྒྱུ་ནི་ཀུན་ཀྱང་བདེ་གཤེགས་སྙིང་པོ་ཅན། །རྐྱེན་ནི་དགེ་བའི་བཤེས་ལ་རབ་བརྟེན་པས། 
 །ཡིད་བཞིན་ནོར་བུ་ལྟ་བུའི་བླ་མ་མཆོག །བྱང་ཆུབ་སེམས་ཀྱི་ཐུགས་རྒྱུད་གང་བ་དེས།
 
-19 །ཐོག་མཐའ་བར་དུ་དག་པའི་ཆོས་རྣམས་དང་། །རྒྱན་དང་སྡོང་པོ་བཀོད་ལས་ལེགས་གསུངས་པའི། 
+19
+།ཐོག་མཐའ་བར་དུ་དག་པའི་ཆོས་རྣམས་དང་། །རྒྱན་དང་སྡོང་པོ་བཀོད་ལས་ལེགས་གསུངས་པའི། 
 །བྱང་ཆུབ་སེམས་ཀྱི་ཡོན་ཏན་དཔག་ཡས་བརྗོད།
 
-20 །སྐྱང་ནུལ་མཛེས་སྡུག་ངོམ་པའི་གནས་ཁང་ཡང་། །གུར་གུམ་སྤོས་ཆུས་བྲན་བཅས་གདོང་བཀྲུ་ཞིང་། 
+20
+།སྐྱང་ནུལ་མཛེས་སྡུག་ངོམ་པའི་གནས་ཁང་ཡང་། །གུར་གུམ་སྤོས་ཆུས་བྲན་བཅས་གདོང་བཀྲུ་ཞིང་། 
 །དཀོན་མཆོག་འབའ་ཞིག་ཡིད་ལ་སེམས་པ་ཡི། །མཆོད་ཚོགས་ཕྲུ་མ་འདེབས་ལ་དགའ་ཞིང་དགོད།
 
-21 །དམ་ཚིག་གཟུགས་བརྙན་མཐའ་དག་དེར་བོས་ནས། །ཡེ་ཤེས་སེམས་དཔའ་དགུག་གཞུག་ཆོ་ག་ནི།
+21
+།དམ་ཚིག་གཟུགས་བརྙན་མཐའ་དག་དེར་བོས་ནས། །ཡེ་ཤེས་སེམས་དཔའ་དགུག་གཞུག་ཆོ་ག་ནི།
  །མཛའ་གཅུགས་དམ་བཅའ་དྲན་པ་ལས་མྱུར་བས། །རྒྱལ་རྣམས་ཞིང་ཁམས་གཞན་དུ་གཟིགས་པ་ཡོལ།
 
-22 །གང་ཞིག་ལུས་པ་མེད་པའི་སེམས་ཅན་གྱི། །མགོན་དང་དཔུང་གཉེན་གྱུར་ཀྱང་བདུད་སྡེའི་དགྲ། 
+22
+།གང་ཞིག་ལུས་པ་མེད་པའི་སེམས་ཅན་གྱི། །མགོན་དང་དཔུང་གཉེན་གྱུར་ཀྱང་བདུད་སྡེའི་དགྲ། 
 །ཇི་ལྟ་ཇི་སྙེད་མཁྱེན་ཅིང་གཟིགས་པ་ཡི། །བཅོམ་ལྡན་བདག་གིས་སྡུམ་པར་མཆིས་སུ་གསོལ།
 
-23 །ལས་ཀྱི་སྤྲུལ་པ་མ་ཡིན་འབྱོན་པའི་ཤུལ། །ཁྲུས་ཀྱི་ཁང་བུ་བརྩེགས་པ་དྲི་བསུང་ཅན། 
+23
+།ལས་ཀྱི་སྤྲུལ་པ་མ་ཡིན་འབྱོན་པའི་ཤུལ། །ཁྲུས་ཀྱི་ཁང་བུ་བརྩེགས་པ་དྲི་བསུང་ཅན། 
 །ཤེལ་དང་ནོར་བུའི་ས་གཞི་ཀ་བར་ལྡན། །གཡུ་དམར་མུ་ཏིག་བླ་བྲེ་དཔྱངས་པ་དེར།
 
-24 །བདེ་གཤེགས་རིགས་ཀྱི་བུ་མཆོག་བཅས་པ་ལ། །སྤོས་ཆུས་གང་བའི་ནོར་བུའི་བུམ་པ་ནས། 
+24
+།བདེ་གཤེགས་རིགས་ཀྱི་བུ་མཆོག་བཅས་པ་ལ། །སྤོས་ཆུས་གང་བའི་ནོར་བུའི་བུམ་པ་ནས། 
 །ཁྲུས་ཀྱི་རིམ་གྲོ་བགྱིད་པའི་སྨིན་ལེགས་མ། །གླུ་གར་རོལ་མོའི་འགྱུར་བ་འགྲན་ལ་བརྩོན།
 
-25 །ཉེ་རེག་ཆོ་ག་མཁས་པའི་རི་དྭགས་མིག །དྲིལ་ཕྱིས་བསྐུ་མཉེའི་སྲི་ཞུས་གཡེང་བའང་། 
+25
+།ཉེ་རེག་ཆོ་ག་མཁས་པའི་རི་དྭགས་མིག །དྲིལ་ཕྱིས་བསྐུ་མཉེའི་སྲི་ཞུས་གཡེང་བའང་། 
 །ཁ་དོག་གཅིག་ཏུ་མི་གནས་དབང་པོའི་མཚོན། །ཐུགས་སུ་བཏགས་པ་མེད་པའི་ལྷ་རྫས་ཉོ།
 
-26 །དཔག་བསམ་ལྗོན་པས་བཙོང་བའི་པཉྩ་ལི། །ལྕིད་ཀྱི་ནོན་སྤངས་སྲབ་འཇམ་ཡང་བའི་གོས། 
+26
+།དཔག་བསམ་ལྗོན་པས་བཙོང་བའི་པཉྩ་ལི། །ལྕིད་ཀྱི་ནོན་སྤངས་སྲབ་འཇམ་ཡང་བའི་གོས། 
 །དྲི་དང་སྤོས་ཆུས་བགོས་ཤིང་བྱུགས་པ་དང་། །རིན་ཐང་བརྗོད་ལ་ཁྲེལ་བའི་རིན་ཆེན་རྒྱན། 
 །གདུ་བུ་དཔུང་རྒྱན་སྙན་ཆ་ཅོད་པན་སོགས།
 
-27 །འདོད་པའི་ཡོན་ཏན་སྤངས་པའི་ཐུབ་དབང་ཀྱང་། །བཀྲེན་ལྡན་བསོད་ནམས་སླད་དུ་བདག་གིར་བཞེས། 
+27
+།འདོད་པའི་ཡོན་ཏན་སྤངས་པའི་ཐུབ་དབང་ཀྱང་། །བཀྲེན་ལྡན་བསོད་ནམས་སླད་དུ་བདག་གིར་བཞེས། 
 །འཇིག་རྟེན་དབང་ཕྱུག་ལ་སོགས་ཉེ་བའི་སྲས། །ངན་སོང་ཀུན་འདྲེན་ལ་སོགས་བསྐལ་བཟང་གི 
 །སེམས་དཔའ་བཅུ་དྲུག་དང་ནི་ཁྱིམ་པའི་ཚུལ། །ཆོས་འཕགས་རྟག་ཏུ་ངུ་དང་ལི་ཙ་བཱི། 
 །དྲི་མ་མེད་པར་གྲགས་ལའང་དབུལ་བར་བགྱི།
 
-28 །སྟོང་གསུམ་གཅིག་ཅར་ཁྱབ་པའི་དྲིའི་བཞོན་པར། །འཁྱུད་པའི་ཙན་དན་སྤོས་ཀྱི་བསུང་ཞིམ་དྲིས། 
+28
+།སྟོང་གསུམ་གཅིག་ཅར་ཁྱབ་པའི་དྲིའི་བཞོན་པར། །འཁྱུད་པའི་ཙན་དན་སྤོས་ཀྱི་བསུང་ཞིམ་དྲིས། 
 །བསོད་ནམས་བྱེ་བའི་འབྱུང་གནས་མཚན་དཔེའི་བྱད། །གསེར་སྦྱངས་བརྟན་པ་འཕྲོག་ལ་བྱུགས་པར་བགྱི།
 
-29 །བཏང་སྙོམས་ཡངས་པའི་ཤེལ་གྱི་ས་གཞི་ལ། །བྱམས་པའི་པདྨ་གེ་སར་སྟོང་བརྡལ་བར། 
+29
+།བཏང་སྙོམས་ཡངས་པའི་ཤེལ་གྱི་ས་གཞི་ལ། །བྱམས་པའི་པདྨ་གེ་སར་སྟོང་བརྡལ་བར། 
 །སྙིང་རྗེའི་ཉི་ཟླ་བཀྲག་ཏུ་ཚེར་བ་བསྟར། །དགའ་ཆེན་བཅོམ་ལྡན་འཁོར་བཅས་བཞུགས་སུ་གསོལ།
 
-30 །བབ་ཅོལ་གོམས་པ་མིན་པའི་ལུས་བཏུད་ཀྱི། །སྙིང་གར་གུས་བཅས་མངོན་རྟོགས་ངོམ་པ་ལ། 
+30
+།བབ་ཅོལ་གོམས་པ་མིན་པའི་ལུས་བཏུད་ཀྱི། །སྙིང་གར་གུས་བཅས་མངོན་རྟོགས་ངོམ་པ་ལ། 
 །མེ་ཏོག་དོག་པས་རབ་བཟུང་སྙིམ་པའི་སྣོད༑ །ག་བུ་ཆུང་གི་བརྟུལ་ཞུགས་འཛིན་པ་ཡིན།
 
-31 །རིག་དང་ཞབས་སུ་ལྡན་སོགས་བདེ་གཤེགས་ཀྱི། །ཡོན་ཏན་མཐའ་དག་གནས་ཀྱིས་བསྐལ་པ་བཞིན། 
+31
+།རིག་དང་ཞབས་སུ་ལྡན་སོགས་བདེ་གཤེགས་ཀྱི། །ཡོན་ཏན་མཐའ་དག་གནས་ཀྱིས་བསྐལ་པ་བཞིན། 
 །དད་པའི་སྐྱེད་མོས་ཚལ་དུ་འོངས་པའི་མོད། །སྐྱོ་བ་མིན་པའི་བ་སྤུ་གཅིག་ཏུ་གཟིངས།
 
-32 །ཟླ་གཞོན་ཁྲུས་ལ་འཇུག་པའི་རྫིད་བུའི་ནང་། །རྨ་བྱའི་བུ་མོ་འཇོ་སྒེག་རོལ་པ་ལྟའི། 
+32
+།ཟླ་གཞོན་ཁྲུས་ལ་འཇུག་པའི་རྫིད་བུའི་ནང་། །རྨ་བྱའི་བུ་མོ་འཇོ་སྒེག་རོལ་པ་ལྟའི། 
 །ལང་ཚོའི་གྲངས་སྙེད་རྡུལ་གྱི་རྣམ་གྲངས་དང་། །ཤིན་ཏུ་འཁྲུག་པ་སྐྱེད་བྱེད་ཕྱག་གིས་བྲེལ།
 
-33 །གཏོང་བའི་ཡན་ལག་རྫོགས་པའི་དངོས་འབྱོར་དང་། །དེས་ཀྱང་མཚོན་པར་དཔེ་མེད་ཡིད་ཀྱིས་སྤྲུལ།
+33
+།གཏོང་བའི་ཡན་ལག་རྫོགས་པའི་དངོས་འབྱོར་དང་། །དེས་ཀྱང་མཚོན་པར་དཔེ་མེད་ཡིད་ཀྱིས་སྤྲུལ།
 །བླ་ན་མཆིས་པ་མ་ཡིན་མཆོད་པའི་སྤྲིན། །ཀུན་ཏུ་བཟང་པོའི་ཡོན་ལ་ཕྲག་དོག་བགྱིད།
 
-34 །མུ་ཅོར་སྨྲ་བའི་ལས་དང་བག་ཆགས་སྡིག །དགེ་ལ་འཇིགས་ནས་གཞན་དུ་བྲོས་པའི་གཟུགས། 
+34
+།མུ་ཅོར་སྨྲ་བའི་ལས་དང་བག་ཆགས་སྡིག །དགེ་ལ་འཇིགས་ནས་གཞན་དུ་བྲོས་པའི་གཟུགས། 
 །སྲིད་པའི་མུན་ནག་སྟུག་པོར་འཆབ་པ་ཀུན། །སྟོབས་བཞིའི་ཉིན་བྱེད་འབར་བས་སྦྱང་ཤིང་བཤགས།
 
-35 །སྦྱོར་བ་གང་གིས་བདག་ཉིད་མ་འཁྲུགས་བཞིན། །བསམ་པའི་ཁྱད་པར་གཅིག་གིས་གཞན་དག་པའི། 
+35
+།སྦྱོར་བ་གང་གིས་བདག་ཉིད་མ་འཁྲུགས་བཞིན། །བསམ་པའི་ཁྱད་པར་གཅིག་གིས་གཞན་དག་པའི། 
 །རྣམ་དཀར་ཡུད་ལ་འཕྲོག་པའི་ཆོམ་རྐུན་གྱི། །བརྟུལ་ཞུགས་རྗེས་སུ་ཡི་རང་ཁོ་ནས་བྱས།
 
-36 །ཐར་མེད་འཁོར་བའི་སྤྱོད་པ་མ་དུལ་ཞིང་། །རྣམ་པར་སྲ་མཁྲེགས་ཐ་བ་གང་གིས་ཀྱང་།
+36
+།ཐར་མེད་འཁོར་བའི་སྤྱོད་པ་མ་དུལ་ཞིང་། །རྣམ་པར་སྲ་མཁྲེགས་ཐ་བ་གང་གིས་ཀྱང་།
 །གདུལ་ཐབས་བརྟན་པ་བྲལ་ལ་ཆོས་འཁོར་གྱི། །རྩིབས་རྣོན་མུ་ཁྱུད་འཛིན་དེ་བསྐོར་བར་བསྐུལ།
 
-37 །རྒྱལ་དང་དེ་སྲས་རྣམས་ཀྱིས་སྤངས་གྱུར་བའི། །འགྲོ་འདིས་སྡུག་བསྔལ་གནས་སྐབས་བསྟེན་མཐོང་ནས། 
+37
+།རྒྱལ་དང་དེ་སྲས་རྣམས་ཀྱིས་སྤངས་གྱུར་བའི། །འགྲོ་འདིས་སྡུག་བསྔལ་གནས་སྐབས་བསྟེན་མཐོང་ནས། 
 །མྱ་ངན་འདའ་བ་མིན་པའི་གདན་ཁྲི་ལ། །དངོས་པོ་ཀུན་གྱི་རིན་ཐོང་གཅིག་ཏུ་སྤུངས།
 
-38 །བདག་ཏུ་བལྟ་བས་འདར་བའི་རྣམ་དཀར་ཡང་། ། སྲིད་པར་ལན་གཅིག་མཐོང་བའི་ཆོ་ངེ་སྟེ། 
+38
+།བདག་ཏུ་བལྟ་བས་འདར་བའི་རྣམ་དཀར་ཡང་། ། སྲིད་པར་ལན་གཅིག་མཐོང་བའི་ཆོ་ངེ་སྟེ། 
 །བྱང་ཆུབ་བསྔོ་བའི་གསེར་འགྱུར་རྩིས་ཐེབས་པ། །འདི་ནི་སྟོན་པ་གཞན་གྱི་ལུགས་ལ་མེད།
 
-39 །ཆོག་ཤེས་བདུད་རྩིའི་བཏུང་བས་མ་ངོམས་ན༑ །སྐྱེས་བུའི་ཡིད་ལ་མ་བཟུང་མཆོད་སྤྲིན་ཡང་། 
+39
+།ཆོག་ཤེས་བདུད་རྩིའི་བཏུང་བས་མ་ངོམས་ན༑ །སྐྱེས་བུའི་ཡིད་ལ་མ་བཟུང་མཆོད་སྤྲིན་ཡང་། 
 །ཚིག་གིས་ཕ་མཐར་འཁྱམས་ལ་སྐྲག་གྱུར་ནས། །བདག་ལུས་སྟན་དུ་དབུལ་ལའང་དོ་གལ་བགྱིད།
 
-40 །དཀོན་མཆོག་གསུམ་གྱི་འབངས་སུ་དམ་བཅས་པའི། །གྲིབ་བསིལ་སོ་གའི་མེ་ཏོག་འཇོ་སྒེག་ཅན། 
+40
+།དཀོན་མཆོག་གསུམ་གྱི་འབངས་སུ་དམ་བཅས་པའི། །གྲིབ་བསིལ་སོ་གའི་མེ་ཏོག་འཇོ་སྒེག་ཅན། 
 །རྣམ་ཀུན་འཁྲུགས་པའི་གཤིན་རྗེའི་མདུན་སར་ཡང་། །ཁྲོ་གཉེར་འཇིགས་པའི་རིན་ཐང་ཟད་མི་ཤེས།
 
-41 །དེས་ནི་གཏི་མུག་མཐུས་ནོན་སྡིག་ལྡན་བདག །བྱི་དོར་ཤིན་ཏུ་བསྟེན་པའི་དྭངས་ཤེལ་ལྟར།
+41
+།དེས་ནི་གཏི་མུག་མཐུས་ནོན་སྡིག་ལྡན་བདག །བྱི་དོར་ཤིན་ཏུ་བསྟེན་པའི་དྭངས་ཤེལ་ལྟར།
  །བསོད་ནམས་རྙོག་པ་དྭངས་པའི་སེམས་ཀྱི་ནང་། །སེམས་བསྐྱེད་ཆོ་གས་ཐོབ་པའི་གཟུགས་བརྙན་དངོམ།
 
-42 །ཉེས་པ་བརྒྱ་ཕྲག་གཡང་སར་ལྷུང་བ་ཡི། །རིམས་ཀྱིས་ཤིན་ཏུ་བཏབ་པའི་ནད་པ་རྣམས།
+42
+།ཉེས་པ་བརྒྱ་ཕྲག་གཡང་སར་ལྷུང་བ་ཡི། །རིམས་ཀྱིས་ཤིན་ཏུ་བཏབ་པའི་ནད་པ་རྣམས།
 །གསོ་དཔྱད་ཕལ་པའི་མདུན་སར་དབུགས་མི་ཕྱིན། །སྨན་པ་མཆོག་ལ་སྐྱབས་སུ་ལྷག་པར་དོང།
 
-43 །མོས་པ་གང་གི་སླད་དུ་འདིར་གཤེགས་ནས། །སེམས་ཅན་ཁམས་ལ་དགོངས་པའི་སྟོན་མཆོག་ནི། 
+43
+།མོས་པ་གང་གི་སླད་དུ་འདིར་གཤེགས་ནས། །སེམས་ཅན་ཁམས་ལ་དགོངས་པའི་སྟོན་མཆོག་ནི། 
 །ཐེག་པ་ཆེན་པོའི་སྐྱེས་བུ་འབའ་ཞིག་པའི༑ །ཚོགས་ཀྱི་དབུས་ན་ལྷམ་མེར་མཛེས་པ་ལ།
 
-44 །སྐྱབས་སུ་འགྲོ་བ་གསུམ་གྱི་གཞི་བཅས་ལ། །དགོངས་སུ་གསོལ་བ་གསུམ་གྱིས་སར་བྱས་ནས། 
+44
+།སྐྱབས་སུ་འགྲོ་བ་གསུམ་གྱི་གཞི་བཅས་ལ། །དགོངས་སུ་གསོལ་བ་གསུམ་གྱིས་སར་བྱས་ནས། 
 །རྒྱལ་བ་སྲས་དང་བཅས་པའི་ཐུགས་བསྐྱེད་དང་། །བསླབ་པའི་བརྟུལ་ཞུགས་མཐའ་དག་བླང་པ་ཡིན།
 
-45 །ཉོན་སྒྲིབ་ཟུག་རྔུའི་དུམ་བུ་བཅད་གྱུར་ཀྱང་། །ཤེས་སྒྲིབ་ཡུལ་གྱི་རོ་ལ་བཅགས་པ་ཡི། 
+45
+།ཉོན་སྒྲིབ་ཟུག་རྔུའི་དུམ་བུ་བཅད་གྱུར་ཀྱང་། །ཤེས་སྒྲིབ་ཡུལ་གྱི་རོ་ལ་བཅགས་པ་ཡི། 
 །ཉན་རང་དགྲ་བཅོམ་མ་བསྒྲལ་བ་ལས་བསྒྲལ།
 
-46 །གཉིས་ཀའི་འཆིང་བས་ཀུན་ནས་དཀྲིགས་པ་ཡི། །ཚངས་པ་ལ་སོགས་སོ་སོ་སྐྱེ་བོ་ནས། 
+46
+།གཉིས་ཀའི་འཆིང་བས་ཀུན་ནས་དཀྲིགས་པ་ཡི། །ཚངས་པ་ལ་སོགས་སོ་སོ་སྐྱེ་བོ་ནས། 
 །སློབ་པ་འཕགས་པའི་བར་ལ་གནས་པ་ཡི། །སེམས་ཅན་མ་གྲོལ་བ་རྣམས་དགྲོལ་བ་དང་། 
 །ཤིན་ཏུ་སྡུག་བསྔལ་དྲག་པོའི་ཤུགས་རིང་ལས། །དབུགས་འབྱིན་ཐོབ་པ་མེད་པའི་ངན་སོང་གསུམ། 
 །དབུགས་འབྱིན་ཆེན་པོའི་གནས་ལ་སྦྱར་བ་དང་༑
 
-47 །མདོར་ན་རྟེན་ཅིང་འབྲེལ་འབྱུང་བཅུ་གཉིས་ཀྱི། །འཁོར་ལོའི་རྒྱར་ཆུད་སེམས་ཅན་ཡོད་དོ་ཅོག 
+47
+།མདོར་ན་རྟེན་ཅིང་འབྲེལ་འབྱུང་བཅུ་གཉིས་ཀྱི། །འཁོར་ལོའི་རྒྱར་ཆུད་སེམས་ཅན་ཡོད་དོ་ཅོག 
 །མི་གནས་ཡེ་ཤེས་མྱ་ངན་འདས་པའི་གྲོང་།
 
-48 །དགོད་བྱེད་ཆོ་གས་བཟུང་བའི་བརྗོད་པ་ནི། །སྔོན་བྱོན་དྲང་སྲོང་རྣམས་ཀྱི་ལུགས་ལ་བརྟེན། 
+48
+།དགོད་བྱེད་ཆོ་གས་བཟུང་བའི་བརྗོད་པ་ནི། །སྔོན་བྱོན་དྲང་སྲོང་རྣམས་ཀྱི་ལུགས་ལ་བརྟེན། 
 །རྟག་ཏུ་ཉིན་དང་མཚན་མོ་ལན་གསུམ་དུ། །བྱང་ཆུབ་སེམས་གཉིས་བསྐྱེད་ལ་ནན་ཏན་བྱ།
 
-49 །འདུན་པའི་རྩེ་ལ་ཆོས་རྣམས་རྐྱེན་ཆགས་པས། །བརྗོད་པ་དང་པོས་སྨོན་དང་གཉིས་པས་འཇུག 
+49
+།འདུན་པའི་རྩེ་ལ་ཆོས་རྣམས་རྐྱེན་ཆགས་པས། །བརྗོད་པ་དང་པོས་སྨོན་དང་གཉིས་པས་འཇུག 
 །གསུམ་ཀས་གཉི་ཀ་བརྟན་པར་འཐོབ་པ་ནི། །རྒྱ་མཚོའི་སྤྲིན་གྱི་བཞེད་པ་བླ་ན་མེད།
 
-50 །སྔོན་ཆད་གཞན་གྱི་དོན་ལ་ལྟ་ཅི་སྨོས། །རང་དོན་ཉིད་དུ་རྨི་བའང་མ་མྱོང་བའི། 
+50
+།སྔོན་ཆད་གཞན་གྱི་དོན་ལ་ལྟ་ཅི་སྨོས། །རང་དོན་ཉིད་དུ་རྨི་བའང་མ་མྱོང་བའི། 
 །རིན་ཆེན་སེམས་ཀྱི་ཁྱད་པར་གསར་པ་འདིས། །བདག་གི་སྲིད་པ་རིན་ཐང་མེད་པ་བྱས།
 
-51 །རིགས་ལས་ཉམས་པ་གང་ཞིག་ཆོ་རིགས་ཀྱི། །ལྷག་པར་བཙུན་པའི་གནས་ཐོབ་ཇི་བཞིན་དུ། 
+51
+།རིགས་ལས་ཉམས་པ་གང་ཞིག་ཆོ་རིགས་ཀྱི། །ལྷག་པར་བཙུན་པའི་གནས་ཐོབ་ཇི་བཞིན་དུ། 
 །རྒྱལ་བ་ཀུན་གྱི་སྲས་སུ་དེང་གྱུར་པས། །བྱང་ཆུབ་སེམས་དཔའི་མིང་གི་ཅོད་པན་ཐོབ།
 
-52 །སྲིད་གསུམ་བདག་པོ་བྱས་དང་དེ་ཉིད་ཀྱིས། །རྨོངས་པའི་བླ་དྭགས་དཔྱངས་ལའང་དགའ་བྱེད་ན། 
+52
+།སྲིད་གསུམ་བདག་པོ་བྱས་དང་དེ་ཉིད་ཀྱིས། །རྨོངས་པའི་བླ་དྭགས་དཔྱངས་ལའང་དགའ་བྱེད་ན། 
 །བྱང་ཆུབ་སེམས་དཔའི་གནས་ཐོབ་དེ་རིང་ཙམ། །དགའ་བའི་འཁྲི་ཤིང་སློང་ལ་ལྷ་ཡང་ཕྱོགས༑
 
-53 །འཆི་བདག་འཇོམས་པའི་བདུད་རྩི་མི་ཟད་གཏེར། །དབུལ་བ་སེལ་བའི་ནོར་དང་ནད་ཞིའི་སྨན། 
+53
+།འཆི་བདག་འཇོམས་པའི་བདུད་རྩི་མི་ཟད་གཏེར། །དབུལ་བ་སེལ་བའི་ནོར་དང་ནད་ཞིའི་སྨན། 
 །སྲིད་ལམ་དུབ་པའི་མགྲོན་པོའི་ངལ་སྟེགས་ཕྱིར། །བདག་ནི་དེང་ནས་འགྲོ་བའི་ཉེར་འཚོར་གྱུར།
 
 །ཡོན་ཏན་རིན་པོ་ཆེའི་མཛོད་དགའ་བའི་ཆར་ཞེས་བྱ་བ་ལས། བྱང་ཆུབ་ཀྱི་སེམས་ཡོངས་སུ་བཟུང་བའི་ཚོམས་ཏེ་ལེའུ་བརྒྱད་པའོ།།
@@ -7090,57 +7171,59 @@ But if we now reject the precepts
 That the Buddhas and their Bodhisattva heirs
 Have in their wisdom's power
 Most perfectly examined,
-We will have deceived all living beings
-And therefore we will wander endlessly in realms of sorrow.
 
 2
+We will have deceived all living beings
+And therefore we will wander endlessly in realms of sorrow.
 Therefore we will do no deed that mars
 A single being's joy and thus brings ruin on ourselves.
+
+3
 If those who circle in samsara, mixing downfalls
 With the strength of bodhichitta,
 Are hindered long from bodhisattva grounds,
 Those who throw away the precepts are insane indeed!
 
-3
+4
 Since those with proud determination fueled by anger,
 Felt at even slight discomforts and the acts that cause them,
 Will endure the wounds of weapons, dart or lance,
 And will not turn away until their aims are won,
 
-4
+5
 We too should wage a war against our utter enemies,
 The mighty hosts of our defilements.
 Resenting them, we should not let our discipline relax.
 For who indeed would cast away their keeping of the precepts?
 
-5
+6
 If we are unaware of the extent to which
 We are ourselves bound tightly in the prison of defilement,
 How can our resolve to save unnumbered beings,
 Bringing them to freedom, not diminish?
 
-6
+7
 Within the fields of carefulness and introspection,
 The shoots of bodhichitta may be cultivated easily.
 I beg that we uphold it steadily, removing faults,
 And strive by every means to strengthen it.
 
-7
+8
 In this connection, twenty downfalls are to be repudiated.
 The five of kings begin with taking of the wealth
 That has been dedicated to the Triple Gem;
 The five of ministers begin with laying towns and regions waste;
 The eight of ordinary beings begin
 With teaching emptiness to those with untrained minds.
+
+9
 And then to these is added the abandonment
 Of bodhichitta both in aspiration and in action.
-
-8
 Briefly, even sinful deeds perceived in dreams
 Should be confessed at once
 With recitation of the Sutra in Three Sections.
 
-9
+10
 If of the three transgressions
 (Forsaking aspiration bodhichitta, basis of the path;
 Downfalls; and the giving back of vows)
@@ -7149,7 +7232,7 @@ We should with strong remorse,
 Before the break of day, invoke Akashagarbha,
 And with the prayer in seven branches mend the vow.
 
-10
+11
 Perfectly to give our happiness to others,
 Taking on ourselves the burden of their pain,
 Contriving thus the wondrous bravery of taking and receiving,
@@ -7157,31 +7240,31 @@ That beings, till they gain enlightenment,
 Should never be unhappy:
 This indeed should be our constant aspiration.
 
-11
+12
 Of aspiration bodhichitta
 The precepts are the four unbounded attitudes.
 Gratitude for kindnesses received gives birth to love.
 From love derives compassion and from this is bodhichitta born—
 All this is well established in trustworthy texts.
 
-12
+13
 As soon as she gives birth, a mother takes her babe, an ugly imp,
 Upon her lap contrived now as a washing place,
 And with soft hands she cleans away its filth.
 With her own milk she nurses it and wraps it in her body's warmth.
 
-13
+14
 She'd rather die than that her little one fall ill
 And for her child she's able to endure sin, pain, and cruel words.
 To disregard one's mother's kindness and her loving care—
 Is anything more evil, more degenerate?
 
-14
+15
 The earth with all its mountains would be slight to bear—
 Far greater is the weight of failing to repay her kindness!
 To do so is to be like one who swallows poisoned food.
 
-15
+16
 We should now recall that all beings without end,
 When they became our mothers,
 Helped and showed us perfect kindness.
@@ -7191,81 +7274,81 @@ All those who know that beings have been kind,
 Who feel great gratitude to them,
 Will be endowed with sublime riches.
 
-16
+17
 Aspiration bodhichitta is resplendent like the autumn moon,
 But perils worse than Rahu's face endanger it:
 Four evils to be driven far away.
-
-17
 These evils are to mislead people worthy of respect,
+
+18
 To bring regret and doubt to those who practice virtue,
 To slander holy beings, speaking ill of them,
 To trick and swindle others, leading them astray.
-
-18
 To harbor any of these four
 Will lead to loss of aspiration bodhichitta.
+
+19
 For if we fail to feel remorse and to apply the antidotes,
 And if the time of reparation is allowed to pass,
 Then indeed is bodhichitta lost.
-
-19
 To this the four white forces are the best of remedies:
 Never, at the cost of life or limb to lie (intending to deceive);
+
+20
 Always to respect and praise the Bodhisattvas
 As though they were the very Buddha;
 To care for every living being without guile or underhandedness;
 And then to lead all on the pathways of enlightenment.
 
-20
+21
 Four perceptions fortify and guard the enlightened attitude:
 To look upon one's teacher as the Buddha
 And take his teachings as the path;
 To take as friends all those who practice them
 And look upon all beings as one's very children.
-These are the perfect precepts linked with aspiration bodhichitta.
 
-21
+22
+These are the perfect precepts linked with aspiration bodhichitta.
 Active bodhichitta's precepts are the six transcendent virtues.
 The first five bring about the gathering of sublime merit.
 The final one produces a great gathering of wisdom.
+
+23
 Without relying on these two accumulations, there's no buddhahood.
 Skillful means and strength, then aspiration and primordial wisdom—
 One speaks of ten perfections when these four are added.
-
-22
 The children of the Conqueror accomplishing this path,
 According to their strength of mind, are classified as three.
 Those who wish to free themselves and then to liberate all beings
 Have bodhichitta of great aspiration in the manner of a king.
 
-23
+24
 Those who wish to free themselves and beings all at once
 Have bodhichitta of most sacred wisdom in the manner of a ferryman.
 Those who wish for peace once beings have been saved
 Have unexampled bodhichitta in the manner of a shepherd.
 
-24
+25
 Bodhisattvas who are dull in their capacity
 Need thirty-three unmeasured kalpas
 For the finding of their freedom.
 Those of moderate capacity need seven,
 While those of sharpest faculties need three.
-
-25
 "Giving" is, essentially, to be without attachment.
+
+26
 It is distinguished threefold: giving of the Dharma,
 Giving of possessions, and the gift of fearlessness.
 The giving of possessions is again divided threefold:
 Common, great, and extreme giving.
-
-26
 Common giving means providing others with supplies
 Of food and clothes, of chariot, oxen, land.
+
+27
 Great giving is the yielding of one's daughter, son, or spouse.
 And extreme giving—hardest yet—is giving of one's head and limbs.
 
-27
+28
 Those hidebound by their avarice,
 Who start to train themselves,
 Must pass from hand to hand repeatedly
@@ -7273,291 +7356,295 @@ Small foodstuffs and the like
 And think that they are truly giving them.
 Thus they grow in strength and overcome their craving and desire.
 
-28
+29
 The gift of fearlessness means guarding others' lives,
 Releasing them from danger, bringing them to places of relief.
 Injudicious giving, when one lacks capacity,
 Is something to be scorned.
+
+30
 And so the Shikshasamucchaya has proscribed
 The giving up of body and of life
 By those in whom compassion is as yet impure.
-
-29
 The giving that abets nonvirtue also is not good
 But rather something that should be despised.
+
+31
 To give up one's attachment to possessions
 Is held to be the measure of true giving.
-
-30
 The gift of Dharma is in three degrees,
 Of which the actual gift is teaching in accordance with one's hearers.
 Such a thing is hard for those still on the path of aspiration;
-They should instead remove their own defilements.
 
-31
+32
+They should instead remove their own defilements.
 With love and with compassion
 And through reading of the scriptures,
 They should liberate the minds of those who tend to virtue;
 They should pray for them.
 And once their own minds have been freed,
+
+33
 Their main task is to bring about the benefit of others
 According to their karmic destiny and character.
-
-32
 Discipline in essence is to keep oneself from what is inappropriate
 And this, divided threefold, means
 To keep from evil acts, to gather virtue,
 And to bring about the benefit of beings.
+
+34
 To keep from evil means abstaining from nonvirtue,
 In one's thoughts and words and deeds.
 To gather virtue means the practice of the six perfections.
 Benefiting beings means to work for others' sake.
-
-33
 The discipline of Bodhisattvas is more eminent than Pratimoksha,
+
+35
 And this is thanks to four distinctive elements.
 Through Pratimoksha one refrains from harming others
 And the wish to do so.
 The Bodhisattvas do likewise
 But add to this the help they give to others.
-
-34
 The things to be abandoned in the Pratimoksha
 Are summarized as seven negativities
 (The stress being laid on body and on speech),
-While Bodhisattvas emphasize and shun all ten.
 
-35
+36
+While Bodhisattvas emphasize and shun all ten.
 Other differences distinguish them.
 For according to the Pratimoksha,
 Rules should not be broken even for the sake of others.
 But if the seven evil deeds of speech and body
 Are for others' good, the Bodhisattvas are permitted them,
+
+37
 Provided that, on threefold scrutiny, they know
 Their actions are, or will be, for the benefit of beings,
 And will further, and not lessen, their own store of merit.
 
-36
+38
 This we find depicted in the tale of Goodheart and Black Spearman,
 And of Tararamana, the Brahmin's son:
 Although they seemed like sins, their acts were virtuous.
 But since the strength of action and result derives from the intention,
-The three nonvirtues of the mind can never be allowed.
 
-37
+39
+The three nonvirtues of the mind can never be allowed.
 It has been taught that, though this be the case—
 For those who, though they hold the bodhisattva vows,
 Pursue their own advantage and their happiness
 (Avoiding all the actions hard to do
 And failing to achieve the benefit of others),
-The dispensation just described is but the cause of downfall.
 
-38
+40
+The dispensation just described is but the cause of downfall.
 Bodhisattvas who are starting on their path
 Should mainly bring an increase to their qualities of mind.
 At the outset, while the first of the three disciplines—
 To keep themselves from evil—is as yet impure,
-To take the other two as principal will entail many obstacles.
 
-39
+41
+To take the other two as principal will entail many obstacles.
 Best are Bodhisattvas who go forth to homelessness,
 As the Sutra Ornament declares.
 And yet it is not clearly said that such a discipline,
 Belonging to the bodhisattva level,
 Should always be embraced through an authentic pratimoksha ritual.
+
+42
 For as with Indrabodhi, the intention is supreme
 For those with previous training and great strength of mind.
-
-40
 As well as vows of upavasa and upasaka,
 The Bodhisattvas who are householders
+
+43
 Maintain the twofold bodhichitta constantly
 In aspiration and in deed.
 Those who have embraced monastic life,
 As well as vows of bhikshu, shramanera, and shiksamana,
+
+44
 Uphold the bodhichitta both in aspiration and in deed.
 Both maintain the discipline according to their state.
-
-41
 Upasakas are differentiated in two kinds.
 There are those who keep a single precept, such as not to kill.
 If then they give up stealing, they maintain the vows in part.
+
+45
 If then they promise not to lie, they hold a major part of them.
 If then they turn from sexual misdeeds and keep from alcohol,
 They are considered upasakas of a complete observance.
-
-42
 Then, those who have renounced the four roots
 And abstain from alcohol,
 Renouncing thus all five,
-Are honored as upasakas of pure conduct.
 
-43
+46
+Are honored as upasakas of pure conduct.
 Deriving from the tenfold precepts of the shramaneras,
 But granted the employ of gold and silver
 For the maintenance of wives and children,
 And with dancing and the use of ornaments
 Regarded as a single minor flaw,
+
+47
 Those who keep this "eightfold discipline,"
 At all times and without a limitation,
 Are upasakas according to the way of Chandragomin.
-
-44
 Shramaneras keep ten major precepts:
 They vow not to kill and not to take the property of others;
+
+48
 They renounce unchastity and lying and the taking of strong drink,
 Dancing, ornaments and so forth,
 Lofty beds and seats and eating after noon,
 Together with the use of gold and silver.
 
-45
+49
 Women who prepare themselves to take full ordination
 Must renounce twelve extra things, like touching men.
 And since they're prey to their emotions,
 They must pass two years' probation, testing thus their aptitude for vows.
 
-46
+50
 Bhikshus must forswear four radical defeats,
 Thirteen residual faults, and thirty downfalls that require rejection,
 Ninety "mere downfalls" and four faults that must be pointedly confessed,
 Together with one hundred and twelve wrong actions—
-Numbering thus two hundred and fifty-three wrong deeds.
 
-47
+51
+Numbering thus two hundred and fifty-three wrong deeds.
 For bhikshunis, three hundred and sixty-four acts must be shunned:
 Eight radical defeats (four specific ones are added to the four already mentioned).
 To these are added wrongful acts
 And different species of related misdemeanors such as "incomplete infractions."
 
-48
+52
 Through the defeats, the ordination is completely lost.
 The intention to conceal the fault, or not,
 Determines the criterion whereby
 The vows may later be repaired.
-
-49
 It is indeed amazing that some claim to keep the vows
 And yet are ignorant of what they should be keeping.
+
+53
 Through just a knowledge of the downfalls
 It is easy to restore and purify the vows.
 Indeed, of the four doors that lead to downfalls,
 Ignorance is foremost, as Asanga has explained.
-
-50
 The precepts to be implemented are
 The rituals of the three foundations
+
+54
 And those of seventeen precepts that remain.
 This is the discipline of things to be adopted.
-
-51
 Excepting seventeen transgressions
 (Four defeats and faults that are residual)
 When something untoward must needs be done,
-It must be blessed.
-And so, if food be taken at improper times,
-One thinks that one is dwelling in the northern continent.
+It must be blessed. And so, if food be taken at improper times,
 
-52
+55
+One thinks that one is dwelling in the northern continent.
 So too, when bathing, one must think that one is sick,
 And when constrained to wear additional or improper clothing
 (White in color, made of skin or fur),
 One keeps in mind that without such materials
 One would be at great loss,
-Wherefore such things are sanctioned as a means to save one's life.
 
-53
+56
+Wherefore such things are sanctioned as a means to save ones life.
 If one is forced to handle precious substances,
 One thinks that this has been allowed for making offerings
 To the Three Jewels or to succor living beings.
 And as for what is neither banned nor yet permitted,
 An estimate is made according to the precepts.
 
-54
+57
 The rules of all the four monastic schools—
-Sarvastivada and Mahasanghika,
-Sthavira and Sammitiya—
+Sarvastivada and Mahasanghika, Sthavira and Sammitiya—
 Cannot but be covered by the precepts of the Buddha;
 Each is therefore able to uphold the entire training.
 
-55
+58
 The higher discipline is dedicated
 To the state beyond all suffering.
 The bodhisattva vow effects the benefit of others.
 Receiving true empowerment, one takes the mantra vow.
+
+59
 The precepts of these three, when perfectly observed,
 Give rise to all the many perfect qualities.
-
-56
 One in nature but of separate aspect,
 The three vows all subsist
 Within the mindstream of a single individual.
 When they seem in contradiction, higher vows take precedence,
-For so the teaching of the accomplished masters of the past proclaims.
 
-57
+60
+For so the teaching of the accomplished masters of the past proclaims.
 For even if there seems to be a conflict with the lower vows,
 There is agreement with their purpose:
 Harm must be avoided, benefit secured.
 True contradiction, if there were one, could not be permitted.
-If there is permission, there can be no contradiction.
 
-58
+61
+If there is permission, there can be no contradiction.
 And so it is that alcohol, a downfall for the Shravakas
 And considered likewise as a fault for Bodhisattvas,
 Is in the Mantrayana savored as a substance of samaya
+
+62
 By those for whom the host of thoughts arise as deities;
 Both alcohol and attitude are thus transformed.
-
-59
 They are not "monks" nor are they "Bodhisattvas."
 They are not those who, without means to harness it, repudiate desire,
 Nor yet are they defeated by defilement.
+
+63
 To those for whom all things appear as deities and mandalas
 And as amrita—substance of samaya to be taken and enjoyed—
 To those with changed perceptions thus, such things have been allowed.
 
-60
+64
 Compared with gifts made to the Sangha
 (Monks who hold the pratimoksha or the bodhisattva vows),
 Offerings proffered to the yidam are of greater merit.
 To other aspects of the precepts the same should be applied.
-
-61
 But the respective aspects of the vows are not alloyed or mixed.
 As antidote and in their purpose, they are all the same.
+
+65
 The vows are gradually transmuted and their qualities enhanced.
 They thus remain without essential contradiction;
 Their observance should be fitted to the situation.
-
-62
 Of those who now consider
 How the three vows are combined within a single mind,
 Some say that they are one, for they transform;
+
+66
 Some say that in one vow,
 The aspects of the lower vows remain distinct;
 Some say they are three substances in conflict
 But increasing in their quality.
-
-63
 Others differentiate the vows according to the time and circumstance
 Wherein they are relinquished and received.
 Some say the vows remain distinct,
 Like copper coins stacked one upon the other,
+
+67
 Some that they are of a different strength—
 They're like the sun and moon and stars
 Whose light is not diminished when they are eclipsed.
-
-64
 Though these and further statements may be made about the vows,
 Their aspects are distinct as at the moment of their taking.
+
+68
 When observed, they're all the same
 As antidote and in their purpose.
 And they are all transformed through power of primal wisdom.
 These are general considerations, different from specific points.
-
-65
 For those who claim the aspects are transformed,
 No redress is possible.
+
+69
 For when a downfall has occurred in terms of Pratimoksha,
 Repairing it accordingly can have no sense
 Because they say the vow has been transformed.
@@ -7565,7 +7652,7 @@ And there's no need, and it is out of place,
 To mend the fault according to a higher vow,
 In terms of which no downfall has occurred.
 
-66
+70
 Those who understand the vows as forms
 That come to birth from body and from speech,
 Or else as the continuum of the refraining mind
@@ -7575,277 +7662,278 @@ And those who are without the skillful means
 Whereby defilements are transformed and brought upon the path—
 Though they embrace the Mahayana
 And even have received empowerment—
-Are not Vajradharas, beings for whom the vows have been transformed.
 
-67
+71
+Are not Vajradharas, beings for whom the vows have been transformed.
 Vows are rendered pure by attitude of mind
 And attitude is purified by yoga of the deity.
 When this in turn is cleansed through mastery of primal wisdom,
+
+72
 Precept-marring downfalls
 (Entities endowed with their own features,
 Subject to both birth and to cessation),
 Are no longer apprehended.
 Then there is no gain and there's no loss.
-
-68
 At their outset, in their middle, and their ending,
 The vows are not in conflict with each other.
 They're relative phenomena whereby one's attitude is changed.
+
+73
 If those who apprehend their bodies and their minds as real,
 And hold the three vows, practicing with aspiration,
 Remain therein and keep their different aspects,
 They must observe the vows combined.
-
-69
 If thus they keep the vows, the lower precepts are enhanced.
 If downfalls are repaired, this must be done
 According to the level of the vow infringed.
+
+74
 Since actions that give rise to faults have been proscribed
 And what produces qualities and merit is allowed,
 Allowance or proscription hinges not upon the letter of the law
 But must be gauged according to the agent's attitude.
 
-70
+75
 To generate the qualities not yet possessed
 Of all the six perfections and the two accumulations,
 And bringing increase to the ones already gained,
 All this is called the discipline of gathering virtue.
-It is included in the training of the mind.
 
-71
+76
+It is included in the training of the mind.
 Virtue that is filled with loving-kindness and compassion
 Is generosity when practiced for the sake of beings.
 It is discipline when free from self-concern
-And patience when untiring for the sake of others.
 
-72
+77
+And patience when untiring for the sake of others.
 It is diligence when done with vibrant joy
 And concentration when enacted with one-pointed mindfulness.
 It is wisdom when there is no clinging to reality of things.
-From virtue such as this the six perfections never separate.
 
-73
+78
+From virtue such as this the six perfections never separate.
 Mindful, self-aware in all the four activities,
 Bodhisattvas gather perfect virtue in their every deed.
 Even as they walk and raise and place their feet,
 They effortlessly tread the path of six perfections,
-Completing with great speed the two accumulations.
 
-74
+79
+Completing with great speed the two accumulations.
 Skilled in means direct and indirect,
 They labor for the benefit of every being.
 They open wide the doors of generous giving,
 Of pleasing speech and inspiration to the practice,
 Of conduct that accords with teachings given,
-And discipline that gathers virtue.
 
-75
+80
+And discipline that gathers virtue.
 Regarding altruistic action,
 Though the teachings speak of six considerations,
 In short this means the judgment of the strength of one's own practice.
 Let those who never wander from the Dharma's path
 Secure the good of others.
+
+81
 Common people, who have not yet gained their own good,
 Should investigate their own deluded thoughts.
-
-76
 When one can achieve the great good of another,
 It's then that lower precepts may be left aside.
 A village may be sacrificed to save a town;
+
+82
 One's home may be relinquished to preserve one's life;
 And for the sake of Dharma, one may sacrifice oneself.
-
-77
 Upon the ground of unafraid endurance
 The perfumed scent of Dharma is diffused,
 Protected by three kinds of patience:
 Putting up with hardship, making light of any injury,
-And braving the profundity of doctrine.
 
-78
+83
+And braving the profundity of doctrine.
 The evil state of anger with its dark and creeping tendrils
 Makes the mind and heart extremely hard.
 Those afraid of hell whence there is no escape
-Will give no chance for anger to develop.
 
-79
+84
+Will give no chance for anger to develop.
 Harmful circumstances are like forest thorns:
 There is no overcoming them; they constantly increase.
 But if we tame the single source of anger and resentment,
-The hard austerity of patience will become our friend.
 
-80
+85
+The hard austerity of patience will become our friend.
 Through contact with the dart of harsh and hostile words,
 Our hearts are stricken through—and yet does anything occur?
 Because we take such words as harmful in themselves,
-We're pained and agitated in the interplay of harm and harmed.
 
-81
+86
+We're pained and agitated in the interplay of harm and harmed.
 For in this world our hurts in cause and fruit,
 Like shouts and answering echoes, all arise from us.
 If "I" does not arise, there's no one they can injure.
-See how they derive from factors earlier contrived.
 
-82
+87
+See how they derive from factors earlier contrived.
 When examined, they are not great harms but great advantages.
 For thanks to them we board the ship of patience
 Thus to gain the jewel of bodhichitta.
-Let us honor all such hurts as holy teaching!
 
-83
+88
+Let us honor all such hurts as holy teaching!
 When the nature of these injuries is closely scrutinized,
 They lack enduring features, they're like figures traced on water.
 In the instant that the strident thought of wrath subsides,
+
+89
 A state of spacelike emptiness occurs
 Devoid of taking or rejecting.
-
-84
 When the three austerities of patience fail,
 To undertake the other five perfections, giving and the rest,
 Is, in the end, like walking on a road beset with enemies.
-It's hard to reach the wished-for goal, so let us be stouthearted.
 
-85
+90
+It's hard to reach the wished-for goal, so let us be stouthearted.
 With punctual and timely diligence,
 Like swans that hasten to their groves,
 We should devote ourselves to all the practices of virtue,
-Not leaving them forgotten in the pit of laziness.
 
-86
+91
+Not leaving them forgotten in the pit of laziness.
 People are engrossed in wrongful actions;
 They are tangled in the strings of their distracting pastimes.
 Discouragement oppresses them
 And even what they can do they neglect.
 Putting themselves down, they wallow in faintheartedness.
-They are like people who set sail in leaking ships.
 
-87
+92
+They are like people who set sail in leaking ships.
 Diligence that's armorlike beats the four demons down;
 Diligence in action brings us progress on the ten grounds and the paths;
 Diligence undaunted, irreversible, insatiable—
-Those who have all these will gain the goals that they desire.
 
-88
+93
+Those who have all these will gain the goals that they desire.
 Our life is like the closing of the day:
 Quickly, quickly does the dark of death draw near.
 And when it comes, our worldly works give no relief,
 Though they be many, more than all the stars.
 
-89
+94
 The mighty stream of diligence, which clears away
 The turbid ooze of laziness and never deviates,
 Flows on with swift and tireless strength
 Until it pours into the ocean of omniscience.
 
-90
+95
 A wholesome land, a forest, flower-strewn,
 The haunt and habitat of peaceful waterbirds,
 Beautiful to see, with walls and terraces of rock,
-And lovely with the young of hart and hind,
 
-91
+96
+And lovely with the young of hart and hind,
 The joy-bestowing woodland
 Is a goddess with her waist entwined
 With fresh and swaying traceries of moss.
 It's here that cuckoos, unafraid of harm,
-Announce their tidings: sadness with the world.
 
-92
+97
+Announce their tidings: sadness with the world.
 Go to such a place all you who wish to concentrate your minds.
 Wealth and pleasures are like fleeting canopies of cloud;
 And life, a flash of lightning, shakes and trembles
+
+98
 Midst a gang of thieves: the sufferings of pain,
 Of change and sorrow in the making.
-
-93
 Craving to acquire, to keep, and to increase—
 Beings are tumbled in this ruin-bearing torrent.
 Gripped by pride, by avarice and stinginess,
-They wander after death in shoreless seas of lower realms.
 
-94
+99
+They wander after death in shoreless seas of lower realms.
 Precious things acquired deceitfully
 Are like the clouds abundant with their rain.
 They are the cause of suffering.
 But those with little property are safe from enemies and thieves.
+
+100
 And those content with what they have
 Have reached the highest peak of wealth.
-
-95
 Ordinary people are by nature childish,
 Their childish minds are clogged with clouds of faults.
 They praise themselves, disparage others;
-They have rough defiled emotions like a serpent's tongue.
 
-96
+101
+They have rough defiled emotions like a serpent's tongue.
 They think the wavering glories of this life will last forever.
 For what is done for them they show no thanks
 But only its reverse, and look with sullen frowns.
 They blow the fires of hatred with the winds of calumny.
-Like apes they are the source of every kind of mischief.
 
-97
+102
+Like apes they are the source of every kind of mischief.
 The belly of their sins is vast like some leviathan.
 Like vicious snakes they harm all those they meet.
+
+103
 Keep far away from childish folk who, like a fire,
 Will scorch and burn the healing trees of virtue.
-
-98
 Worse than poison are the objects of the senses,
 For their fruit, when fully ripened, brings great harm,
 Not only in this life but all the lives to come—
 Though in the moment of their tasting, they are sweet indeed—
-And this no supreme mantra and no physic can relieve.
 
-99
+104
+And this no supreme mantra and no physic can relieve.
 For those who have not tamed the elephant of mind,
 Nothing is more false or more deceptive
 Than the objects of the senses.
 Till this compounded aggregate is borne away upon the bier,
-Let peaceful forest glades be home for you!
 
-100
+105
+Let peaceful forest glades be home for you!
 "Wildernesses" and "secluded places": both are good,
 Inspiring us with sorrow at samsara.
 No trade is there, no farming, no bad company,
 No tiresome threats of impositions, duties, need for livelihood;
-The birds and beasts say nothing untoward.
 
-101
+106
+The birds and beasts say nothing untoward.
 All things needful, fruits and limpid water, there abound,
 And spacious caves and shelters made of leaves.
 To live within the cool shade of the trees is bliss indeed;
-Would that we might take it for our dwelling place!
 
-102
+107
+Would that we might take it for our dwelling place!
 The fashion of the forest is transformed
 To greet its guests as the four seasons pass.
 Nothing there provokes defilement.
-See!
-The teachings we may trust have said
-That boundless merit comes from even seven steps to such a place.
 
-103
+108
+See! The teachings we may trust have said
+That boundless merit comes from even seven steps to such a place.
 Resting there in perfect concentration
 Defines the higher training of the mind.
-Because they're interlinked, the body placed in Vairochana's
-Sevenfold posture acts as vital axis of the mind.
+Because they're interlinked, the body placed in
 
-104
+109
+Vairochana's Sevenfold posture acts as vital axis of the mind.
 Strive in stable meditation.
 Place the mind upon one thing, not straying to another.
 Checking that the target's held, whatever it may be.
 The mind is thereby fastened to its virtuous object;
-All appearances contrived by thought will sink into the dharmata.
 
-105
+110
+All appearances contrived by thought will sink into the dharmata.
 Things appear uninterruptedly.
 But not considering such things as truly real,
 The mind remains without discursiveness upon its object.
 This is meditative equipoise or shamatha.
 Vipashyana, which shares its nature, is post-meditation.
 
-106
+111
 Three kinds of concentration are distinguished:
 Concentration that's enjoyed by childish beings,
 Concentration that discerns with clarity,
@@ -7855,7 +7943,7 @@ The absence or the presence of discursiveness,
 Both gross and subtle, and the rest.
 Likewise there exist four formless concentrations.
 
-107
+112
 The samadhis and the formless concentrations constitute
 The concentration that's enjoyed by childish beings:
 Those who have not entered any of the paths.
@@ -7864,22 +7952,22 @@ Accumulation and the path of joining
 Makes the path of freedom manifest.
 Their concentration thus is clearly discerning.
 
-108
+113
 From the first ground onward
 Is the concentration of the Noble Ones:
 The immaculate and perfect concentration of the Tathagatas.
 The essence of all concentration is the holding of the mind within,
 The cause of which is steady mindfulness and diligence.
 
-109
+114
 When attention wanders, it is once again repaired.
 By acting thus is bliss engendered, wondrous siddhi gained.
 Such practice has as its result
 Clairvoyance and the other powers.
-
-110
 Discursiveness is present, gross and subtle,
 In the stage of preparation for the first samadhi.
+
+115
 But as the first samadhi supervenes,
 The gross departs and just the subtle stays.
 The other three samadhis are devoid
@@ -7887,60 +7975,62 @@ Of all discursiveness both gross and subtle;
 And each of them makes ready for the one that follows.
 All are said to be the basis for the noble path.
 
-111
+116
 The concentration that engenders every perfect quality
 Is pervaded by compassion and by primal wisdom.
 Through having many concentrations,
 One achieves the qualities of all the grounds and paths.
 Meditation and post-meditation, which share a single mental substance,
 Eliminate duality of perceiver and perceived.
+
+117
 Until the seventh ground is reached,
 Practitioners arising from such meditative equipoise
 Are dissipated in the period of post-meditation.
-
-112
 Wisdom's higher training is now clearly ascertained.
 It arises from the preparation for samadhi.
+
+118
 Through this and through the wisdom that is born
 From both the actual samadhi and post-meditative state
 (Or through the wisdoms that derive
 From hearing, from reflection, and from meditation),
 Vipashyana is perfectly accomplished.
-
-113
 Through this, the host of the afflictions is destroyed.
 Phenomena and their nature, all is understood.
+
+119
 The city of existence is traversed,
 The state of no more sorrow is attained.
 The ascending structure of the six perfections
 Is founded on transcendent wisdom.
-
-114
 If therefore those who are still ordinary beings
+
+120
 Fail to take support of wisdom that derives from listening to teachings,
 Their reflection and their meditation both will wander into error.
 The teachings thus declare that wisdom that derives from hearing
 Is the cause of all the others.
-
-115
 This wisdom will survey the Dharma to be understood,
+
+121
 Distinguishing expedient and definitive,
 And different kinds of teaching: four implied, four indirect.
 Suchness is the nature of all things
 Abiding in three doors of perfect liberation.
 The meaning of this teaching is definitive.
-
-116
 That beings might be led upon the path,
+
+122
 All objects that appear are analyzed with reasoning
 And overstated as to their existence.
 This is the expedient path.
 To know on which of these two teachings
 (Expedient or definitive) one should rely
 Is indeed a key that opens up the scriptures.
-
-117
 When the nature of these two is clarified,
+
+123
 Implied and indirect instructions are explained
 As means to grasp the expedient's real intention.
 The first of these are only slightly overstated
@@ -7948,22 +8038,24 @@ And open to interpretation.
 Their aim
 Is not to lead beings in one situation only.
 
-118
+124
 Four kinds of implied teachings have been taught
 And all of them achieve the aim intended.
 Teachings that imply the equality of all phenomena
 Reveal that even opposites are one.
 Some teachings, which imply another sense,
 Reveal that if things are examined they are found to be unreal.
+
+125
 Teachings that imply fulfillment at another time
 Declare the effortless achievement of enlightenment.
 Teachings given for certain individuals
 Are intended to humiliate their arrogance.
-
-119
 Teachings that are indirect
 Are those that express artfully, in pleasing and engaging words,
 What does not fit the minds of some and leads them into doubt.
+
+126
 That the perfect path might be embraced,
 The words are on the level of their hearers,
 Though their meaning is not so.
@@ -7971,7 +8063,7 @@ These teachings are distinguished in four types:
 Those for introducing to the path, those upon the nature of phenomena,
 Those that are remedial, and those expressed in metaphors.
 
-120
+127
 Teachings given indirectly for the sake of introduction
 Are aimed at Shravakas who, alarmed by emptiness,
 Reject the Mahayana.
@@ -7979,139 +8071,144 @@ Hearing "there is form,"
 They take it for existent and embark upon the path,
 Yet Buddha's meaning was that everything appears to us like dreams.
 
-121
+128
 The indirect instructions on the threefold nature of phenomena—
 The imputed, the dependent, and the actual—
 Were given that beings might grasp the absence of intrinsic being.
 The first reveals that things have no intrinsic nature,
+
+129
 The second that production too has no intrinsic nature.
 The third shows likewise that the ultimate has no intrinsic nature.
 Phenomena are thus described with deep and perfect words.
-
-122
 The teachings given indirectly as remedial methods
 Correct the false ideas that people have.
+
+130
 Declaring that his life, his lineage and stature were both measureless,
 The Buddha's meaning was that all the Buddhas' forms
 Are equal in the Dharmakaya,
 And equal likewise in accumulation and activities.
-
-123
 The teaching given indirectly in the form of metaphors—
 Where it is said that one should slay one's parents
 (Who should not be slain),
+
+131
 Destroy the ones who should not be destroyed
 (The Sovereign and the two of pure life)—
-These indicate such things as Craving, Grasping, and the alaya.
+These indicate such things as
+Craving, Grasping, and the alaya.
 To understand them in their literal sense would be a great mistake.
 
-124
+132
 Here, in brief, is what distinguishes
 The teachings that are indirect from those that are implied.
 That which is implied relates to what the Buddha had in mind:
 Such words do not depend upon the wits of the recipient.
 But teachings given indirectly
 Do depend upon the hearers' understanding.
-This distinction likewise is a key that opens up the scriptures.
 
-125
+133
+This distinction likewise is a key that opens up the scriptures.
 Regarding what is to be understood,
 The essence of the four and eighty thousand sections
 Of the Dharma of the Conqueror consists in the two truths:
 The all-concealing relative of worldly beings and the absolute.
-Aside from these there is no third.
 
-126
+134
+Aside from these there is no third.
 Two ways there are in which the all-concealing relative appears:
 Those things occurring to deluded mind
 That function in accordance with the way that they appear
 Are known as "unmistaken relative."
+
+135
 And those that do not function though they do appear
 Are known as the "mistaken relative."
-
-127
 The absolute truth is the fundamental way of being.
 The phenomena of samsara and nirvana
 Are not by nature of two different kinds,
+
+136
 But are beyond both thought and word primordially.
 This truth is not set forth in terms of realized and unrealized minds.
-
-128
 The two truths blend: appearance and emptiness unite.
 Phenomena are like the moon reflected in a pool.
+
+137
 Their aspect of appearance is the all-concealing truth;
 Their lack of real existence is the absolute.
-
-129
 To the five sense consciousnesses
 Forms and other things appear distinct like colors in a painting.
 Desirable, they're grasped as things to be enjoyed.
+
+138
 They are considered real and are rejected or accepted.
 These delusory perceptions of discursive mind
 Should be examined in the light of eight examples of illusion.
-
-130
 The ultimate that can withstand analysis
 Is not the absolute, for intellect itself is relative.
+
+139
 What is neither one nor many
 Can never be the object of the intellect.
-
-131
 Here now is the outline of the tenet systems.
 The ultimate constituent of consciousness through mental scrutiny;
+
+140
 The ultimate constituent of matter through destruction with a hammer—
 Arriving thereby at the partless particle:
 Such is the system of the Shravakas.
-
-132
 What performs a function is here declared the absolute;
 The rest is all-concealing relative.
+
+141
 These two have been described respectively
 As the specifically and generally characterized.
 This is the view of the Sautrantika in harmony with reasoning.
-
-133
 The subject and the object appearing as two separate things—
 Perceiver and perceived—is the all-concealing truth.
+
+142
 By contrast, nondual mind is absolute:
 This is the tenet of the Chittamatra school.
-
-134
 All appearing things exist upon the level of the relative
 And are illusion-like by nature—
+
+143
 Though ultimately none is real but is like space—
 To make this affirmation is the way of the Svatantrika Madhyamikas.
-
-135
 To say "the relative is just appearance"
 And that "emptiness is absolute," is simply to verbalize.
+
+144
 Phenomena transcend all ontological extremes.
 From the very moment they appear,
 They have no birth and no cessation, no going and no coming.
-
-136
 To hold back from asserting the position
 That on the level of the relative, dependent things exist—
+
+145
 Such is the special teaching of Nagarjuna and of Chandrakirti,
 The founders of the great way of Prasangika.
-
-137
 Able to examine and contest the views of all the lower schools,
 This is the supreme way and free from all mistake.
+
+146
 Knowing thus the character of different tenets,
 Deriving as these do from varying beliefs,
 The wisdom that can well discern the true position
 (And that which is in harmony, and that which disagrees)
 Depends upon one's hearing of the teaching.
 
-138
+147
 It expels defilement
 And on the undefiled the demons have no hold.
 What here is comprehended is the fundamental nature of phenomena:
 Unspeakable, unthinkable,
 The final truth that cannot be expressed.
 
-139
+148
 All things that appear and are imagined by the mind
 As what can be expressed and spoken of and thought
 Are posited as relative, the all-concealing truth.
@@ -8119,150 +8216,156 @@ The union of the two truths
 Is beyond both realizer and realized;
 No one can experience it in such a way.
 
-140
+149
 Indeed it cannot be observed.
 There's no attaining and no nonattaining it!
 But when a state of mind occurs attuned to emptiness,
 To this the label "realization" is affixed.
 
-141
+150
 All arises in dependence:
 This, of all the Dharma, is the treasure.
 To understand and penetrate this well,
 Through wisdom based upon reflection,
 Is the key to all the teachings—all without exception.
 
-142
+151
 Everything that might appear,
 All things of both samsara and the state beyond all sorrow,
 Come from nowhere; nowhere do they go or stay,
 Arising in dependence based upon their fundamental nature.
 
-143
+152
 Things seem to arise and then to cease,
 And yet they're empty in the very instant of appearing.
 To rest in no conceptual extreme
 Is set forth as the Middle Way itself.
 
-144
+153
 "Clean" and "unclean"—both are adventitious.
 They don't exist in fact and yet appear, though they are nonexistent.
 They're seized upon through mental imputation.
 Analysis reveals these four extremes:
 Existence, nonexistence, permanence, annihilation.
 
-145
+154
 Even those "abiding in the middle" are not wise!
 For just like silkworms cased within their silk,
 They're tangled in their tenets and assertions!
 
-146
+155
 Phenomena—the things imputed by our minds—
 Do not arise, nor do they cease or stay;
 They do not come, they do not go;
 They are not different, they are not the same;
 They are not permanent and they are not annihilated.
+
+156
 All conceptual theories regarding them subside.
 To know this as their very nature
 Is the essence of the wisdom that arises from reflection.
 
-147
+157
 All appearing objects: earth and water, fire and wind and space;
 Mountains, forest groves and towns;
 All such compounded things arise from their respective causes.
 Samsara thus arises in dependence.
 
-148
+158
 Because there's ignorance, conditioning factors manifest,
 And likewise every link is based on the preceding one.
 They all unfold till "age and death" is reached.
 Such is dependent arising in the inner sense.
 
-149
+159
 Nirvana, which arises in dependence,
 Rests in both the paths and their result.
-To speak then of these paths: When ignorance,
-150
+To speak then of these paths:
+When ignorance,
 The root of the twelve links arranged in forward order
 Leading to samsara,
+
+160
 Is vanquished through wisdom of awareness,
 Conditioning factors and the other links
 Are, in their order, also overturned,
 Thus severing the root of all existence.
 
-
-151
+161
 Those who understand the nature
 Of "arising in dependence,"
 Knowing Suffering, reject its Origin;
 They effect Cessation and behold the supreme Path.
 
-152
+162
 And so, upon the basis of reflection,
 One comes to the conviction that phenomena are unoriginate.
 To recognize their nature and to rest in it
 Is known as wisdom that results from meditation.
 
-153
+163
 The ultimate expanse—immaculate, pure space—
 Is of a single taste with meditation's object.
 Here there is no place for form or other aggregates,
 And also of eight consciousnesses there's indeed no trace.
 
-154
+164
 To say "There's nothing there," thus mentally refuting them,
 Is utterly at variance with wisdom in itself.
 The ultimate expanse is not mere nothingness;
 It is a treasure of all wisdoms and enlightened bodies.
 
-155
+165
 Perfectly one watches perfect purity,
 Which is the spotless nature in itself.
 But "to watch" is just a metaphor.
 Not to wander from this is the best of meditations.
 
-156
+166
 For in the presence of such primal wisdom
 There's no place for intellect and mental fabrication.
 When wisdom such as this is well and truly known,
 It is by skillful means that liberation comes.
+
+167
 But if there is no wisdom, skillful means
 Will bring to us no freedom from our fetters.
-
-157
 Those who cultivate within their minds
 Emptiness and great compassion
 Pursue the great path of accumulation.
+
+168
 Until the supreme mundane level on the path of joining,
 Emptiness occurs in meditation, and compassion afterward.
-
-158
 But when the path of seeing is attained,
 Emptiness, compassion—both unite inseparably.
+
+169
 And on the first ground, that of Perfect Joy,
 The truth of suchness is perceived directly.
-
-159
 Later, on the noble path of meditation
 At the tenth ground's final point,
+
+170
 Concentration diamondlike destroys the veils of thought:
 Enlightenment stands manifest.
-
-160
 And then there is no moment when
 The mind is not at rest in even meditation.
 Eighteen distinctive qualities of the Victorious Ones,
+
+171
 The ten strengths and four fearless states—
 All of them are actualized, and one is Buddha.
-
-161
 It's thus that all the six perfections
 Are the broad highway of all the Conquerors.
+
+172
 Unmistaken in their view and in their deeds most pure,
 To Akanishta unexcelled they make their way.`
       },
       'chapter-10': {
         tib: `རིག་པ་འཛིན་པའི་སྡེ་སྣོད་བསྟན་པའི་ཚོམས
+
 1
 །།བྱང་ཆུབ་སེམས་དཔའ་སྔགས་ཀྱི་ཐེག་པ་ལ། །འབྲས་བུའམ་ནི་རྡོ་རྗེའི་ཐེག་པ་དང་།
 །ཐབས་ཀྱི་ཐེག་པ་རིག་པ་འཛིན་པ་ཡི། །སྡེ་སྣོད་ཅེས་གྲགས་རྒྱུ་ལས་ཁྱད་པར་འཕགས། །
@@ -8980,903 +9083,1083 @@ To Akanishta unexcelled they make their way.`
 
 ཡོན་ཏན་རིན་པོ་ཆེའི་མཛོད་དགའ་བའི་ཆར་ཞེས་བྱ་བ་ལས། རིག་པ་འཛིན་པའི་སྡེ་སྣོད་བསྟན་པའི་ཚོམས་ཏེ་ལེའུ་བཅུ་པའོ།།
 `,
-        en: `1.Regarding the Bodhisattva Mantra Vehicle:
+        en: `1
+Regarding the Bodhisattva Mantra Vehicle:
 It is the Resultant or the Vajra Vehicle,
 And the Vehicle of Methods, the Pitaka of Vidyadharas;
 It is renowned as superior to the Causal [Vehicle].
 
-2.From the perspective of continuity, it is the Tantra of Ground, Path, and Result.
+2
+From the perspective of continuity, it is the Tantra of Ground, Path, and Result.
 Relying on two stages, method and wisdom are conjoined.
 Not tormented by the power of austerity, the entrance is vast.
 Dominating with sharp faculties, the discipline is swift.
 
-3.Intended for the times: the Perfection, the Three,
+3
+Intended for the times: the Perfection, the Three,
 The Two, and the Age of Strife—these four.
 Intended for castes: the Brahmin, the Royal Caste,
 The King, and the Lowly or Outcaste.
 
-4.Intended for faculties: dull, medium, sharp, and supreme.
+4
+Intended for faculties: dull, medium, sharp, and supreme.
 The Dharmas are Action, Conduct, Yoga, and Unsurpassed.
 The first three are the Outer Secret Mantra;
 Explicitly taught by the Sage, they share characteristics with the [Causal] Vehicle.
 
-5.Conduct of cleanliness and vows is mostly similar.
+5
+Conduct of cleanliness and vows is mostly similar.
 Though conflicting with the Age of Strife, desire
 Is taken as the path, yet deities are not in union.
 The five meats and five nectars are not enjoyed.
 
-6.Dividing them: The Tantras of Action and Conduct.
+6
+Dividing them: The Tantras of Action and Conduct.
 Male and female Bodhisattvas, Vidya [mantra] and Dharani [deities].
 In Action, the manner is lord and servant; in Conduct, friend and sibling.
 Even in accomplishing the lord and servant of Action...
 
-7.Lacking self-generation, one positions oneself as inferior.
+7
+Lacking self-generation, one positions oneself as inferior.
 [Though] existing in some, principally front-generation is shown.
 External activities, bathing and cleanliness, are paramount.
 Practicing in the manner of high and low, siddhis are desired.
 
-8.Regarding the method of Action and one's own [internal] yoga,
+8
+Regarding the method of Action and one's own [internal] yoga,
 By practicing in equal parts, it is known as the Conduct Tantra.
 Oneself as the Samayasattva, and dwelling in front
 Is the Wisdom Deity; as a sibling, one takes siddhis.
 
-9.Regarding the boundaries of Yoga Tantra and below,
+9
+Regarding the boundaries of Yoga Tantra and below,
 The Great Array is like the Sambhogakaya.
 Though shown, generation and perfection are not in union.
 Method and wisdom are graduated and distinct.
 
-10.Practicing yoga principally, body and speech are shown as friends.
+10
+Practicing yoga principally, body and speech are shown as friends.
 Wisdom [beings] are invoked and dissolved, bound by the four mudras.
 Within the state of Samaya and Wisdom being one, siddhis are taken.
 At the conclusion of recitation, the request to depart is made.
 
-11.The Unsurpassed Inner Secret Mantra
+11
+The Unsurpassed Inner Secret Mantra
 Is the union of generation and perfection.
 It is posited as Father Tantra, Mother Tantra, and Non-dual Tantra.
 Deities are in union; special samaya substances are utilized.
 
-12.Possessing a nature without accepting or rejecting clean and dirty.
+12
+Possessing a nature without accepting or rejecting clean and dirty.
 Great Yoga (Mahayoga), the Father Tantra, is the path of method.
 Making generation stage primary, it purifies the five winds.
 Subsequently, Yoga [of Scripture] (Anuyoga), the Mother Tantra, is the path of wisdom.
 
-13.Making perfection stage primary, from elements melting bliss is generated.
+13
+Making perfection stage primary, from elements melting bliss is generated.
 Great Perfection (Atiyoga), the Non-dual path of primal wisdom,
 Separated from one and many, connects to Great Luminosity.
 The vital point of all: the body possessing six elements.
 
-14.Aggregates, elements, and sense fields; channels, drops, and winds—
+14
+Aggregates, elements, and sense fields; channels, drops, and winds—
 Through being workable, the three—generation, perfection, and union—
 Generate all qualities; this is the path of the Vajra Vehicle.
 In the naturally spontaneously present great mandala...
 
-15.The view decides; meditation brings into experience.
+15
+The view decides; meditation brings into experience.
 Action adopts and discards; the result accomplishes the two benefits.
 Relying authentically on the Tantra of Ground, Path, and Result.
 The door of entering is the ripening empowerment.
 
-16.That which liberates is the two aspects: generation and perfection.
+16
+That which liberates is the two aspects: generation and perfection.
 As harmonious friends are the three: samaya and conduct.
 From certainty in the genuine supreme path of Mantra:
 Without first obtaining empowerment, there are no siddhis.
 
-17.Like wishing for butter by squeezing sand,
+17
+Like wishing for butter by squeezing sand,
 Though diligent in teaching, learning, and meditating, one goes to hell.
 The individual who obtains empowerment becomes a Son of the Victors.
 By seeing the mandala, one is fully liberated from negative karma.
 
-18.If possessing the pure family for seven lifetimes,
+18
+If possessing the pure family for seven lifetimes,
 It is said one will definitely accomplish and obtain the tenth ground.
 [But] a master bestowing empowerment, devoid of confidence in the two stages,
 Who does not bind the retreat or enjoyment of funds, attached to home...
 
-19.Possessing little compassion and overpowered by speculation,
+19
+Possessing little compassion and overpowered by speculation,
 Though he performs empowerment, like linked cattle, he falls to the abyss.
 The ten aspects of Thatness—Outer, Inner, and Secret—
 The Lama who knows these and is himself liberated...
 
-20.Should examine the continuum of the disciple possessing faith
+20
+Should examine the continuum of the disciple possessing faith
 And a sense of shame, then grant empowerment by stages.
 The Approach, and the Ritual of the Earth,
 And the Preparation; the disciple enters and is ripened.
 
-21.Even regarding each of the four clear realizations,
+21
+Even regarding each of the four clear realizations,
 If the four-by-four perfecting branches are incomplete,
 Because the ritual is impaired, it is unable to ripen.
 Regarding the classification of empowerment in individual Tantra sections:
 
-22.In Action Tantra, there are the two: Water and Crown.
+22
+In Action Tantra, there are the two: Water and Crown.
 In Conduct Tantra, added to that is the Vajra Name.
 In Yoga Tantra, the five empowerments of Awareness,
 And the Secret, the Authorization, and the Final Support are completed.
 
-23.In Unsurpassed: Vase, Secret, Wisdom, and Word—the four empowerments.
+23
+In Unsurpassed: Vase, Secret, Wisdom, and Word—the four empowerments.
 In the specific stages of the Pinnacle Vehicle:
 Elaborate, Unelaborate, and Extremely Unelaborate.
 Though generally the opening and closing of empowerments is limitless...
 
-24.They are the four aspects of seizing the ground and placing the boundary.
+24
+They are the four aspects of seizing the ground and placing the boundary.
 As the four empowerments of Ground, Path, and Result.
 Primordially established, the support of channels, winds, and drops;
 Being intrinsic to oneself and endowed in parallel.
 
-25.Regarding the two kinds of cooperative causes:
+25
+Regarding the two kinds of cooperative causes:
 The suitable vessel, the minor student, is the causal condition.
 The Master possessing view and realization is the dominant condition.
 Knowing the potent ritual is the object condition.
 
-26.Dependent arising is the immediate condition.
+26
+Dependent arising is the immediate condition.
 From the assembly of two causes and four conditions, empowerment is accomplished.
 Posited through the certainty of the number of antidotes:
 The principal of the body is the channel.
 
-27.The aspect of the channels abides in the form of syllables.
+27
+The aspect of the channels abides in the form of syllables.
 On that rely the winds; on winds rely the elements.
 On elements relies the ultimate bodhichitta—the four.
 The individual of the Desire Realm, the person of their own continuum...
 
-28.Abides in the four kinds of desire regarding all, etc.
+28
+Abides in the four kinds of desire regarding all, etc.
 Relying on what is to be purified and the purifier, there is certainty.
 The desire which is satisfied by the initial look
 Is the abiding in the mastery of others' emanations.
 
-29.Relying on the colored powder mandala, the Vase Empowerment
+29
+Relying on the colored powder mandala, the Vase Empowerment
 Is conferred; principally it cleanses the obscurations of the body.
 The vessel and contents, stationary and moving, aggregates, elements, and sense fields all
 Dawn as the single mandala complete with the three seats.
 
-30.Appearance and emptiness in union; the three essences.
+30
+Appearance and emptiness in union; the three essences.
 Regarding the philosophical tenet, the great non-duality of samsara and nirvana.
 At death, the ball of light transfers through sound.
 The course of the channels dissolves; [it is] the Generation Stage, the Nirmanakaya.
 
-31.The uncompounded Vajra of Body pervading space.
+31
+The uncompounded Vajra of Body pervading space.
 Relying on the mandala of the Bhaga, the Secret Empowerment is conferred.
 Desire satisfied by laughter; the Joy of Emanation.
 Cleansing the obscurations of speech, it is the path of self-blessing.
 
-32.Tummo inserts the subject-object, Roma, and Kyangma into the Central Channel.
+32
+Tummo inserts the subject-object, Roma, and Kyangma into the Central Channel.
 Self-arisen primal wisdom, the tenet of unmixed perfection.
 Within the state of Great Luminosity, the Example at death,
 The course of syllables dissolves; [it is] the Sambhogakaya.
 
-33.The Vajra of Speech complete with sixty branches.
+33
+The Vajra of Speech complete with sixty branches.
 Of the beautiful one displaying the clear realization of the three seats,
 Relying on the Secret Mandala is the Wisdom Empowerment;
 Satisfied by holding hands; the desire of the Joyous Realm [Tushita].
 
-34.Cleansing obscurations of mind; Appearance, Increase, and Attainment—the three—
+34
+Cleansing obscurations of mind; Appearance, Increase, and Attainment—the three—
 And the wisdom of four joys are accomplished by the melting bliss of elements.
 The tenet of indivisible bliss and emptiness is experienced.
 Appearance at death is unestablished; [it is] the Vajrasattva.
 
-35.The knot of channels at the heart is released; the Example Wisdom.
+35
+The knot of channels at the heart is released; the Example Wisdom.
 The space-pervading Vajra of Mind, the Body of Lucidity.
 Relying on the mandala of Bodhichitta,
 The experience of the third is the Empowerment Indicated by Words.
 
-36.Free from strife and below; desire of embrace and union.
+36
+Free from strife and below; desire of embrace and union.
 Cleansing the obscurations of the three doors; purifying the grasping at difference.
 The essence-drop of emptiness possessing the essence of awareness.
 The tenet is Inconceivable Primal Wisdom.
 
-37.At death, the Great Secret Mahamudra.
+37
+At death, the Great Secret Mahamudra.
 The result is the space-pervading Essence Body (Svabhavikakaya).
 If applying the sound and meaning: by the sound Abhishimcha
 Adventitious stains are scattered; and by Shekata...
 
-38.Good fortune is poured; thus it is established in two aspects.
+38
+Good fortune is poured; thus it is established in two aspects.
 The Supreme Empowerment abiding in oneself, the six elements'
 Support and endowment, is the Causal Empowerment.
 That conferred by the ritual of the Master himself...
 
-39.And habituated by one's own visualization is the Path Empowerment.
+39
+And habituated by one's own visualization is the Path Empowerment.
 Like the Empowerment of Great Rays of Light at the time of the cause,
 One's mind ripening into the Four Kayas is the Result Empowerment.
 When the four empowerments are complete, the vow of the Vidyadhara is obtained.
 
-40.Like a seed placed in the soil of a field
+40
+Like a seed placed in the soil of a field
 Where the defects of the hard earth have been purified by the individual obtaining empowerment,
 Having purified the four obscurations, the Four Kayas are made manifest.
 Secondly, regarding the path, from the two aspects of generation and perfection…
 
-41.First, regarding the Generation Stage: for the sake of purifying the habitual tendencies
+41
+First, regarding the Generation Stage: for the sake of purifying the habitual tendencies
 Of the four kinds of birth-places, it is shown in accordance with those.
 Since the manner of generation is in accord with the aspects of samsara,
 The three existences are purified and cleansed without remainder.
 
-42.Through the agreement of the manner of abiding [the Ground] and Nirvana,
+42
+Through the agreement of the manner of abiding [the Ground] and Nirvana,
 The result is perfected in the ground through the aspect of the deity.
 As the ripener of the Perfection Stage for both [self and other],
 The three—purity, perfection, and ripening—are crucial for the general welfare of beings.
 
-43.Just as egg-born beings are born twice,
+43
+Just as egg-born beings are born twice,
 One generates in the two aspects: Self-generation and Other-generation.
 Regarding the five [steps] of creating the Other as the Son:
 Generating the Principal [Deity] from the seed; and...
 
-44.Invoking the Buddhas of the ten directions and dissolving them into the space [of the deity];
+44
+Invoking the Buddhas of the ten directions and dissolving them into the space [of the deity];
 Invoking sentient beings and purifying their obscurations;
 Generating greatness regarding non-duality; and
 Drawing [the deity] from space and placing them upon the seat.
 
-45.Regarding the eight [steps] of creating Oneself as the Son:
+45
+Regarding the eight [steps] of creating Oneself as the Son:
 Like the ripening of the egg and its transformation into this and that [shape]:
 The Principal melts into light and becomes the seed; and
 From that, the Father and Mother and sense bases are perfected; and...
 
-46.The thought of the Father becomes the syllable; and
+46
+The thought of the Father becomes the syllable; and
 Light radiates from the Mother and makes supplication to the deity; and
 All are dissolved into oneself; holding the pride; and
 Having entered into union, the mandala is generated in space.
 
-47.The forty-two thoughts dawn as deities; expelling [interferences];
+47
+The forty-two thoughts dawn as deities; expelling [interferences];
 Binding with the four mudras; and sealing.
 If condensing: By visualizing oneself as the deity primarily,
 The mandala is clearly struck in the front sky; performing the stream of confession.
 
-48.In the state where both are non-objectified, the individual deity's
+48
+In the state where both are non-objectified, the individual deity's
 Mandala is meditated upon according to the clear realization.
 For the sake of purifying womb-birth, the Four or Five Manifest Enlightenments:
 First, the intent of the Heruka Galpo:
 
-49.The death and bardo together are the mind of emptiness.
+49
+The death and bardo together are the mind of emptiness.
 The consciousness of the Gandharva, the appropriator,
 Is purified by the seed of the deity; that also,
 Like semen, blood, and wind mixing, is the quivering 'nur-nur' [embryonic stage].
 
-50.It is purified by the seed itself transforming into the hand implement.
+50
+It is purified by the seed itself transforming into the hand implement.
 Hardening and becoming oblong, the hand implement becomes a ball of light.
 Like the completion of Vishnu's fish and turtle and limbs,
 Having transformed into the aspect of the deity, it is purified.
 
-51.The mudra is the Body; the seed syllable is the Vajra of Speech;
+51
+The mudra is the Body; the seed syllable is the Vajra of Speech;
 The Mind is applied as the hand implement itself.
 This is the system of Father Tantra called "The Three Vajra Rituals."
 From the Bardo [Intermediate State] seeking a body is the Path of Accumulation.
 
-52.Consciousness entering the womb is the Path of Joining.
+52
+Consciousness entering the womb is the Path of Joining.
 Having entered the womb, the five awakenings are Seeing and Meditation.
 The ten months are applied to the Grounds; and
 Birth is the Path of No More Learning, the Nirmanakaya.
 
-53.The First Manifest Enlightenment, the Moon Mandala:
+53
+The First Manifest Enlightenment, the Moon Mandala:
 Semen of womb-birth; moisture of warmth-moisture birth;
 The father of egg-birth; the emptiness portion of miraculous birth.
 Similarly, the Second, the Sun Mandala also:
 
-54.The ovum [blood] of womb-birth; the warmth of warmth-moisture birth;
+54
+The ovum [blood] of womb-birth; the warmth of warmth-moisture birth;
 The mother of egg-birth; the clarity portion of miraculous birth.
 The Third Manifest Enlightenment: together with seed and hand implement.
 The entrance of consciousness between the two, semen and blood; and...
 
-55.It purifies the bardo consciousness of the four birth-places.
+55
+It purifies the bardo consciousness of the four birth-places.
 The Fourth Manifest Enlightenment: the three types mix into one.
 The mixing of semen, blood, and mind into one taste; and
 The warmth of warmth-moisture birth and consciousness; and...
 
-56.The clear yet empty portion of miraculous birth; and
+56
+The clear yet empty portion of miraculous birth; and
 The mixed portions of the intermediate existence are purified.
 The Fifth Manifest Enlightenment: established as the Body.
 When the sense bases of the four birth-places are fully perfected...
 
-57.The waking of the senses towards the object of awareness—
+57
+The waking of the senses towards the object of awareness—
 The aspect of samsara together with its parts is purified.
 The collection of elements, aggregates, and consciousness
 Is pure in its locus; the Deity complete with the three seats.
 
-58.Agreement with the manner of abiding and Nirvana
+58
+Agreement with the manner of abiding and Nirvana
 Is the Resultant Heruka [arising] from the Cause.
 The parts of semen, blood, wind—the three—together with the mind,
 Through being utterly purified, become the ripener of the Perfection Stage.
 
-59.Regarding birth from warmth and moisture: upon the gathering of the two [fluids],
+59
+Regarding birth from warmth and moisture: upon the gathering of the two [fluids],
 Through the entrance of consciousness, just as form is accomplished instantly,
 Upon the mere recollection of the name and clear realization of the deity,
 The Generation Stage complete with mudras is meditated upon.
 
-60.Miraculous birth is instantaneous recollection and perfection.
+60
+Miraculous birth is instantaneous recollection and perfection.
 Without relying on name and form, it is brilliantly clear.
 Regarding the four modes of meditation also: for the beginner,
 The Generation Stage purifying egg-birth is meditated upon principally.
 
-61.Training in accord with the power of gradual habituation: Firm, Greatly Firm,
+61
+Training in accord with the power of gradual habituation: Firm, Greatly Firm,
 And Extremely Firm.
 All are the Samadhi of Suchness,
 The tone of wisdom free from all elaboration.
 
-62.Through the projecting impetus of All-Illuminating Compassion,
+62
+Through the projecting impetus of All-Illuminating Compassion,
 What dawns as the Generation Stage is the unmistaken supreme path of method.
 From the very time of appearance, it is unestablished in nature.
 Profound appearance-emptiness, the path connecting method and wisdom.
 
-63.A Generation Stage with object-fixation contrary to that
+63
+A Generation Stage with object-fixation contrary to that
 Exists even among Mutineers [Tirthikas] and types of demons.
 Regarding the Bodhisattva Path of Seeing in Mantra:
 It is called the Supreme Siddhi of Mahamudra.
 
-64.The method for making the very renowned [Mahamudra] manifest:
+64
+The method for making the very renowned [Mahamudra] manifest:
 The aspect of appearance clear as the deity's body is the Accumulation of Merit.
 Regarding that, the nature unestablished is Wisdom.
 Relying on the two accumulations as the near cause, the sharp faculties...
 
-65.And the four types of Vidyadharas connected to the five paths,
+65
+And the four types of Vidyadharas connected to the five paths,
 From the staircase itself, possessing the five certainties, etc.
 Proceed to the field of the Five Kayas like a magical illusion.
 
-66.Secondly, regarding the Perfection Stage itself:
+66
+Secondly, regarding the Perfection Stage itself:
 According to the Father Tantras: the winds of the five elements
 Being utterly purified generates the wisdom of clarity-emptiness.
 According to the Mother Tantras: for the sake of generating the wisdom
 Of melting bliss within the elements, possessing the method of one's own body; and...
 
-67.Relying on another's body generates the wisdom of the four joys.
+67
+Relying on another's body generates the wisdom of the four joys.
 According to the Non-dual Tantra: the separated-from-one-and-many
 Great Essence Drop (Bindu), the Luminosity, is taken as principal.
 The former two are paths of appearance with object-fixation.
 
-68.The latter one is Luminosity without appearance.
+68
+The latter one is Luminosity without appearance.
 Abiding in the faction of the first [Conceptual Perfection Stage]: the channels; and
 The arrangement of the moving winds; and the Bodhichitta.
 Abiding in [these] three is the City of the Vajra Aggregate.
 
-69.In the beginning of taking the place of the human womb,
+69
+In the beginning of taking the place of the human womb,
 The two eyes and the channel knot of the navel are formed.
 Depending on that, the body is generated; the refined
 Three channels abiding like pillars inside.
 
-70.Outwardly, body and speech; inwardly, the three afflictions;
+70
+Outwardly, body and speech; inwardly, the three afflictions;
 Secretly, acting as the support for Body, Speech, and Mind.
 The three syllables abide; the upper and lower tips of the Central Channel
 Are planted in the Brahma Aperture and the Secret Place, the two.
 
-71.Right and left, Roma and Kyangma, white and red.
+71
+Right and left, Roma and Kyangma, white and red.
 In women, it is reversed, so Kyangma is right.
 The Central Channel is pale blue; by the two [side channels] in the manner of a sheep's pen [loops]
 Twenty-one knots are made.
 
-72.Respectively, Body, Speech, Mind—or the Four/Five Kayas
+72
+Respectively, Body, Speech, Mind—or the Four/Five Kayas
 And the Six Paramitas—the channel petals of the wheels of number.
 [Through] subtracting and adding, the mode of the base of purification and the purifier.
 At the navel, sixty-four; at the throat...
 
-73.Two sets of eight [16]; and at the heart, eight channel petals.
+73
+Two sets of eight [16]; and at the heart, eight channel petals.
 At the crown, thirty-two; at the Bliss-Preserver [Secret Place],
 Seventy-two. Similarly, at the Ushnisha,
 It is known as the Wheel of the Space Element.
 
-74.At each wheel and at their individual intervals,
+74
+At each wheel and at their individual intervals,
 Twelve transfers, the time-conjunctions of the winds, and
 Similarly, the twelve dependent arisings abide.
 Regarding the elements, the transfers are the reverse order of abandonment.
 
-75.When reaching the Wisdom Wheel of the secret place,
+75
+When reaching the Wisdom Wheel of the secret place,
 One transfer of wind and one dependent arising
 Having ceased, the realization of the First Ground dawns.
 Gradually, up to the Wheel of the Space Element...
 
-76.Through the reversing of the portion of each wind and dependent arising,
+76
+Through the reversing of the portion of each wind and dependent arising,
 At the end of the twelve grounds being fully perfected,
 When the Bindu mixes with the element of Space,
 One manifestly awakens; the system of the Primordial Buddha.
 
-77.On the channel petals whose numbers agree with those,
+77
+On the channel petals whose numbers agree with those,
 The seeds of the six families abiding as bases of purification
 Are purified by the six Sages of Awareness, the purifiers,
 And the Six Paramitas.
 
-78.The five aspects of distinct wisdom
+78
+The five aspects of distinct wisdom
 And the inconceivable one—six—are obtained.
 Similarly, the Wheel of Peace at the heart and
 The Wheel of Wrath at the crown—the two...
 
-79.Channel petals equal in number to the deities; and
+79
+Channel petals equal in number to the deities; and
 Through the two doors of karma, upper and lower, the liberation of method.
 The system of the Mayajala, the King of Tantra.
 Upon the moving winds, the two: major and minor [elements].
 
-80.The major: in one full day and night,
+80
+The major: in one full day and night,
 It courses in the number of twenty-one thousand six hundred.
 The minor: of the eighty-four thousand conceptual thoughts,
 They abide like mounts equal in number.
 
-81.The root winds are the Life-Supporting, the Fire-Accompanying,
+81
+The root winds are the Life-Supporting, the Fire-Accompanying,
 The All-Pervading, the Upward-Moving, and the Downward-Clearing—abiding as five.
 Their functions, respectively: sustaining life, generating digestive heat,
 Lifting the body and acting, and the going and coming of the breath, and...
 
-82.Acting to eject feces and urine and to move the body.
+82
+Acting to eject feces and urine and to move the body.
 Furthermore, the male Upward-Moving wind acts in the upper body;
 The female Downward-Clearing acts in the lower; the [others] are equal to neutral.
 The inner winds possess the bad colors of the five elements.
 
-83.The support for the abiding of the aggregates, elements, and sense fields;
+83
+The support for the abiding of the aggregates, elements, and sense fields;
 The five poisons and the five primal wisdoms
 Act as the support for their spreading like cause and effect.
 In particular, when the five refined winds enter the central channel...
 
-84.The exhaustions of Earth, Water, Fire, Wind, and Space [elements],
+84
+The exhaustions of Earth, Water, Fire, Wind, and Space [elements],
 And samadhi, qualities, and miracles are accomplished.
 The secret winds are the five primal wisdoms;
 They are contrary to the aspect of gross phenomena.
 
-85.Thirdly, the arrangement of the element of Bodhichitta:
+85
+Thirdly, the arrangement of the element of Bodhichitta:
 From the Roma, the nectar of the moon; and
 From the Kyangma, the sun-dust descends.
 The tip of the male Kyangma and the female Roma...
 
-86.Because they are knotted, the leakage of the two elements is guarded.
+86
+Because they are knotted, the leakage of the two elements is guarded.
 Therefore, since they spread from those two otherwise [if not knotted],
 At all the channel knots, the refined white and red [elements],
 In the manner of Dakas and Yoginis...
 
-87.By embracing and uniting, they take the offering of bliss-emptiness.
+87
+By embracing and uniting, they take the offering of bliss-emptiness.
 In brief, the abiding channels are like irrigation ditches;
 The moving wind is the driver, the charioteer;
 The Bodhichitta is like water collecting where it is led.
 
-88.In the Space of Rahu [Central Channel] where six wheels are stacked,
+88
+In the Space of Rahu [Central Channel] where six wheels are stacked,
 Through being drawn by the chariot of Life and Exertion [winds],
 The knots of the Central Channel are released two by two, and
 The refined portions of the wind and elements, two by two...
 
-89.Enter the belly of Rahu; beginning from the First Ground,
+89
+Enter the belly of Rahu; beginning from the First Ground,
 The qualities of the Ten Grounds increase and go to the Ushnisha.
 In particular, the system of the Net of Magical Illusion [Guhyagarbha] and the Secret Drop:
 The vessel and contents perfected in oneself; the City of the Aggregates.
 
-90.The Sugatagarbha, indeterminate in the three times,
+90
+The Sugatagarbha, indeterminate in the three times,
 Manifestly awakening as the entirety, the Vajra Throne.
 In the hollow of the glorious knot of the heart,
 There are eight refined channels abiding.
 
-91.The three central ones are the support of the Three Kayas and Dharmata.
+91
+The three central ones are the support of the Three Kayas and Dharmata.
 The one in front is the channel where wisdom dawns.
 In the back, from the channel of qualities, the fields dawn.
 On the left, the three channels of one's own continuum are the support of delusive appearance.
 
-92.In the center of each, the syllables of Samsara and Nirvana
+92
+In the center of each, the syllables of Samsara and Nirvana
 Abide in the manner of the base of purification and the purifier.
 They are purified by the syllables of Body, Speech, and Mind.
 In the center of all, the refined white channel...
 
-93.Inside the subtle [channel], about a tenth of a horse-hair's width,
+93
+Inside the subtle [channel], about a tenth of a horse-hair's width,
 The light where the refined dust and breath are mixed,
 Possessing five colors, extremely subtle.
 It is the support of the Bodhichitta, the nature of luminosity.
 
-94.The Celestial Palace where the Five Families of Samantabhadra dwell.
+94
+The Celestial Palace where the Five Families of Samantabhadra dwell.
 At the time when the refined wind and mind gather there,
 The vision of the fields of Nirvana dawns in its entirety.
 The five lights of the appearance portion and the Dharmakaya of the emptiness portion...
 
-95.By mixing into one taste, the two accumulations are completed by the path.
+95
+By mixing into one taste, the two accumulations are completed by the path.
 That known as the "Dense Array of the Pure Akanishtha"—
 It does not exist elsewhere; the entirety of obscurations,
 At the time when they are abandoned, is spontaneously established there.
 
-96.Therefore, the body is the support of great primal wisdom.
+96
+Therefore, the body is the support of great primal wisdom.
 Even in Samsara itself, regarding the manner of the essence's abiding,
 There is neither impairment nor inferiority.
 The ultimate Bodhichitta which is unchanging...
 
-97.Is like sesame oil pervading the sesame seed.
+97
+Is like sesame oil pervading the sesame seed.
 Thus, having known the natural state of the Vajra Body
 And the manner of the abiding of the primordial ground,
 Tummo [inner heat] and the Illusory Body, the Path of Dream...
 
-98.Luminosity, Bardo, and Phowa—the six aspects.
+98
+Luminosity, Bardo, and Phowa—the six aspects.
 Although accomplished by the exertion of the individual,
 Because they do not depend on other conditions, they are the Method Path of one's own body.
 Having gone to the point where channels, drops, and winds act harmfully, then...
 
-99.Taking bliss-emptiness as the path is the Other-Body [consort practice].
+99
+Taking bliss-emptiness as the path is the Other-Body [consort practice].
 Since all [practices] proceed as the path, it is the Path of Methods.
 Secondly, regarding the Perfection Stage without appearance:
 Whatever the transformed Generation and Perfection stages are...
 
-100.All appearances of the pure vessel and contents, stable and moving,
+100
+All appearances of the pure vessel and contents, stable and moving,
 Melt into light; the seeds at the heart
 Dissolve into the Bindu; that also, gradually from the bottom,
 Becomes emptiness, the nature of the sky itself.
 
-101.One places [the mind] in the very domain of Great Primal Wisdom.
+101
+One places [the mind] in the very domain of Great Primal Wisdom.
 By the Generation Stage, the attachment to the truth of appearance is stopped.
 By the Perfection Stage, the fixation on illusion is abandoned.
 Bliss, clarity, and non-thought—co-emergent wisdom dawns.
 
-102.The profound Unsurpassed Perfection Stages
+102
+The profound Unsurpassed Perfection Stages
 Are not taught in the Tantras below the Unsurpassed.
 The nearby path where one with sharp faculties becomes Vajradhara in one life;
 It is called "The Hidden, Extremely Profound."
 
-103.Third, the Samaya which acts as the harmonious friend:
+103
+Third, the Samaya which acts as the harmonious friend:
 One guards the discipline of entering Mantra without deterioration.
 Not confusing the dependent arising of method and antidote,
 One practices like a peacock entering upon aconite poison.
 
-104.Regarding the difference between Samaya and Vow:
+104
+Regarding the difference between Samaya and Vow:
 Samaya is not to be transcended;
 Vow is the certainty of what to do and what not to do.
 They are one in essence, distinguished by their isolates [conceptual aspects].
 
-105.Furthermore, if it is a Mantra Vow, Samaya is mixed with it.
+105
+Furthermore, if it is a Mantra Vow, Samaya is mixed with it.
 If it is a Samaya, it does not [necessarily] imply the Vow is mixed.
 The general meaning of all: Not having obtained Mantra Vows, and
 In the nature of notions such as madness...
 
-106.For one who does not abide [in sanity], there is neither downfall nor siddhi.
+106
+For one who does not abide [in sanity], there is neither downfall nor siddhi.
 One who possesses Mantra Vows and has not spoiled or given them up,
 Whose consciousness abides in its natural state—
 That is the vessel for both downfalls and siddhis.
 
-107.Regarding root downfalls other than Bodhichitta,
+107
+Regarding root downfalls other than Bodhichitta,
 It is called "Entanglement" (Kun dkris); if one still does it,
 And the desire to do it has not reversed, and there is no regret for it,
 And one possesses knowledge [lack] of shame regarding oneself...
 
-108.And lack of embarrassment regarding others;
+108
+And lack of embarrassment regarding others;
 At the end of an action where the motivation of the three factors is complete,
 If it exists continuously for that duration,
 It becomes a Defeat (Pham pa) where the Entanglements are complete.
 
-109.If there is no continuity of the time [duration] of the obstacle,
+109
+If there is no continuity of the time [duration] of the obstacle,
 Or if one of the three factors is incomplete,
 The branch of action is not assembled; it becomes a Gross Infraction (Sborm po).
 Knowing that, regarding all Roots and Branches...
 
-110.Do not abandon with the mind; do not discard with the body.
+110
+Do not abandon with the mind; do not discard with the body.
 Regarding the division of day and night into six parts:
 Within each part, regarding the fourteen root downfalls,
 One should calculate whether a fault has occurred or not.
 
-111.If stained, generate regret and the mind of restoration.
+111
+If stained, generate regret and the mind of restoration.
 If not stained, meditate on joy and dedicate.
 Whether stained in the past or not, whatever it is,
 Henceforth, even at the cost of life, regarding negative deeds...
 
-112.Rely utterly on the binding mind of "I will not be stained."
+112
+Rely utterly on the binding mind of "I will not be stained."
 Whenever, within any of the six periods,
 One becomes deluded regarding the notion of performing the calculation,
 The fault called "Gross Infraction" (Sborm po) arises.
 
-113.If all six pass, it becomes six Gross Infractions.
+113
+If all six pass, it becomes six Gross Infractions.
 If restoration is not accomplished within that day,
 Upon the rising of the first dawn of the next,
 It is said it becomes twelve Gross Infractions.
 
-114.Regarding branch samayas also, it follows that pattern.
+114
+Regarding branch samayas also, it follows that pattern.
 First, the binding outline cherished generally for Unsurpassed [Tantra].
 One should examine the divisions of the fourteen root downfalls thus:
 First: The Master who has conferred empowerment—what need to mention?
 
-115.One who has explained from a Mantra Tantra even a single verse;
+115
+One who has explained from a Mantra Tantra even a single verse;
 And shown the profound pith instructions of the path—the three.
 To carry contempt, physically or verbally, for the relationship of Dharma;
 For that person, there is no Mantra Siddhi.
 
-116.Second: Regarding the three vows and the points of training,
+116
+Second: Regarding the three vows and the points of training,
 Transgressing the boundaries of permission and prohibition of the Sugata.
 Similarly, regarding the command of a Master possessing characteristics,
 Intended for the place and time—it is to hold it in contempt.
 
-117.Third: The siblings who have mixed in the single row of empowerment;
+117
+Third: The siblings who have mixed in the single row of empowerment;
 To criticize and abuse them. Even if singling out [one],
 Since limitless sentient beings are siblings of the Sugatagarbha,
 Therefore, it is equal for both distant and close siblings.
 
-118.Fourth: Regarding a sentient being with a rough train of thought,
+118
+Fourth: Regarding a sentient being with a rough train of thought,
 Who is tormented by karma in this visible life;
 Abandoning the mind of love by meditating on joy regarding that [suffering]
 Is extremely heavy for a Bodhisattva.
 
-119.What need to mention desiring [them] to be separated from happiness?
+119
+What need to mention desiring [them] to be separated from happiness?
 Fifth: The Bodhichitta of aspiring for the welfare of others;
 Because abandoning the aspiration mind at that moment casts it away,
 It becomes a Defeat with complete Entanglements.
 
-120.Ejecting the jasmine [semen] except in the seven permitted situations.
+120
+Ejecting the jasmine [semen] except in the seven permitted situations.
 Sixth: Scolding the Word of the Victor relying on the three vehicles,
 Saying "The Teacher did not speak this"; and
 Other treatises suitable as causes for karma and siddhis...
 
-121.Despising the authorization and blessing, not viewing it as the Word.
+121
+Despising the authorization and blessing, not viewing it as the Word.
 Seventh: Not performing the ritual of empowerment; and
 Incomplete, impaired, bad vessel, or afraid of the profound;
 Regarding the time and occasion of the Vinaya, or being separated by place...
 
-122.Proclaiming the meaning and intent of the conduct of profound Secret Mantra.
+122
+Proclaiming the meaning and intent of the conduct of profound Secret Mantra.
 Although it is an exception regarding authorization and reading transmission,
 Regarding the identification of "Proclaiming Secrets" here, one examines the vessel.
 
-123.Eighth: The form aggregate is Vairochana, and so on for the five.
+123
+Eighth: The form aggregate is Vairochana, and so on for the five.
 Similarly, regarding sense bases as deities and stars; without knowing that,
 By the intellect of speculation establishing [them] as the Truth of Suffering,
 To despise and to torment [the body] especially by the power of austerity.
 
-124.Ninth: The meaning of Emptiness, naturally pure...
+124
+Ninth: The meaning of Emptiness, naturally pure...
 Is the domain of the Buddhas alone; other than that,
 Regarding the connection with the realm of sentient beings as "interpretive intent,"
 Having entertained doubt, to abandon the guidance [of emptiness].
 
-125.Tenth: To be loving towards those who slander the Three Jewels and the Lama...
+125
+Tenth: To be loving towards those who slander the Three Jewels and the Lama...
 And destroyers of the Teaching, etc., the objects of the rite of wrathful
 Direct conduct; to endure and be patient with them,
 And having become acquainted and friendly, to act lovingly.
 
-126.Eleventh: Measuring the Dharma free of names with valid cognition [logic].
+126
+Eleventh: Measuring the Dharma free of names with valid cognition [logic].
 Just as the "selflessness of phenomena" and the mind contradict substance,
 Viewing the aggregates, etc., as empty by the mind of grasping at supreme;
 Measuring the philosophical tenet of the Unborn by conceptual thought.
 
-127.Twelfth: Regarding disciples who are suitable vessels for Mantra, or...
+127
+Twelfth: Regarding disciples who are suitable vessels for Mantra, or...
 Those possessing the three faiths and striving for the meaning; not teaching the Dharma.
 By bad motivation, upsetting the minds of others,
 Deflecting their interest into the perverted [path].
 
-128.Thirteenth: Regarding the samaya substances to be engaged...
+128
+Thirteenth: Regarding the samaya substances to be engaged...
 Having viewed them as self-existing entities, to abandon some and crave others.
 Not entering under the experience of the conduct of Mantra just as it is,
 Wandering into the path of the two extremes.
 
-129.Fourteenth: Regarding the Yoginis, etc., who have transcended the world,
+129
+Fourteenth: Regarding the Yoginis, etc., who have transcended the world,
 And the Mamos and Dakinis, etc., holding the boundaries;
 Viewing the element of the five [women] as self-existing entities [ordinary];
 Disparaging women who become the support of empowerment.
 
-130.The branches of the fourteen, acting to discard the vows...
+130
+The branches of the fourteen, acting to discard the vows...
 Although not Defeats (Pham pa), regarding the attainment of siddhis
 There are eight Gross Infractions (Sbom po) which are great obstacles:
 Relying on an ordinary woman as a consort (Rig ma)
 Who has not been purified by empowerment, samaya, and vows. And...
 
-131.Taking nectar not in accordance with the ritual
+131
+Taking nectar not in accordance with the ritual
 From the "Well of Memory" [Consort's body] which contradicts the characteristics.
 To those who have not obtained empowerment and especially those lacking faith,
 Showing the body image, text, hand implement, and mudra.
 
-132.At the time of the Wheel of Gathering (Tsog), fighting and
+132
+At the time of the Wheel of Gathering (Tsog), fighting and
 Applying ordinary conduct through babble and jokes.
 To a vessel possessing the Holy Dharma asking questions, while knowing,
 Giving a deceptive answer contrary to that.
 
-133.Staying for a full seven days among Shravakas
+133
+Staying for a full seven days among Shravakas
 Who slander the view and conduct of Mantra and test [the Yogi].
 While not knowing the ritual of the Mantra Tantra and Thatness,
 Associating with the pride and lie of being a Vajra Holder.
 
-134.Having obtained empowerment, explaining the secrets again
+134
+Having obtained empowerment, explaining the secrets again
 To one who possesses doubt and has no faith in Mantra.
 Summarized by Nagarjuna; similarly by Ashvagosha (Dpa' bo) and
 Lakshminkara. Other meanings than that [list]...
 
-135.Conferring empowerment without having purified the approach (recitation); and
+135
+Conferring empowerment without having purified the approach (recitation); and
 Being in a hurry to gather students for consecration and fire puja;
 Other than the Ganachakra, food of the afternoon, etc.—
 Violating the [Pratimoksha] precepts without necessity...
 
-136.Acting as a cause to refute oneself and steal siddhis;
+136
+Acting as a cause to refute oneself and steal siddhis;
 One should examine the Gross Infractions spoken of [in those texts] also.
 Thus, regarding the fourteen root downfalls common to
 Unsurpassed Yoga, those summarized by Bhawilha...
 
-137.Are pervasive to all and utterly renowned.
+137
+Are pervasive to all and utterly renowned.
 Otherwise, regarding the individual systems of the four Tantra sections,
 The definite count of fourteen is clearly spoken of
 In the Kalachakra and the General Tantra Manifest Enlightenment, etc.
 
-138.For the one possessing Yoga, it is easier to die or give up life;
+138
+For the one possessing Yoga, it is easier to die or give up life;
 If one does not practice guarding the samaya at all times,
 For the individual practicing Mantra, other than the two:
 Bad migrations and Buddhahood, there is no third place to go.
 
-139.Therefore, if fallen, having refuted oneself [felt remorse],
+139
+Therefore, if fallen, having refuted oneself [felt remorse],
 Strive immediately in the method of restoring it.
 In particular, the first root downfall is extremely heavy.
 Offer the service of the Lama and the Three Spheres completely pure.
 
-140.Repeat the empowerment and restore the entrance to the vows; and
+140
+Repeat the empowerment and restore the entrance to the vows; and
 Without staying near [in ordinary conduct], take the Self-Entry many times.
 Similarly, regarding the support of embarrassment and shame before others:
 If the Lama is absent, in front of a holder of Mantra vows...
 
-141.With prostrations and subdued conduct, saying one's own name:
+141
+With prostrations and subdued conduct, saying one's own name:
 "Because this and that fault contradictory to the Vinaya
 Of the Vajra Vehicle has occurred..."
 If concealed, oneself will not abide in bliss.
 
-142.Without concealment, having supplicated well, the object of confession
+142
+Without concealment, having supplicated well, the object of confession
 Asks if the fault is seen, or oneself says "I see it."
 The object asks "Henceforth will you bind it?"
 "I will accept it on the crown of my head according to the Dharma and Vinaya."
 
-143.Saying thus three times, perform the skill in means.
+143
+Saying thus three times, perform the skill in means.
 If the restoration is delayed, day by day
 It goes on increasing; as the antidote to that,
 Confess always with the Hundred Syllables complete with the four powers.
 
-144.Recite the words of confession uttering the calculation of the fourteen.
+144
+Recite the words of confession uttering the calculation of the fourteen.
 In particular, the tradition of the Sutra, Maya, and Mind (mdo sgyu sems gsum):
 In the General Sutra: the Vajra of Body, Speech, and Mind—
 Guarding, practicing, and not abandoning the wish-fulfilling...
 
-145.Divided by the accomplishment of objects of knowledge, there are twenty-eight.
+145
+Divided by the accomplishment of objects of knowledge, there are twenty-eight.
 Regarding the five root samayas of the Mayajala (Magical Net) and
 The ten branches explained: regarding the aspect of the Root,
 Not abandoning the Vajra Master and serving him with respect.
 
-146.Not cutting the continuous stream of Mantra and Mudra; and
+146
+Not cutting the continuous stream of Mantra and Mudra; and
 Acting lovingly toward those who have entered the perfect path;
 Not proclaiming the secret meanings to others.
 
-147.The branch samayas are condensed into two sections.
+147
+The branch samayas are condensed into two sections.
 The aspect of the first: not abandoning the five afflictions.
 Knowing the nature, the affliction is Thatness.
 Held by method, it is like aconite eaten by a peacock.
 By knowing them as the Five Families from the beginning, they become Primal Wisdom.
 
-148.The aspect of the second: the five great nectars.
+148
+The aspect of the second: the five great nectars.
 Certainty as what is to be accepted; accepted as the play of Dharmata.
 Accepted by knowing them as the nature of the Five Families.
 Accepted because they are the samaya substances accomplishing siddhi.
 
-149.Accepted because Dakinis gather and siddhis are near.
+149
+Accepted because Dakinis gather and siddhis are near.
 Accepted because it is the discipline of all Buddhas.
 Regarding the definite count of two hundred divisions of parts,
 The system of the Omniscient Rongpa condenses them into twenty.
 
-150.Regarding the Mind Section (Sems sde): Non-existent, Single,
+150
+Regarding the Mind Section (Sems sde): Non-existent, Single,
 Even, and Spontaneously Present—so it is known.
 Free from a boundary to be guarded, regarding the manner of abiding of the essence
 Where no object to be transgressed is observed, it is bound by the knot of samaya.
 
-151.The system of the Vajra King, primordially un-deteriorated.
+151
+The system of the Vajra King, primordially un-deteriorated.
 For the sake of purifying the own-stream of those entered into the path,
 If deteriorated, the restoration is the Supreme Precious Vase.
 
-152.The philosophical tenet of the Arrangement of Samayas (Dam tshig rnam bkod) is:
+152
+The philosophical tenet of the Arrangement of Samayas (Dam tshig rnam bkod) is:
 Regarding the Root: the Body, Speech, and Mind of the Lama—three.
 Outer, Inner, and Secret samayas—three sets of three.
 Abandon killing, unchaste conduct, and stealing.
 Disparaging father, mother, siblings, one's own body, or any Dharma.
 
-153.Stepping on the Lama's shadow; striking the Consort or siblings.
+153
+Stepping on the Lama's shadow; striking the Consort or siblings.
 Regarding the three of Speech: abandon lies, slander, and harsh words.
 Teaching Dharma [without authorization]; not respecting the meaning, mind, and natural state [meditation].
 Not speaking harsh words to the Lama's Consort and siblings.
 
-154.Regarding the three of Mind: the three aspects of mind [malice, covetousness, wrong view]; and
+154
+Regarding the three of Mind: the three aspects of mind [malice, covetousness, wrong view]; and
 Abandoning wrong conduct, meditation, and view.
 The Lama, Deity, and Siblings; View, Meditation, and Session—mindful of all.
 
-155.The twenty-five branches which are the power of method:
+155
+The twenty-five branches which are the power of method:
 Intercourse, union, taking what is not given, lies, meaningless words—
 The five to be practiced are practiced by knowing permission and prohibition.
 Attachment, anger, etc., the five afflictions—
 The five not to be abandoned are free from [being viewed as] self-existing entities.
 
-156.Feces, urine, meat (mamsa), blood (rakta), chyle (zil)—
+156
+Feces, urine, meat (mamsa), blood (rakta), chyle (zil)—
 Regarding the five to be accepted, the dualistic thought of clean and dirty is torn asunder.
 Aggregates, elements, objects, senses, colors—as Deities;
 The five to be known are practiced by the power of wisdom.
 
-157.Vajra, Jewel, Lotus, Karma, Tathagata—
+157
+Vajra, Jewel, Lotus, Karma, Tathagata—
 The five to be accomplished are accomplished by the power of realization and habituation.
 These are the intent of the Clarification of Samaya.
 Similarly, the twenty-five disciplines of the Kalachakra.
 
-158.Guhyasamaja, Buddha Union (Sangs rgyas mnyam sbyor), Secret Moon, etc.
+158
+Guhyasamaja, Buddha Union (Sangs rgyas mnyam sbyor), Secret Moon, etc.
 The general meaning of the Tantra sections of the past and future translations:
 Regarding the vows of the Five Families:
 Buddha [Family]: Yoga, Engaging in Aspiration, and Discipline—the three.
 
-159.Akshobhya: Holding the Vajra, Bell, Mudra, and Lama.
+159
+Akshobhya: Holding the Vajra, Bell, Mudra, and Lama.
 Ratnasambhava: Giving Dharma, Wealth, Fearlessness, and Love.
 Amitabha: Holding the Three Vehicles and explaining the Dharmas.
 Amoghasiddhi: Devotion to offerings, praise, and all activities.
 
-160.In particular, the vows of the Five Families of Unsurpassed [Yoga Tantra]:
+160
+In particular, the vows of the Five Families of Unsurpassed [Yoga Tantra]:
 Those becoming the Vajra Family: regarding "killing the life"—
 Other than the ten fields [of enemies], it is killing the wind and thought in the Central Channel.
 The Jewel Family: regarding "taking what is not given"—
 The qualified Dharani [Consort] and the wealth of beings without fortune;
 Taking Perfect Buddhahood by the power of one's own strength.
 
-161.The Lotus Family: worshipping the one with deer-eyes;
+161
+The Lotus Family: worshipping the one with deer-eyes;
 Engaging thoroughly with the woman of Emptiness.
 Relying on Karma [Mudra], Dharma [Mudra], Samaya [Mudra], and Mahamudra.
 
-162.The Wheel Family: regarding substances and objects,
+162
+The Wheel Family: regarding substances and objects,
 Enjoying the qualities of desire as like a magical illusion.
 The hidden words of the branches of that:
 "Not liberating," "Liberating," etc., are common with the Bodhisattva Grounds.
 
-163.Gods and Demi-gods, and the Secret Ones [Yakshas]—do not despise.
+163
+Gods and Demi-gods, and the Secret Ones [Yakshas]—do not despise.
 Mudra, Mount, Weapon, and Sign—
 "Do not disparage"—the two are explicitly taught.
 
-164.Secret Ones: Yakshas. Mudra: The Body Image [of the deity] is perfected.
+164
+Secret Ones: Yakshas. Mudra: The Body Image [of the deity] is perfected.
 Mount: The Lama's seat and horse, etc.
 Weapon: The types made for the sake of the Deity.
 
-165.Sign: The hand implements of the Deity and the Lama; and...
+165
+Sign: The hand implements of the Deity and the Lama; and...
 Stepping on the shadow of a Stupa; the word "disparage."
 Similarly, offering substances that are old are known as "inferior."
 The shapes of hand implements also are prohibited to be eaten.
 
-166.In particular, killing and taking what is not given, etc.
+166
+In particular, killing and taking what is not given, etc.
 Not distinguishing the division of the literal teaching itself and
 The intent of the interpretive teaching, the Mantrika falls downwards.
 In brief, without realizing the hidden secret,
 Avoid explicitly seeking the concealed secret in all [public contexts].
 
-167.Because he kills a Brahmin every day and performs the deeds of Immediate Retribution,
+167
+Because he kills a Brahmin every day and performs the deeds of Immediate Retribution,
 Yet is suitable as a support for the birth of Mantra vows;
 Therefore, what need to mention the greatness of the methods of Secret Mantra?
 Not knowing the boundaries of downfalls; not respecting the Lama; and...
 
-168.Habituated to carelessness; the four great strengths of affliction.
+168
+Habituated to carelessness; the four great strengths of affliction.
 Added to those "Four Doors of the Arising of Downfalls":
 Great forgetfulness and unclear mindfulness.
 Added [together], they are the six causes of damaged samaya.
 
-169.Therefore, by the antidote of mindfulness and introspection (vigilance),
+169
+Therefore, by the antidote of mindfulness and introspection (vigilance),
 With the care of [a doctor] opening the eyes of the blind,
 Just like guarding [the eyes], in the six sessions of day and night,
 One should scrutinize and examine the points of adopting and discarding.
 
-170.If damaged, the restoration is superior to the lower [vehicles].
+170
+If damaged, the restoration is superior to the lower [vehicles].
 In the Shravaka discipline, if the mind of concealment is not born,
 It exists to be restored seven times; with concealment, even once
 There is no object of restoration; it is like a broken clay pot.
 
-171.The Bodhisattva Vow is like a damaged precious vessel;
+171
+The Bodhisattva Vow is like a damaged precious vessel;
 It is restored by relying on the condition of another, a Spiritual Friend.
 The Secret Mantra Vow is like a dented precious vessel;
 Since it exists to be restored by the power of one's own strength...
 
-172.If the Lama or sibling is disparaged, immediately please and fulfill them.
+172
+If the Lama or sibling is disparaged, immediately please and fulfill them.
 If the Word of Speech is damaged, meditate on Vajra Dharma [Avalokiteshvara]
 And recite the Essence or the Hundred Syllables one hundred thousand times.
 If Mind is damaged, cut speech [silence] for three years.
 
-173.One-pointed equipoise is the method of restoration.
+173
+One-pointed equipoise is the method of restoration.
 Passing one-sixth [of the day/session]: the boundary of transcending the session time.
 "Contradicted," "Damaged," "Transgressed," and "Torn"—so they are called.
 A day, a month, one year, and two years passed.
 
-174.They are suitable to be restored, [though] heavier and heavier.
+174
+They are suitable to be restored, [though] heavier and heavier.
 If three years pass, it is not suitable to be restored.
 If "Contradicted," [restore] by Ganachakra; if "Damaged," fulfill with all possessions.
 If "Transgressed," [restore] by child, wife, and the wealth of jewels.
 
-175.If "Torn," the arrangements of restoring by [giving] life
+175
+If "Torn," the arrangements of restoring by [giving] life
 Are spoken of in the Vajra Sun Arrangement.
 Furthermore, repeating the four empowerments and taking Self-Entry;
 Generation and Perfection, recitation, discipline of non-emission; and...
 
-176.Yoga of the Drop, Fire Puja, sending Torma.
+176
+Yoga of the Drop, Fire Puja, sending Torma.
 Washing the torn mantra and mudra, and burning with Tummo.
 Proclaiming the fault in the presence of the Assembly or a Support.
 Ransoming life, reading the Scriptures, and reciting the Hundred Syllables.
 
-177.Prostrating with the Seven Limbs and building Stupas.
+177
+Prostrating with the Seven Limbs and building Stupas.
 By such methods, it is not [a situation of] reaching the end [hopelessness].
 In particular, by the Confession of Churning the Depths (Dong Sprugs), there is nothing not uncleansed.
 For all those possessing visualization, the mind of regret is especially crucial.
 
-178.If not confessed, in this life happiness and qualities will decline.
+178
+If not confessed, in this life happiness and qualities will decline.
 One will fall into the Vajra Hell which has no equal.
 The one possessing samaya, in sixteen lifetimes, or
 More swiftly: in this [life], or at death, or in the intermediate state...
 
-179.The eight siddhis and the ten powers—outer and inner [two];
+179
+The eight siddhis and the ten powers—outer and inner [two];
 The eight sovereignties and the four types of Vidyadharas;
 The Supreme Siddhi, the Seven Branches of Union;
 Going to the Field of the Five Kayas, the two benefits are spontaneously established.`
       },
       'chapter-11': {
         tib: `།གཞིའི་བཞུགས་ཚུལ་བསྟན་པའི་ཚོམས།
+
 1
 །རྒྱལ་བས་འཁོར་ལོ་བར་པར་རྣམ་ཐར་གསུམ། །བསྟན་བྱའི་ངོ་བོ་སོ་སོ་རང་རིག་ཉིད། །
 སེམས་ཅན་ཁམས་ལ་བདེ་གཤེགས་སྙིང་པོ་རུ། །རང་བཞིན་བཞུགས་ལ་རྫོགས་པ་ཆེན་པོར་གྲགས།
@@ -10001,7 +10284,7 @@ Going to the Field of the Five Kayas, the two benefits are spontaneously establi
 །སྣང་བ་ཉིད་དང་ལྷན་ཅིག་ཡོད་མེད་བྱེད། །གང་དུའང་མ་རིག་གང་འཛིན་གློ་བུར་རྐྱེན། །
 སྲིད་པའི་བདག་པོ་ང་དང་ང་ཡི་བར། །མེད་བཞིན་འཁྲུལ་པའི་རྩ་བ་ཆོད་གྱུར་ན། །
 ཀུན་བྱེད་རྒྱལ་པོ་རང་བྱུང་རང་ལ་ཐིམ།`,
-        en: `CHAPTER 11: The Ground of Great Completeness.
+        en: `CHAPTER 11: The Ground of Great Completeness
 
 1
 In the Intermediate Wheel, the Conqueror [taught] the Three Liberations.
@@ -10227,6 +10510,7 @@ The All-Creating King dissolves into the Self-Arisen Self.`,
       },
       'chapter-12': {
         tib: `།རང་བཞིན་རྫོགས་པ་ཆེན་པོའི་ལམ་ཐུན་མོང་མ་ཡིན་པ་བསྟན་པའི་ཚོམས།
+
 1
 །།གང་ཞིག་སློབ་པ་མིན་པའི་ཟུང་འཇུག་ལ། །དཀྲི་བའི་ལམ་ཆེན་ཕྱིན་དྲུག་ཡོན་ཏན་ཀུན། །
 ཤེས་རབ་ཕ་རོལ་ཕྱིན་ལ་ཡང་དག་བསྟེན། །ལམ་དེ་ནམ་ཡང་གཞན་དྱི་རྒྱུར་མི་འགྱུར།
@@ -10404,7 +10688,7 @@ The All-Creating King dissolves into the Self-Arisen Self.`,
 མྱ་ངན་འདས་པའི་ལམ་མཆོག་བསྙེན་པར་མཛོད།
 །ཡོན་ཏན་རིན་པོ་ཆེའི་མཛོད་དགའ་བའི་ཆར་ཞེས་བྱ་བ་ལས།
 །རང་བཞིན་རྫོགས་པ་ཆེན་པོའི་ལམ་ཐུན་མོང་མ་ཡིན་པ་བསྟན་པའི་ཚོམས་ཏེ་ལེའུ་བཅུ་གཉིས་པའོ།།`,
-        en: `CHAPTER 12: The Uncommon Path of the Great Completeness.
+        en: `CHAPTER 12: The Uncommon Path of the Great Completeness
 
 1
 That which is the Great Path that leads to
@@ -11035,7 +11319,7 @@ Please rely on the Supreme Path of passing beyond sorrow (Nirvana).`,
 འབྲས་བུ་ལྷུན་གྲུབ་ཆེན་པོའི་གོ་འཕང་ཡིན།
 
 །ཡོན་ཏན་རིན་པོ་ཆེའི་མཛོད་དགའ་བའི་ཆར་ཞེས་བྱ་བ་ལས། །མཐར་ཕྱིན་འབྲས་བུ་སྐུ་དང་ཡེ་ཤེས་བསྟན་པའི་ཚོམས་ཏེ་ལེའུ་བཅུ་གསུམ་པས་རྫོགས་སོ།།`,
-        en: `CHAPTER 13: The Ultimate Result—the Kayas and Wisdoms.
+        en: `CHAPTER 13: The Ultimate Result—the Kayas and Wisdoms
 
 1
 Thus, having well realized the characteristics of the Ground and Path,
@@ -11228,6 +11512,7 @@ In the ninth courtyard, the sixty Mamos.
 Because they are gathered by emanation to tame the misleading guides,
 And appear to the face of the individual tames—obstructors, etc.—
 Therefore, they are not the Mandala of the Self-Appearance Akanishtha.
+
 33
 The tone of Dharmakaya Wisdom clarifying outwardly;
 The place perfected as the Sambhogakaya possessing five perfections.
@@ -11608,6 +11893,7 @@ Is the Go-phang (State/Level) of the Great Spontaneous Result.`,
 
 །སངས་རྒྱས་གཉིས་པ་པདྨ་སམྦྷ་ཝའི་ཞབས་རྡུལ་ལ་སྤྱི་བོས་རེག་པའི་རྫོགས་ཆེན་པ་རང་བྱུང་རྡོ་རྗེ་མཁྱེན་བརྩེ་འོད་ཟེར་གྱིས་དཔལ་ལྡན་པདྨ་འོད་གླིང་དུ་སྦྱར་བའོ། །དགེའོ།། །།`,
         en: `Colophon
+
 1
 Having perfected the analysis of the vessel of my own continuum,
 If I had not obtained the relieving breath of compassion
@@ -11649,7 +11935,6 @@ The View not disturbed by the wind of mental activity;
 The Conduct following after the Holy Sons of the Victors;
 Never becoming a burden to others,
 May the great wave of activity become the glory of beings.
-
 
 The Treasury of Precious Qualities called "The Rain of Joy" was composed at the request of the Dharma Lord (Choje) Drakpuk-pa of Latö, by the Dzogchenpa Rangjung Dorje Khyentse Ozer—who touches with his crown the dust of the feet of the Second Buddha Padmasambhava—in Glorious Pema Oling.`,
         pl: '', ru: '', de: '', fr: ''
@@ -11718,19 +12003,19 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
         if (map.has(s.num)) map.get(s.num).en = s.content.join('\n');
         else map.set(s.num, { num: s.num, tib: '', en: s.content.join('\n') });
       });
-      return Array.from(map.values()).sort((a,b) => (parseInt(a.num)||0) - (parseInt(b.num)||0));
+      return Array.from(map.values()).sort((a, b) => (parseInt(a.num) || 0) - (parseInt(b.num) || 0));
     }
 
     function renderRootText() {
       const body = document.getElementById('rootTextBody');
       if (!body) return;
       const lang = state.targetLang || 'en';
-      
+
       body.innerHTML = rootTextSubsections().map(sec => {
         const isOpen = state.rootTextChaptersOpen.has(sec.key);
         const zipped = zipStanzas(sec.tib, sec[lang]);
-        
-        const content = zipped.length > 0 
+
+        const content = zipped.length > 0
           ? zipped.map(p => `
             <div class="rt-stanza-pair">
               <div class="rt-stanza-tib"><strong>${escHtml(p.num)}</strong> ${p.tib ? escHtml(p.tib) : ''}</div>
