@@ -49,14 +49,18 @@
       line-height: 1.5;
     }
 
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: var(--bg);
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    }
+
     .app-header {
       background: var(--header-bg);
       color: var(--header-text);
       padding: 14px 22px 12px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
     }
 
     .header-label {
@@ -1189,18 +1193,42 @@
     <div class="print-doc-title" id="printDocTitle"></div>
     <div class="print-breadcrumb" id="printBreadcrumb"></div>
   </div>
-  <div class="app-header">
-    <div class="header-label">Sa bche Explorer · Yonten Dzo · Complete Outline by Patrul Rinpoche</div>
-    <span class="header-tib">ཡོན་ཏན་རིན་པོ་ཆེའི་མཛོད་ཀྱི་སྤྱི་དོན་ས་བཅད</span>
-    <span class="header-en">Structural Outline of the Treasury of Precious Qualities</span>
-    <div class="lang-select" id="langSelect">
-      <button class="lang-select-btn" id="langSelectBtn" title="Change language" aria-haspopup="true"
-        aria-expanded="false">
-        <span class="lang-flag" id="langFlag">&#x1F1EC;&#x1F1E7;</span>
-        <span class="lang-code" id="langCode">ENG</span>
-        <span class="lang-caret">&#x25BE;</span>
-      </button>
-      <ul class="lang-menu" id="langMenu" role="menu" hidden></ul>
+  <div class="sticky-header">
+    <div class="app-header">
+      <div class="header-label">Sa bche Explorer · Yonten Dzo · Complete Outline by Patrul Rinpoche</div>
+      <span class="header-tib">ཡོན་ཏན་རིན་པོ་ཆེའི་མཛོད་ཀྱི་སྤྱི་དོན་ས་བཅད</span>
+      <span class="header-en">Structural Outline of the Treasury of Precious Qualities</span>
+      <div class="lang-select" id="langSelect">
+        <button class="lang-select-btn" id="langSelectBtn" title="Change language" aria-haspopup="true"
+          aria-expanded="false">
+          <span class="lang-flag" id="langFlag">&#x1F1EC;&#x1F1E7;</span>
+          <span class="lang-code" id="langCode">ENG</span>
+          <span class="lang-caret">&#x25BE;</span>
+        </button>
+        <ul class="lang-menu" id="langMenu" role="menu" hidden></ul>
+      </div>
+    </div>
+    <div class="controls">
+      <div class="search-wrap">
+        <span class="search-icon">&#x1F50D;</span>
+        <input class="search-box" id="searchBox" type="text" placeholder="Search (diacritics optional)..."
+          autocomplete="off" spellcheck="false">
+        <button class="search-clear" id="searchClear" title="Clear search">&#x2715;</button>
+      </div>
+      <span class="search-count" id="searchCount"></span>
+      <div class="divider"></div>
+      <div class="lang-toggles">
+        <button class="lang-btn tib-btn active" id="btnTib"
+          title="Toggle Tibetan">&#x0F56;&#x0F7C;&#x0F51;&#x0F0B;&#x0F61;&#x0F72;&#x0F42;</button>
+        <button class="lang-btn active" id="btnEng" title="Toggle English">ENG</button>
+      </div>
+      <div class="divider"></div>
+      <div class="size-controls">
+        <button class="btn size-btn" id="btnSizeDown" title="Decrease text size">&#x2212;</button>
+        <button class="btn size-btn" id="btnSizeUp" title="Increase text size">+</button>
+      </div>
+      <div class="divider"></div>
+      <button class="btn" id="btnPrint" title="Print / Save as PDF">Print</button>
     </div>
   </div>
   <div class="intro-section">
@@ -1224,28 +1252,6 @@
       <p>Use the search bar to find topics across Tibetan and English &mdash; diacritics are optional. Click any node to
         see its position in the breadcrumb trail.</p>
     </div>
-  </div>
-  <div class="controls">
-    <div class="search-wrap">
-      <span class="search-icon">&#x1F50D;</span>
-      <input class="search-box" id="searchBox" type="text" placeholder="Search (diacritics optional)..."
-        autocomplete="off" spellcheck="false">
-      <button class="search-clear" id="searchClear" title="Clear search">&#x2715;</button>
-    </div>
-    <span class="search-count" id="searchCount"></span>
-    <div class="divider"></div>
-    <div class="lang-toggles">
-      <button class="lang-btn tib-btn active" id="btnTib"
-        title="Toggle Tibetan">&#x0F56;&#x0F7C;&#x0F51;&#x0F0B;&#x0F61;&#x0F72;&#x0F42;</button>
-      <button class="lang-btn active" id="btnEng" title="Toggle English">ENG</button>
-    </div>
-    <div class="divider"></div>
-    <div class="size-controls">
-      <button class="btn size-btn" id="btnSizeDown" title="Decrease text size">&#x2212;</button>
-      <button class="btn size-btn" id="btnSizeUp" title="Increase text size">+</button>
-    </div>
-    <div class="divider"></div>
-    <button class="btn" id="btnPrint" title="Print / Save as PDF">Print</button>
   </div>
   <div class="breadcrumb-bar empty" id="breadcrumb">Click any node to mark your place</div>
   <div class="tree-section-outer" id="treeSectionOuter">
