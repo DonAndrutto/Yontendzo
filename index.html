@@ -637,12 +637,49 @@
     }
 
     .intro-body p {
-      margin-bottom: 8px;
+      margin-bottom: 12px;
     }
 
     .intro-body .text-title {
       font-weight: 600;
       color: var(--text);
+    }
+
+    .intro-header {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 20px 0 8px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      padding-bottom: 4px;
+    }
+
+    .intro-list {
+      margin: 0 0 16px 20px;
+      padding: 0;
+      list-style-type: disc;
+    }
+
+    .intro-list li {
+      margin-bottom: 8px;
+    }
+
+    .intro-body a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .intro-body a:hover {
+      text-decoration: underline;
+    }
+
+    .intro-body code {
+      background: #f0e9dd;
+      padding: 2px 4px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 12px;
+      color: var(--accent);
     }
 
     .chapter-tag {
@@ -1214,7 +1251,7 @@
               d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z">
             </path>
           </svg>
-          Donate
+          <span id="donateLabel">Donate</span>
         </a>
       </div>
     </div>
@@ -1246,21 +1283,27 @@
       <span class="intro-arrow" id="introArrow">&#x25B6;</span> <span id="aboutLabel">About this text</span>
     </button>
     <div class="intro-body" id="introBody">
-      <p><span
-          class="text-title">&#x0F61;&#x0F7C;&#x0F53;&#x0F0B;&#x0F4F;&#x0F53;&#x0F0B;&#x0F58;&#x0F5B;&#x0F7C;&#x0F51;
-          &middot; Yonten Dzo</span> (<em>Treasury of Precious Qualities</em>) by Jigme Lingpa (1730&ndash;1798) is a
-        comprehensive overview of the entire Buddhist path according to the Nyingma tradition.</p>
-      <p>This explorer presents <strong>Patrul Rinpoche's complete structural outline</strong> (sa bche) of the entire
-        text &mdash; all 13 chapters, covering the three types of individuals, the Six Paramitas, Secret Mantra
-        Vajrayana, and Dzogchen.</p>
-      <p>The outline spans from the <strong>preamble</strong> through the <strong>freedoms and advantages</strong>,
-        <strong>impermanence</strong>, <strong>karma</strong>, the <strong>Four Truths</strong>,
-        <strong>Bodhicitta</strong>, the <strong>Six Perfections</strong> (including the full Wisdom chapter with the
-        four philosophical schools), <strong>Secret Mantra</strong> with empowerments and generation/completion stages,
-        <strong>Dzogchen</strong> ground-path-fruition, and the <strong>five kayas</strong> of the result.
-      </p>
-      <p>Use the search bar to find topics across Tibetan and English &mdash; diacritics are optional. Click any node to
-        see its position in the breadcrumb trail.</p>
+      <p><span class="text-title">ཡོན་ཏན་མཛོད · Yönten Dzö</span> (<em>Treasury of Precious Qualities</em>) by Jigme Lingpa (1730–1798) is a comprehensive overview of the entire Buddhist path according to the Nyingma tradition.</p>
+      <p>This explorer presents <strong>Patrul Rinpoche's complete structural outline</strong> (sa bche) of the entire text — all 13 chapters, covering the three types of individuals, the Six Pāramitās, Secret Mantra Vajrayāna, and Dzogchen.</p>
+      <p>The outline spans from the preamble through the freedoms and advantages, impermanence, karma, the Four Truths, Bodhicitta, the Six Perfections (including the full Wisdom chapter with the four philosophical schools), Secret Mantra with empowerments and generation/completion stages, Dzogchen ground-path-fruition, and the five kāyas of the result.</p>
+      
+      <h4 class="intro-header">What is a Sa Bche?</h4>
+      <p>A <em>sa bche</em> (ས་བཅད།) — literally "division of ground" — is the traditional Tibetan method for mapping the architecture of a text. It works exactly like a directory tree on a computer: every topic is nested inside a larger topic, and every path through the outline — like <code>2.3.3.3.1.2 > Bodhisattva vow > Precepts > Training</code> — is a unique address that tells you precisely where you are within the whole. Just as folders contain subfolders on a hard drive, each division of the sa bche contains further subdivisions, and the numbered path from root to leaf is your coordinate within the text's total structure.</p>
+      <p>Sa bche works like a mind-map. Great scholastic commentators used the sa bche as an analytical instrument — a complete logical decomposition of the text's argument. It reveals how each topic relates to every other: what contains what, what precedes what, and at what level of specificity any given passage operates. To read a text without its sa bche is like navigating a city without a map. To read it with the sa bche is to see the entire city from above while standing on any given street.</p>
+      <p>Patrul Rinpoche's outline of the Yönten Dzö is among the most meticulous such structures in the Nyingma scholastic tradition — mapping Jigme Lingpa's verses from the broadest division (preamble, body, conclusion) down through as many as twelve levels of nesting in the tantric chapters.</p>
+      
+      <h4 class="intro-header">Functionality</h4>
+      <ul class="intro-list">
+        <li><strong>Structural outline</strong> — Expand and collapse the tree to explore the text's architecture at any depth. The breadcrumb trail at the top always shows your current position within the whole.</li>
+        <li><strong>Root text</strong> — Tap any chapter heading in the structural outline to jump directly to that chapter's root verses.</li>
+        <li><strong>Language selector</strong> — Switch between Tibetan, English, Polish, Russian, German, and French for chapter headings and root text display.</li>
+        <li><strong>Text size</strong> — Adjust the font size for comfortable reading on any device.</li>
+        <li><strong>Search</strong> — Find topics across Tibetan and English. Diacritics are optional — searching "sutra" will find "sūtra."</li>
+        <li><strong>Custom PDF</strong> — Press Print to generate a PDF of the currently selected path and its children — useful for creating focused study handouts of any section.</li>
+      </ul>
+      
+      <h4 class="intro-header">Credits</h4>
+      <p>Developed by <strong>Andrzej R. Rybszleger</strong>, 2026. Contact: <a href="mailto:rybszlegerr@gmail.com">rybszlegerr@gmail.com</a></p>
     </div>
   </div>
   <div class="breadcrumb-bar empty" id="breadcrumb">Click any node to mark your place</div>
@@ -3149,6 +3192,116 @@
       // "2.1": { pl: "...", ru: "...", de: "...", fr: "..." },
     };
 
+    const ABOUT_CONTENT = {
+      en: `
+      <p><span class="text-title">ཡོན་ཏན་མཛོད · Yönten Dzö</span> (<em>Treasury of Precious Qualities</em>) by Jigme Lingpa (1730–1798) is a comprehensive overview of the entire Buddhist path according to the Nyingma tradition.</p>
+      <p>This explorer presents <strong>Patrul Rinpoche's complete structural outline</strong> (sa bche) of the entire text — all 13 chapters, covering the three types of individuals, the Six Pāramitās, Secret Mantra Vajrayāna, and Dzogchen.</p>
+      <p>The outline spans from the preamble through the freedoms and advantages, impermanence, karma, the Four Truths, Bodhicitta, the Six Perfections (including the full Wisdom chapter with the four philosophical schools), Secret Mantra with empowerments and generation/completion stages, Dzogchen ground-path-fruition, and the five kāyas of the result.</p>
+      
+      <h4 class="intro-header">What is a Sa Bche?</h4>
+      <p>A <em>sa bche</em> (ས་བཅད།) — literally "division of ground" — is the traditional Tibetan method for mapping the architecture of a text. It works exactly like a directory tree on a computer: every topic is nested inside a larger topic, and every path through the outline — like <code>2.3.3.3.1.2 > Bodhisattva vow > Precepts > Training</code> — is a unique address that tells you precisely where you are within the whole. Just as folders contain subfolders on a hard drive, each division of the sa bche contains further subdivisions, and the numbered path from root to leaf is your coordinate within the text's total structure.</p>
+      <p>Sa bche works like a mind-map. Great scholastic commentators used the sa bche as an analytical instrument — a complete logical decomposition of the text's argument. It reveals how each topic relates to every other: what contains what, what precedes what, and at what level of specificity any given passage operates. To read a text without its sa bche is like navigating a city without a map. To read it with the sa bche is to see the entire city from above while standing on any given street.</p>
+      <p>Patrul Rinpoche's outline of the Yönten Dzö is among the most meticulous such structures in the Nyingma scholastic tradition — mapping Jigme Lingpa's verses from the broadest division (preamble, body, conclusion) down through as many as twelve levels of nesting in the tantric chapters.</p>
+      
+      <h4 class="intro-header">Functionality</h4>
+      <ul class="intro-list">
+        <li><strong>Structural outline</strong> — Expand and collapse the tree to explore the text's architecture at any depth. The breadcrumb trail at the top always shows your current position within the whole.</li>
+        <li><strong>Root text</strong> — Tap any chapter heading in the structural outline to jump directly to that chapter's root verses.</li>
+        <li><strong>Language selector</strong> — Switch between Tibetan, English, Polish, Russian, German, and French for chapter headings and root text display.</li>
+        <li><strong>Text size</strong> — Adjust the font size for comfortable reading on any device.</li>
+        <li><strong>Search</strong> — Find topics across Tibetan and English. Diacritics are optional — searching "sutra" will find "sūtra."</li>
+        <li><strong>Custom PDF</strong> — Press Print to generate a PDF of the currently selected path and its children — useful for creating focused study handouts of any section.</li>
+      </ul>
+      
+      <h4 class="intro-header">Credits</h4>
+      <p>Developed by <strong>Andrzej R. Rybszleger</strong>, 2026. Contact: <a href="mailto:rybszlegerr@gmail.com">rybszlegerr@gmail.com</a></p>
+    `,
+      pl: `
+      <p><span class="text-title">ཡོན་ཏན་མཛོད · Yönten Dzö</span> (Skarbnica Cennych Właściwości) autorstwa Dżigme Lingpy (1730–1798) to wszechstronny przegląd całej buddyjskiej ścieżki według tradycji Nyingma.</p>
+      <p>Niniejszy eksplorator przedstawia pełny zarys strukturalny (sa bcze) całego tekstu opracowany przez Patrula Rinpocze — wszystkie 13 rozdziałów, obejmujących trzy typy jednostek, Sześć Pāramit, Tajemną Mantrę Wadźrajany oraz Dzogczen.</p>
+      <p>Zarys obejmuje: od prologu, przez wolności i sprzyjające warunki, nietrwałość, karmę, Cztery Prawdy, Bodhićittę, Sześć Doskonałości (w tym pełny rozdział o Mądrości z czterema szkołami filozoficznymi), Tajemną Mantrę z upoważnieniami oraz fazami powstawania i dopełnienia, podstawę-ścieżkę-owoc Dzogczen, aż po pięć kaj wyniku.</p>
+      <h4 class="intro-header">Czym jest sa bcze?</h4>
+      <p>Sa bcze (ས་བཅད།) — dosłownie „podział terenu" — to tradycyjna tybetańska metoda odwzorowania architektury tekstu. Działa dokładnie jak drzewo katalogów na komputerze: każdy temat jest zagnieżdżony w większym temacie, a każda ścieżka przez zarys — np. <code>2.3.3.3.1.2 > Ślubowanie bodhisattwy > Wskazania > Trening</code> — stanowi unikalny adres, który precyzyjnie wskazuje położenie w obrębie całości. Tak jak foldery zawierają podfoldery na dysku twardym, każdy podział sa bcze zawiera dalsze podpodziały, a numerowana ścieżka od korzenia do liścia to współrzędna danego fragmentu w całej strukturze tekstu.</p>
+      <p>Sa bcze działa jak mapa myśli. Wielcy scholastyczni komentatorzy używali sa bcze jako narzędzia analitycznego — pełnej logicznej dekompozycji argumentacji tekstu. Ujawnia ono, jak każdy temat odnosi się do każdego innego: co zawiera co, co poprzedza co i na jakim poziomie szczegółowości działa dany fragment. Czytać tekst bez sa bcze to jak poruszać się po mieście bez mapy. Czytać go z sa bcze — to widzieć całe miasto z góry, stojąc na dowolnej ulicy.</p>
+      <p>Zarys Yönten Dzö opracowany przez Patrula Rinpocze należy do najbardziej skrupulatnych tego typu struktur w scholastycznej tradycji Nyingma — odwzorowuje wersy Dżigme Lingpy od najszerszego podziału (prolog, część główna, konkluzja) aż po dwanaście poziomów zagnieżdżenia w rozdziałach tantrycznych.</p>
+      <h4 class="intro-header">Funkcjonalność</h4>
+      <ul class="intro-list">
+        <li><strong>Zarys strukturalny</strong> — Rozwijaj i zwijaj drzewo, aby eksplorować architekturę tekstu na dowolnej głębokości. Ścieżka nawigacyjna u góry zawsze pokazuje bieżącą pozycję w obrębie całości.</li>
+        <li><strong>Tekst źródłowy</strong> — Dotknij nagłówka rozdziału w zarysie strukturalnym, aby przejść bezpośrednio do wersów źródłowych danego rozdziału.</li>
+        <li><strong>Wybór języka</strong> — Przełączaj między tybetańskim, angielskim, polskim, rosyjskim, niemieckim i francuskim dla nagłówków rozdziałów i wyświetlania tekstu źródłowego.</li>
+        <li><strong>Rozmiar tekstu</strong> — Dostosuj wielkość czcionki dla wygodnego czytania na dowolnym urządzeniu.</li>
+        <li><strong>Wyszukiwanie</strong> — Znajdź tematy w tybetańskim i angielskim. Znaki diakrytyczne są opcjonalne — wyszukanie „sutra" znajdzie również „sūtra".</li>
+        <li><strong>Własny PDF</strong> — Naciśnij Drukuj, aby wygenerować PDF aktualnie wybranej ścieżki i jej elementów podrzędnych — przydatne do tworzenia materiałów do nauki z wybranej sekcji.</li>
+      </ul>
+      <p><em>Uwaga: Pełna obsługa języka polskiego w interfejsie i treści jest w przygotowaniu.</em></p>
+      <h4 class="intro-header">Autorzy</h4>
+      <p>Opracowane przez <strong>Andrzeja R. Rybszlegera</strong>, 2026. Kontakt: <a href="mailto:rybszlegerr@gmail.com">rybszlegerr@gmail.com</a></p>
+    `,
+      ru: `
+      <p><span class="text-title">ཡོན་ཏན་མཛོད · Йонтен Дзо</span> (Сокровищница Драгоценных Качеств) Джигме Лингпы (1730–1798) — это всеобъемлющий обзор всего буддийского пути согласно традиции Ньингма.</p>
+      <p>Данный обозреватель представляет полную структурную схему (са че) всего текста, составленную Патрулом Ринпоче, — все 13 глав, охватывающих три типа личностей, Шесть Парамит, Тайную Мантру Ваджраяны и Дзогчен.</p>
+      <p>Схема простирается от пролога через свободы и благоприятные условия, непостоянство, карму, Четыре Истины, Бодхичитту, Шесть Совершенств (включая полную главу о Мудрости с четырьмя философскими школами), Тайную Мантру с посвящениями и стадиями зарождения и завершения, основу-путь-плод Дзогчена и пять кай результата.</p>
+      <h4 class="intro-header">Что такое са че?</h4>
+      <p>Са че (ས་བཅད།) — буквально «деление территории» — это традиционный тибетский метод отображения архитектуры текста. Он работает точно как дерево каталогов на компьютере: каждая тема вложена в более крупную тему, а каждый путь через схему — например, <code>2.3.3.3.1.2 > Обет бодхисаттвы > Заповеди > Тренировка</code> — является уникальным адресом, точно указывающим местоположение в пределах целого. Подобно тому, как папки содержат подпапки на жёстком диске, каждое деление са че содержит дальнейшие подразделения, а нумерованный путь от корня до листа — это координата данного фрагмента в общей структуре текста.</p>
+      <p>Са че работает как ментальная карта. Великие схоластические комментаторы использовали са че как аналитический инструмент — полное логическое разложение аргументации текста. Он раскрывает, как каждая тема соотносится с любой другой: что содержит что, что предшествует чему и на каком уровне детализации работает любой данный фрагмент. Читать текст без са че — всё равно что ориентироваться в городе без карты. Читать его с са че — значит видеть весь город сверху, стоя на любой улице.</p>
+      <p>Схема Йонтен Дзо, составленная Патрулом Ринпоче, является одной из наиболее тщательных подобных структур в учёной традиции Ньингма — она отображает стихи Джигме Лингпы от самого широкого деления (пролог, основная часть, заключение) до двенадцати уровней вложенности в тантрических главах.</p>
+      <h4 class="intro-header">Функциональность</h4>
+      <ul class="intro-list">
+        <li><strong>Структурная схема</strong> — Разворачивайте и сворачивайте дерево для исследования архитектуры текста на любой глубине. Навигационная цепочка вверху всегда показывает текущую позицию в пределах целого.</li>
+        <li><strong>Коренной текст</strong> — Нажмите на заголовок главы в структурной схеме, чтобы перейти непосредственно к коренным строфам этой главы.</li>
+        <li><strong>Выбор языка</strong> — Переключайтесь между тибетским, английским, польским, русским, немецким и французским для заголовков глав и отображения коренного текста.</li>
+        <li><strong>Размер текста</strong> — Настройте размер шрифта для комфортного чтения на любом устройстве.</li>
+        <li><strong>Поиск</strong> — Находите темы на тибетском и английском. Диакритические знаки необязательны — поиск «sutra» найдёт и «sūtra».</li>
+        <li><strong>Пользовательский PDF</strong> — Нажмите «Печать», чтобы сгенерировать PDF выбранного пути и его подразделов — полезно для создания учебных материалов по любому разделу.</li>
+      </ul>
+      <p><em>Примечание: Полная поддержка русского языка в интерфейсе и содержании находится в подготовке.</em></p>
+      <h4 class="intro-header">Авторство</h4>
+      <p>Разработано <strong>Анджеем Р. Рыбшлегером</strong>, 2026. Контакт: <a href="mailto:rybszlegerr@gmail.com">rybszlegerr@gmail.com</a></p>
+    `,
+      de: `
+      <p><span class="text-title">ཡོན་ཏན་མཛོད · Yönten Dzö</span> (Schatzkammer der Kostbaren Eigenschaften) von Jigme Lingpa (1730–1798) ist ein umfassender Überblick über den gesamten buddhistischen Pfad gemäß der Nyingma-Tradition.</p>
+      <p>Dieser Explorer präsentiert Patrul Rinpoches vollständige strukturelle Gliederung (Sa Bche) des gesamten Textes — alle 13 Kapitel, die die drei Typen von Individuen, die Sechs Pāramitās, die Geheime Mantra-Vajrayāna und Dzogchen umfassen.</p>
+      <p>Die Gliederung erstreckt sich vom Prolog über die Freiheiten und günstigen Bedingungen, Vergänglichkeit, Karma, die Vier Wahrheiten, Bodhicitta, die Sechs Vollkommenheiten (einschließlich des vollständigen Weisheitskapitels mit den vier philosophischen Schulen), die Geheime Mantra mit Ermächtigungen und Erzeugungs-/Vollendungsstufen, Dzogchen-Grund-Pfad-Frucht bis hin zu den fünf Kāyas des Ergebnisses.</p>
+      <h4 class="intro-header">Was ist ein Sa Bche?</h4>
+      <p>Ein Sa Bche (ས་བཅད།) — wörtlich „Einteilung des Bodens" — ist die traditionelle tibetische Methode zur Abbildung der Architektur eines Textes. Es funktioniert genau wie ein Verzeichnisbaum auf einem Computer: Jedes Thema ist in ein größeres Thema eingebettet, und jeder Pfad durch die Gliederung — etwa <code>2.3.3.3.1.2 > Bodhisattva-Gelübde > Vorschriften > Übung</code> — ist eine eindeutige Adresse, die genau anzeigt, wo man sich innerhalb des Ganzen befindet. So wie Ordner Unterordner auf einer Festplatte enthalten, enthält jede Unterteilung des Sa Bche weitere Unterunterteilungen, und der nummerierte Pfad von der Wurzel zum Blatt ist die Koordinate des jeweiligen Abschnitts in der Gesamtstruktur des Textes.</p>
+      <p>Sa Bche funktioniert wie eine Mindmap. Die großen scholastischen Kommentatoren nutzten das Sa Bche als analytisches Instrument — eine vollständige logische Zerlegung der Argumentation des Textes. Es offenbart, wie jedes Thema sich zu jedem anderen verhält: was was enthält, was wem vorausgeht und auf welcher Ebene der Spezifität ein gegebener Abschnitt operiert. Einen Text ohne sein Sa Bche zu lesen ist wie sich in einer Stadt ohne Karte zurechtzufinden. Ihn mit dem Sa Bche zu lesen heißt, die ganze Stadt von oben zu sehen, während man auf einer beliebigen Straße steht.</p>
+      <p>Patrul Rinpoches Gliederung des Yönten Dzö gehört zu den sorgfältigsten Strukturen dieser Art in der Nyingma-Gelehrtentradition — sie bildet Jigme Lingpas Verse von der breitesten Einteilung (Prolog, Hauptteil, Schluss) bis hin zu zwölf Verschachtelungsebenen in den tantrischen Kapiteln ab.</p>
+      <h4 class="intro-header">Funktionalität</h4>
+      <ul class="intro-list">
+        <li><strong>Strukturelle Gliederung</strong> — Erweitern und reduzieren Sie den Baum, um die Architektur des Textes in beliebiger Tiefe zu erkunden. Die Brotkrümel-Navigation oben zeigt stets Ihre aktuelle Position innerhalb des Ganzen an.</li>
+        <li><strong>Wurzeltext</strong> — Tippen Sie auf eine Kapitelüberschrift in der strukturellen Gliederung, um direkt zu den Wurzelversen dieses Kapitels zu springen.</li>
+        <li><strong>Sprachauswahl</strong> — Wechseln Sie zwischen Tibetisch, Englisch, Polnisch, Russisch, Deutsch und Französisch für Kapitelüberschriften und die Anzeige des Wurzeltextes.</li>
+        <li><strong>Textgröße</strong> — Passen Sie die Schriftgröße für komfortables Lesen auf jedem Gerät an.</li>
+        <li><strong>Suche</strong> — Finden Sie Themen auf Tibetisch und Englisch. Diakritische Zeichen sind optional — die Suche nach „sutra" findet auch „sūtra".</li>
+        <li><strong>Individuelles PDF</strong> — Drücken Sie „Drucken", um ein PDF des aktuell ausgewählten Pfades und seiner Unterelemente zu erstellen — nützlich für die Erstellung gezielter Studienmaterialien zu jedem Abschnitt.</li>
+      </ul>
+      <p><em>Hinweis: Die vollständige Unterstützung der deutschen Sprache in Benutzeroberfläche und Inhalten wird zu einem späteren Zeitpunkt implementiert.</em></p>
+      <h4 class="intro-header">Urheberschaft</h4>
+      <p>Entwickelt von <strong>Andrzej R. Rybszleger</strong>, 2026. Kontakt: <a href="mailto:rybszlegerr@gmail.com">rybszlegerr@gmail.com</a></p>
+    `,
+      fr: `
+      <p><span class="text-title">ཡོན་ཏན་མཛོད · Yönten Dzö</span> (Trésor des Précieuses Qualités) de Jigme Lingpa (1730–1798) est un aperçu complet de l'ensemble du chemin bouddhiste selon la tradition Nyingma.</p>
+      <p>Cet explorateur présente le plan structurel complet (sa bche) de l'intégralité du texte élaboré par Patrul Rinpoché — les 13 chapitres, couvrant les trois types d'individus, les Six Pāramitā, le Mantra Secret du Vajrayāna et le Dzogchen.</p>
+      <p>Le plan s'étend du prologue aux libertés et conditions favorables, l'impermanence, le karma, les Quatre Vérités, la Bodhicitta, les Six Perfections (y compris le chapitre complet sur la Sagesse avec les quatre écoles philosophiques), le Mantra Secret avec les initiations et les phases de génération et d'accomplissement, la base-chemin-fruit du Dzogchen, et les cinq kāya du résultat.</p>
+      <h4 class="intro-header">Qu'est-ce qu'un sa bche ?</h4>
+      <p>Un sa bche (ས་བཅད།) — littéralement « division du terrain » — est la méthode tibétaine traditionnelle pour cartographier l'architecture d'un texte. Il fonctionne exactement comme une arborescence de répertoires sur un ordinateur : chaque sujet est imbriqué dans un sujet plus large, et chaque chemin à travers le plan — par exemple <code>2.3.3.3.1.2 > Vœu de bodhisattva > Préceptes > Entraînement</code> — est une adresse unique qui indique précisément où l'on se trouve au sein de l'ensemble. Tout comme les dossiers contiennent des sous-dossiers sur un disque dur, chaque division du sa bche contient des subdivisions supplémentaires, et le chemin numéroté de la racine à la feuille constitue la coordonnée du passage dans la structure totale du texte.</p>
+      <p>Le sa bche fonctionne comme une carte mentale. Les grands commentateurs scolastiques utilisaient le sa bche comme instrument analytique — une décomposition logique complète de l'argumentation du texte. Il révèle comment chaque sujet se rapporte à tous les autres : ce qui contient quoi, ce qui précède quoi, et à quel niveau de spécificité opère tout passage donné. Lire un texte sans son sa bche, c'est comme se repérer dans une ville sans carte. Le lire avec le sa bche, c'est voir la ville entière d'en haut tout en se tenant dans n'importe quelle rue.</p>
+      <p>Le plan du Yönten Dzö élaboré par Patrul Rinpoché figure parmi les structures les plus méticuleuses de ce type dans la tradition scolastique Nyingma — il cartographie les vers de Jigme Lingpa depuis la division la plus large (prologue, corps, conclusion) jusqu'à douze niveaux d'imbrication dans les chapitres tantriques.</p>
+      <h4 class="intro-header">Fonctionnalités</h4>
+      <ul class="intro-list">
+        <li><strong>Plan structurel</strong> — Développez et réduisez l'arborescence pour explorer l'architecture du texte à n'importe quelle profondeur. Le fil d'Ariane en haut affiche toujours votre position actuelle au sein de l'ensemble.</li>
+        <li><strong>Texte racine</strong> — Touchez un titre de chapitre dans le plan structurel pour accéder directement aux vers racines de ce chapitre.</li>
+        <li><strong>Sélecteur de langue</strong> — Basculez entre le tibétain, l'anglais, le polonais, le russe, l'allemand et le français pour les titres de chapitres et l'affichage du texte racine.</li>
+        <li><strong>Taille du texte</strong> — Ajustez la taille de la police pour une lecture confortable sur tout appareil.</li>
+        <li><strong>Recherche</strong> — Trouvez des sujets en tibétain et en anglais. Les signes diacritiques sont facultatifs — la recherche de « sutra » trouvera également « sūtra ».</li>
+        <li><strong>PDF personnalisé</strong> — Appuyez sur « Imprimer » pour générer un PDF du chemin actuellement sélectionné et de ses éléments enfants — utile pour créer des supports d'étude ciblés pour n'importe quelle section.</li>
+      </ul>
+      <p><em>Note : La prise en charge complète de la langue française dans l'interface et le contenu sera mise en œuvre ultérieurement.</em></p>
+      <h4 class="intro-header">Crédits</h4>
+      <p>Développé par <strong>Andrzej R. Rybszleger</strong>, 2026. Contact : <a href="mailto:rybszlegerr@gmail.com">rybszlegerr@gmail.com</a></p>
+    `
+    };
+
     const UI_STRINGS = {
       en: {
         searchPlaceholder: "Search (diacritics optional)...",
@@ -3156,6 +3309,7 @@
         expandAll: "Expand All",
         collapseAll: "Collapse All",
         printBtn: "Print",
+        donateBtn: "Donate",
         emptyBreadcrumb: "Click any node to mark your place",
         structuralOutline: "Structural Outline",
         rootText: "Root Text",
@@ -3186,6 +3340,7 @@
         expandAll: "Rozwiń wszystko",
         collapseAll: "Zwiń wszystko",
         printBtn: "Drukuj",
+        donateBtn: "Wpłać",
         emptyBreadcrumb: "Kliknij dowolny węzeł, aby zaznaczyć swoje miejsce",
         structuralOutline: "Zarys strukturalny",
         rootText: "Tekst rdzenny",
@@ -3216,6 +3371,7 @@
         expandAll: "Развернуть все",
         collapseAll: "Свернуть все",
         printBtn: "Печать",
+        donateBtn: "Помочь",
         emptyBreadcrumb: "Нажмите на любой узел, чтобы отметить место",
         structuralOutline: "Структурный план",
         rootText: "Коренной текст",
@@ -3231,6 +3387,7 @@
         expandAll: "Alle ausklappen",
         collapseAll: "Alle einklappen",
         printBtn: "Drucken",
+        donateBtn: "Spenden",
         emptyBreadcrumb: "Klicken Sie auf einen Knoten, um Ihren Platz zu markieren",
         structuralOutline: "Strukturelle Gliederung",
         rootText: "Wurzeltext",
@@ -3246,6 +3403,7 @@
         expandAll: "Tout développer",
         collapseAll: "Tout réduire",
         printBtn: "Imprimer",
+        donateBtn: "Donner",
         emptyBreadcrumb: "Cliquez sur un nœud pour marquer votre place",
         structuralOutline: "Plan structurel",
         rootText: "Texte racine",
@@ -12305,6 +12463,9 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
       const btnPrint = document.getElementById('btnPrint');
       if (btnPrint) btnPrint.textContent = ui.printBtn;
 
+      const donateLabel = document.getElementById('donateLabel');
+      if (donateLabel) donateLabel.textContent = ui.donateBtn;
+
       const treeSectionLabel = document.getElementById('treeSectionLabel');
       if (treeSectionLabel) treeSectionLabel.textContent = ui.structuralOutline;
 
@@ -12332,6 +12493,11 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
       const breadcrumb = document.getElementById('breadcrumb');
       if (breadcrumb && breadcrumb.classList.contains('empty')) {
         breadcrumb.textContent = ui.emptyBreadcrumb;
+      }
+
+      const introBody = document.getElementById('introBody');
+      if (introBody) {
+        introBody.innerHTML = ABOUT_CONTENT[lang] || ABOUT_CONTENT['en'];
       }
     }
 
