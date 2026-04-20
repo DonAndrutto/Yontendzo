@@ -4104,13 +4104,21 @@
           li.className = 'miller-item' + (isActive ? ' active' : '');
           
           const tibText = state.showTib ? `<div class="crumb-tib">${escHtml(node.tib)}</div>` : '';
-          const enText = state.showTarget ? `<div class="crumb-en">${escHtml(getLabel(node))}</div>` : '';
+          let enText = '';
+          if (state.showTarget) {
+            enText = `<div class="crumb-en">${wrapChapterTags(escHtml(getLabel(node)), node.id)}</div>`;
+          }
+          
+          let countHtml = '';
+          if (hasChildren) {
+            countHtml = ` <span class="child-count">${node.children.length}</span>`;
+          }
           
           li.innerHTML = `
             <div class="miller-text">
                 <span class="crumb-id">${node.id}</span>
                 ${tibText}
-                ${enText}
+                ${enText}${countHtml}
             </div>
             ${hasChildren ? '<span class="miller-arrow">&#x25B6;</span>' : ''}
           `;
@@ -17018,20 +17026,22 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
       if (state.rootTextOpen) renderRootText();
     });
 
-    // Delegated click handler for chapter-tag links inside the tree.
-    document.getElementById('treeContainer').addEventListener('click', e => {
-      const tag = e.target.closest('.chapter-tag');
-      if (!tag) return;
-      e.preventDefault();
-      e.stopPropagation(); // prevent selectNode firing on the row
-      const n = tag.dataset.chapter;
-      if (n) jumpToRootChapter(n);
-    });
-    document.getElementById('treeContainer').addEventListener('keydown', e => {
-      if ((e.key === 'Enter' || e.key === ' ') && e.target.classList && e.target.classList.contains('chapter-tag')) {
+    // Delegated click handler for chapter-tag links inside the tree and miller views.
+    ['treeContainer', 'millerContainer'].forEach(id => {
+      document.getElementById(id).addEventListener('click', e => {
+        const tag = e.target.closest('.chapter-tag');
+        if (!tag) return;
         e.preventDefault();
-        jumpToRootChapter(e.target.dataset.chapter);
-      }
+        e.stopPropagation(); // prevent selectNode firing on the row
+        const n = tag.dataset.chapter;
+        if (n) jumpToRootChapter(n);
+      });
+      document.getElementById(id).addEventListener('keydown', e => {
+        if ((e.key === 'Enter' || e.key === ' ') && e.target.classList && e.target.classList.contains('chapter-tag')) {
+          e.preventDefault();
+          jumpToRootChapter(e.target.dataset.chapter);
+        }
+      });
     });
 
     // --- Language selector ---
