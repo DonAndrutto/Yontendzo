@@ -520,43 +520,23 @@
       display: none;
     }
 
-    .depth-0>.node-row {
-      border-left-color: #7c2d2d;
-    }
+    .depth-0 > .node-row { border-left: 4px solid #7c2d2d; }
+    .depth-1 > .node-row { border-left: 3px solid #8c3e3e; }
+    .depth-2 > .node-row { border-left: 3px solid #9c4f4f; }
+    .depth-3 > .node-row { border-left: 2px solid #ac6060; }
+    .depth-4 > .node-row { border-left: 2px solid #bc7171; }
+    .depth-5 > .node-row { border-left: 2px solid #cc8282; }
+    .depth-6 > .node-row { border-left: 1px solid #dc9393; }
+    .depth-7 > .node-row { border-left: 1px solid #eca4a4; }
+    .depth-8 > .node-row { border-left: 1px solid #fba5a5; }
+    .depth-9 > .node-row { border-left: 1px solid #ffb6b6; }
+    .depth-10 > .node-row { border-left: 1px solid #ffc7c7; }
+    .depth-11 > .node-row { border-left: 1px dashed #ffd8d8; }
 
-    .depth-1>.node-row {
-      border-left-color: #a04020;
-    }
-
-    .depth-2>.node-row {
-      border-left-color: #c46a1a;
-    }
-
-    .depth-3>.node-row {
-      border-left-color: #c49a0a;
-    }
-
-    /* Change deep-depth solid lines to subtle structural guides beyond depth 3 */
-    .tree-node[class*="depth-4"],
-    .tree-node[class*="depth-5"],
-    .tree-node[class*="depth-6"],
-    .tree-node[class*="depth-7"],
-    .tree-node[class*="depth-8"],
-    .tree-node[class*="depth-9"],
-    .tree-node[class*="depth-10"],
-    .tree-node[class*="depth-11"] {
-      border-left: 1px dashed var(--border) !important;
-      margin-left: 4px;
-    }
-
-    .tree-node[class*="depth-4"] > .node-row:not(.selected),
-    .tree-node[class*="depth-5"] > .node-row:not(.selected),
-    .tree-node[class*="depth-6"] > .node-row:not(.selected),
-    .tree-node[class*="depth-7"] > .node-row:not(.selected),
-    .tree-node[class*="depth-8"] > .node-row:not(.selected),
-    .tree-node[class*="depth-9"] > .node-row:not(.selected),
-    .tree-node[class*="depth-10"] > .node-row:not(.selected),
-    .tree-node[class*="depth-11"] > .node-row:not(.selected) {
+    /* Ensure deep-depth structural guides on the tree-node are removed if no longer wanted, 
+       but we previously added them to .tree-node[class*="depth-4"] etc. 
+       Let's keep the focus on the .node-row for now as per the monochromatic request. */
+    .tree-node[class*="depth-"] {
       border-left: none !important;
     }
 
