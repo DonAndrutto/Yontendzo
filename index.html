@@ -3680,6 +3680,7 @@
         aboutToggle: "About this text",
         expandAll: "Expand All",
         collapseAll: "Collapse All",
+        millerToggle: "Columns",
         printBtn: "Print",
         donateBtn: "Donate",
         backToOutline: "Outline",
@@ -3712,6 +3713,7 @@
         aboutToggle: "O tym tekście",
         expandAll: "Rozwiń wszystko",
         collapseAll: "Zwiń wszystko",
+        millerToggle: "Kolumny",
         printBtn: "Drukuj",
         donateBtn: "Wpłać",
         backToOutline: "Zarys",
@@ -3744,6 +3746,7 @@
         aboutToggle: "Об этом тексте",
         expandAll: "Развернуть все",
         collapseAll: "Свернуть все",
+        millerToggle: "Колонки",
         printBtn: "Печать",
         donateBtn: "Помочь",
         backToOutline: "К плану",
@@ -3761,6 +3764,7 @@
         aboutToggle: "Über diesen Text",
         expandAll: "Alle ausklappen",
         collapseAll: "Alle einklappen",
+        millerToggle: "Spalten",
         printBtn: "Drucken",
         donateBtn: "Spenden",
         backToOutline: "Gliederung",
@@ -3778,6 +3782,7 @@
         aboutToggle: "À propos de ce texte",
         expandAll: "Tout développer",
         collapseAll: "Tout réduire",
+        millerToggle: "Colonnes",
         printBtn: "Imprimer",
         donateBtn: "Donner",
         backToOutline: "Plan",
@@ -17105,6 +17110,12 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
 
       const btnPrint = document.getElementById('btnPrint');
       if (btnPrint) btnPrint.textContent = ui.printBtn;
+
+      const btnMillerToggle = document.getElementById('btnMillerToggle');
+      if (btnMillerToggle) {
+        btnMillerToggle.textContent = ui.millerToggle;
+        btnMillerToggle.title = ui.millerToggle;
+      }
 
       const donateLabel = document.getElementById('donateLabel');
       if (donateLabel) donateLabel.textContent = ui.donateBtn;
