@@ -1231,6 +1231,67 @@
         print-color-adjust: exact;
       }
     }
+    /* ========================================================
+       MILLER COLUMNS VIEW 
+       ======================================================== */
+    .miller-container {
+      display: flex;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 16px;
+      gap: 12px;
+      min-height: 500px;
+      align-items: flex-start;
+    }
+
+    .miller-col {
+      flex: 0 0 280px;
+      width: 280px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      max-height: 600px;
+      overflow-y: auto;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    }
+
+    .miller-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .miller-item {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.1s;
+    }
+    .miller-item:last-child { border-bottom: none; }
+    .miller-item:hover { background: rgba(0, 0, 0, 0.03); }
+    
+    .miller-item.active {
+      background: var(--selected-bg);
+      border-left: 3px solid var(--selected-border);
+    }
+
+    .miller-text {
+      flex: 1;
+      pointer-events: none;
+    }
+    
+    .miller-arrow {
+      font-size: 11px;
+      color: var(--selected-border);
+      margin-left: 8px;
+    }
+    
+    .miller-item .crumb-tib { font-family: 'Noto Sans Tibetan', serif; font-size: 14px; color: var(--text); line-height: 1.8; }
+    .miller-item .crumb-en { font-size: 11px; color: var(--text-muted); font-style: italic; }
+    .miller-item .crumb-id { font-size: 10px; color: #b89870; font-weight: bold; margin-right: 4px; }
   </style>
 </head>
 
@@ -1353,12 +1414,14 @@
         <span class="ts-tib">ས་བཅད</span>
       </button>
       <div class="section-actions" id="treeActions">
+        <button class="btn" id="btnMillerToggle" title="Toggle Column View">Columns</button>
         <button class="btn" id="btnTreeExpandAll">Expand All</button>
         <button class="btn" id="btnTreeCollapseAll">Collapse All</button>
       </div>
     </div>
     <div class="tree-section-body" id="treeSectionBody">
       <div class="tree-container" id="treeContainer"></div>
+      <div class="miller-container" id="millerContainer" hidden></div>
     </div>
   </div>
   <section class="root-text-section" id="rootTextSection">
@@ -3982,6 +4045,112 @@
       root.style.setProperty('--font-size-rt-label', (9 + state.textSize) + 'px');
       document.getElementById('btnSizeDown').disabled = state.textSize <= -2;
       document.getElementById('btnSizeUp').disabled = state.textSize >= 4;
+    }
+
+    // --- MILLER COLUMNS LOGIC ---
+    let isMillerMode = false;
+    let millerPath = []; // Tracks the current active path by node IDs
+
+    document.getElementById('btnMillerToggle').addEventListener('click', () => {
+      isMillerMode = !isMillerMode;
+      const btn = document.getElementById('btnMillerToggle');
+      
+      // Toggle visibility between Tree and Miller containers
+      document.getElementById('treeContainer').hidden = isMillerMode;
+      document.getElementById('millerContainer').hidden = !isMillerMode;
+      
+      if (isMillerMode) {
+        btn.classList.add('active');
+        btn.style.background = 'var(--selected-bg)';
+        btn.style.borderColor = 'var(--selected-border)';
+        
+        // Auto-focus path if a node was already selected in tree view
+        if (state.selected) {
+          millerPath = getBreadcrumb(state.selected).map(n => n.id);
+        } else if (millerPath.length === 0 && DATA.nodes.length > 0) {
+          millerPath = [DATA.nodes[0].id]; // Default to chapter 1
+        }
+        renderMillerColumns();
+      } else {
+        btn.classList.remove('active');
+        btn.style.background = '';
+        btn.style.borderColor = '';
+      }
+    });
+
+    function renderMillerColumns() {
+      const container = document.getElementById('millerContainer');
+      container.innerHTML = ''; // Wipe existing columns
+      
+      let currentLevelNodes = DATA.nodes;
+      
+      // Iterate over the length of the tracked path, plus one extra column for the final children
+      for (let depth = 0; depth <= millerPath.length; depth++) {
+        if (!currentLevelNodes || currentLevelNodes.length === 0) break;
+        
+        const col = document.createElement('div');
+        col.className = 'miller-col';
+        const ul = document.createElement('ul');
+        ul.className = 'miller-list';
+        
+        let nextLevelNodes = null;
+        const activeId = millerPath[depth]; 
+
+        currentLevelNodes.forEach(node => {
+          const li = document.createElement('li');
+          const isActive = (node.id === activeId);
+          const hasChildren = node.children && node.children.length > 0;
+          
+          li.className = 'miller-item' + (isActive ? ' active' : '');
+          
+          const tibText = state.showTib ? `<div class="crumb-tib">${escHtml(node.tib)}</div>` : '';
+          const enText = state.showTarget ? `<div class="crumb-en">${escHtml(getLabel(node))}</div>` : '';
+          
+          li.innerHTML = `
+            <div class="miller-text">
+                <span class="crumb-id">${node.id}</span>
+                ${tibText}
+                ${enText}
+            </div>
+            ${hasChildren ? '<span class="miller-arrow">&#x25B6;</span>' : ''}
+          `;
+          
+          // Upon clicking a node in a column
+          li.addEventListener('click', () => {
+            // Cut off any deeper paths beyond the clicked column
+            millerPath = millerPath.slice(0, depth);
+            // Push the newly clicked item to the path
+            millerPath.push(node.id);
+            
+            // Sync with your existing global state and Breadcrumb UI
+            state.selected = node.id;
+            updateBreadcrumb();
+            
+            // Re-render columns from left to right based on the new path
+            renderMillerColumns();
+          });
+          
+          ul.appendChild(li);
+          
+          if (isActive && hasChildren) {
+            nextLevelNodes = node.children;
+          }
+        });
+        
+        col.appendChild(ul);
+        container.appendChild(col);
+        
+        // Pass the children to the next loop iteration to render the next column
+        currentLevelNodes = nextLevelNodes; 
+      }
+      
+      // Slight delay to allow DOM to render before smoothly scrolling to the newest column
+      setTimeout(() => {
+        container.scrollTo({
+            left: container.scrollWidth,
+            behavior: 'smooth'
+        });
+      }, 10);
     }
 
     document.getElementById('btnTib').addEventListener('click', () => { state.showTib = !state.showTib; applyLangFilter(); });
