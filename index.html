@@ -4124,7 +4124,10 @@
           `;
           
           // Upon clicking a node in a column
-          li.addEventListener('click', () => {
+          li.addEventListener('click', (e) => {
+            // If the user clicked a chapter tag, let the delegated handler handle it instead
+            if (e.target.closest('.chapter-tag')) return;
+
             // Cut off any deeper paths beyond the clicked column
             millerPath = millerPath.slice(0, depth);
             // Push the newly clicked item to the path
