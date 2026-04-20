@@ -1064,6 +1064,24 @@
       .section-header-wrap {
         padding: 14px 14px 10px;
       }
+
+      /* Adaptive Depth Squashing: stop indenting deep levels on mobile */
+      .depth-5 .children-wrap,
+      .depth-6 .children-wrap,
+      .depth-7 .children-wrap,
+      .depth-8 .children-wrap,
+      .depth-9 .children-wrap,
+      .depth-10 .children-wrap,
+      .depth-11 .children-wrap {
+         padding-left: 2px !important;
+         margin-left: 0px !important;
+         border-left: none !important;
+      }
+      
+      .node-id {
+         white-space: pre-wrap;
+         word-break: break-all;
+      }
     }
 
     .tree-anchor {
