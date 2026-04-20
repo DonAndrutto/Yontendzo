@@ -4079,6 +4079,7 @@
 
     function renderMillerColumns() {
       const container = document.getElementById('millerContainer');
+      const savedScroll = container.scrollLeft;
       container.innerHTML = ''; // Wipe existing columns
       
       let currentLevelNodes = DATA.nodes;
@@ -4153,6 +4154,9 @@
         // Pass the children to the next loop iteration to render the next column
         currentLevelNodes = nextLevelNodes; 
       }
+      
+      // Restore scroll position immediately to prevent flickering jump to 0
+      container.scrollLeft = savedScroll;
       
       // Slight delay to allow DOM to render before smoothly scrolling
       setTimeout(() => {
