@@ -3988,8 +3988,20 @@
         let cur = nodeIndex[id];
         while (cur && cur.parentId) { state.expanded.add(cur.parentId); cur = nodeIndex[cur.parentId]; }
       }
-      renderTree(); updateBreadcrumb();
-      if (state.selected) { const el = document.querySelector(`[data-id="${CSS.escape(state.selected)}"]`); if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50); }
+      
+      if (isMillerMode && state.selected) {
+        millerPath = getBreadcrumb(state.selected).map(n => n.id);
+        renderMillerColumns();
+      } else {
+        renderTree();
+      }
+      
+      updateBreadcrumb();
+      
+      if (state.selected && !isMillerMode) { 
+        const el = document.querySelector(`[data-id="${CSS.escape(state.selected)}"]`); 
+        if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50); 
+      }
     }
 
     function getBreadcrumb(id) { const path = []; let cur = nodeIndex[id]; while (cur) { path.unshift(cur.node); cur = cur.parentId ? nodeIndex[cur.parentId] : null; } return path; }
@@ -16961,7 +16973,7 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
       <article class="rt-subsection ${isOpen ? 'open' : ''}" id="${sec.anchor}" data-key="${sec.key}">
         <header class="rt-subsection-header" data-key="${sec.key}">
           <span class="rt-subsection-arrow ${isOpen ? 'open' : ''}">&#x25B6;</span>
-          <span class="ts-label">${escHtml(getRTLabel(sec))}</span>
+          <span class="ts-label">${wrapChapterTags(escHtml(getRTLabel(sec)), '')}</span>
           ${backBtn}
         </header>
         <div class="rt-subsection-body">
@@ -16985,10 +16997,12 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
           const id = btn.dataset.treeId;
           if (id && nodeIndex[id]) {
             selectNode(id);
-            requestAnimationFrame(() => {
-              const el = document.querySelector(`[data-id="${CSS.escape(id)}"]`);
-              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            });
+            if (!isMillerMode) {
+              requestAnimationFrame(() => {
+                const el = document.querySelector(`[data-id="${CSS.escape(id)}"]`);
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              });
+            }
           }
         });
       });
@@ -17029,22 +17043,25 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
       if (state.rootTextOpen) renderRootText();
     });
 
-    // Delegated click handler for chapter-tag links inside the tree and miller views.
-    ['treeContainer', 'millerContainer'].forEach(id => {
-      document.getElementById(id).addEventListener('click', e => {
-        const tag = e.target.closest('.chapter-tag');
-        if (!tag) return;
-        e.preventDefault();
-        e.stopPropagation(); // prevent selectNode firing on the row
-        const n = tag.dataset.chapter;
-        if (n) jumpToRootChapter(n);
-      });
-      document.getElementById(id).addEventListener('keydown', e => {
-        if ((e.key === 'Enter' || e.key === ' ') && e.target.classList && e.target.classList.contains('chapter-tag')) {
+    // Delegated click handler for chapter-tag links inside the tree, miller, and root text views.
+    ['treeContainer', 'millerContainer', 'rootTextBody'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('click', e => {
+          const tag = e.target.closest('.chapter-tag');
+          if (!tag) return;
           e.preventDefault();
-          jumpToRootChapter(e.target.dataset.chapter);
-        }
-      });
+          e.stopPropagation(); // prevent other logic firing
+          const n = tag.dataset.chapter;
+          if (n) jumpToRootChapter(n);
+        });
+        el.addEventListener('keydown', e => {
+          if ((e.key === 'Enter' || e.key === ' ') && e.target.classList && e.target.classList.contains('chapter-tag')) {
+            e.preventDefault();
+            jumpToRootChapter(e.target.dataset.chapter);
+          }
+        });
+      }
     });
 
     // --- Language selector ---
