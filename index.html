@@ -4079,25 +4079,43 @@
 
     function renderMillerColumns() {
       const container = document.getElementById('millerContainer');
-      const savedScroll = container.scrollLeft;
-      container.innerHTML = ''; // Wipe existing columns
-      
       let currentLevelNodes = DATA.nodes;
       
-      // Iterate over the length of the tracked path, plus one extra column for the final children
       for (let depth = 0; depth <= millerPath.length; depth++) {
-        if (!currentLevelNodes || currentLevelNodes.length === 0) break;
+        const activeId = millerPath[depth];
+        let col = container.children[depth];
         
-        const col = document.createElement('div');
-        col.className = 'miller-col';
-        const ul = document.createElement('ul');
-        ul.className = 'miller-list';
+        // Reuse existing column if it matches the current node set
+        let reuse = false;
+        if (col) {
+          const firstItem = col.querySelector('.miller-item');
+          if (firstItem && currentLevelNodes && currentLevelNodes.length > 0 && firstItem.dataset.id === currentLevelNodes[0].id) {
+            reuse = true;
+          }
+        }
         
-        let nextLevelNodes = null;
-        const activeId = millerPath[depth]; 
-
+        if (reuse) {
+          // Sync active state without clearing the column
+          const items = col.querySelectorAll('.miller-item');
+          items.forEach(li => {
+            if (li.dataset.id === activeId) li.classList.add('active');
+            else li.classList.remove('active');
+          });
+        } else {
+          // Divergence found: Wipe this column and all subsequent ones
+          while (container.children.length > depth) {
+            container.removeChild(container.lastChild);
+          }
+          
+          if (!currentLevelNodes || currentLevelNodes.length === 0) break;
+          
+          col = document.createElement('div');
+          col.className = 'miller-col';
+          const ul = document.createElement('ul');
+          ul.className = 'miller-list';
         currentLevelNodes.forEach(node => {
           const li = document.createElement('li');
+          li.dataset.id = node.id;
           const isActive = (node.id === activeId);
           const hasChildren = node.children && node.children.length > 0;
           
@@ -4142,40 +4160,27 @@
           });
           
           ul.appendChild(li);
-          
-          if (isActive && hasChildren) {
-            nextLevelNodes = node.children;
-          }
         });
         
         col.appendChild(ul);
         container.appendChild(col);
-        
-        // Pass the children to the next loop iteration to render the next column
-        currentLevelNodes = nextLevelNodes; 
       }
       
-      // Restore scroll position immediately to prevent flickering jump to 0
-      container.scrollLeft = savedScroll;
+      // Prep next level
+      const activeNode = currentLevelNodes ? currentLevelNodes.find(n => n.id === activeId) : null;
+      currentLevelNodes = (activeNode && activeNode.children) ? activeNode.children : null;
+    }
       
-      // Slight delay to allow DOM to render before smoothly scrolling
+      // Smart scroll to the focus column
       setTimeout(() => {
-        const activeItem = container.querySelector('.miller-item.active');
-        if (activeItem) {
-          const col = activeItem.closest('.miller-col');
-          if (col) {
-            // Scroll so the active column is centered in the view
-            col.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-            return;
-          }
-        }
+        const activeItems = container.querySelectorAll('.miller-item.active');
+        const targetItem = activeItems.length > 0 ? activeItems[activeItems.length - 1] : null;
+        const targetCol = targetItem ? targetItem.closest('.miller-col') : container.lastElementChild;
         
-        // Fallback: scroll to the end
-        container.scrollTo({
-            left: container.scrollWidth,
-            behavior: 'smooth'
-        });
-      }, 10);
+        if (targetCol) {
+          targetCol.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+      }, 50);
     }
 
     document.getElementById('btnTib').addEventListener('click', () => { state.showTib = !state.showTib; applyLangFilter(); });
