@@ -4154,8 +4154,19 @@
         currentLevelNodes = nextLevelNodes; 
       }
       
-      // Slight delay to allow DOM to render before smoothly scrolling to the newest column
+      // Slight delay to allow DOM to render before smoothly scrolling
       setTimeout(() => {
+        const activeItem = container.querySelector('.miller-item.active');
+        if (activeItem) {
+          const col = activeItem.closest('.miller-col');
+          if (col) {
+            // Scroll so the active column is centered in the view
+            col.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+            return;
+          }
+        }
+        
+        // Fallback: scroll to the end
         container.scrollTo({
             left: container.scrollWidth,
             behavior: 'smooth'
