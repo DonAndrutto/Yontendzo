@@ -520,22 +520,29 @@
       display: none;
     }
 
-    .depth-0 > .node-row { border-left: 4px solid #7c2d2d; }
-    .depth-1 > .node-row { border-left: 3px solid #8c3e3e; }
-    .depth-2 > .node-row { border-left: 3px solid #9c4f4f; }
-    .depth-3 > .node-row { border-left: 2px solid #ac6060; }
-    .depth-4 > .node-row { border-left: 2px solid #bc7171; }
-    .depth-5 > .node-row { border-left: 2px solid #cc8282; }
-    .depth-6 > .node-row { border-left: 1px solid #dc9393; }
-    .depth-7 > .node-row { border-left: 1px solid #eca4a4; }
-    .depth-8 > .node-row { border-left: 1px solid #fba5a5; }
-    .depth-9 > .node-row { border-left: 1px solid #ffb6b6; }
-    .depth-10 > .node-row { border-left: 1px solid #ffc7c7; }
-    .depth-11 > .node-row { border-left: 1px dashed #ffd8d8; }
+    .depth-0 > .node-row { border-left: 6px solid #7c2d2d; }
+    .depth-1 > .node-row { border-left: 5px solid #843535; }
+    .depth-2 > .node-row { border-left: 5px solid #8c3d3d; }
+    .depth-3 > .node-row { border-left: 4px solid #944545; }
+    .depth-4 > .node-row { border-left: 4px solid #9c4d4d; }
+    .depth-5 > .node-row { border-left: 3px solid #a45555; }
+    .depth-6 > .node-row { border-left: 3px solid #ac5d5d; }
+    .depth-7 > .node-row { border-left: 3px solid #b46565; }
+    .depth-8 > .node-row { border-left: 2px solid #bc6d6d; }
+    .depth-9 > .node-row { border-left: 2px solid #c47575; }
+    .depth-10 > .node-row { border-left: 2px solid #cc7d7d; }
+    .depth-11 > .node-row { border-left: 2px solid #d48585; }
+    .depth-12 > .node-row { border-left: 1px solid #dc8d8d; }
+    .depth-13 > .node-row { border-left: 1px solid #e49595; }
+    .depth-14 > .node-row { border-left: 1px solid #ec9d9d; }
+    .depth-15 > .node-row { border-left: 1px solid #f4a5a5; }
+    .depth-16 > .node-row { border-left: 1px solid #f9adad; }
+    .depth-17 > .node-row { border-left: 1px solid #ffb5b5; }
+    .depth-18 > .node-row { border-left: 1px solid #ffbdbd; }
+    .depth-19 > .node-row { border-left: 1px dashed #ffc5c5; }
+    .depth-20 > .node-row { border-left: 1px dashed #ffcdcd; }
 
-    /* Ensure deep-depth structural guides on the tree-node are removed if no longer wanted, 
-       but we previously added them to .tree-node[class*="depth-4"] etc. 
-       Let's keep the focus on the .node-row for now as per the monochromatic request. */
+    /* Ensure deep-depth structural guides on the tree-node are removed */
     .tree-node[class*="depth-"] {
       border-left: none !important;
     }
