@@ -842,6 +842,45 @@
       font-size: 16px;
     }
 
+    .back-to-chapter-btn {
+      position: fixed;
+      top: 96px;
+      right: 16px;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      background: var(--accent);
+      color: var(--header-text);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.22);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-6px);
+      transition: opacity 0.18s ease, transform 0.18s ease, background 0.18s ease;
+      z-index: 1100;
+    }
+
+    .back-to-chapter-btn.visible {
+      opacity: 0.92;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .back-to-chapter-btn:hover {
+      opacity: 1;
+      background: #6e2323;
+    }
+
+    .back-to-chapter-btn:focus-visible {
+      outline: 2px solid var(--selected-border);
+      outline-offset: 2px;
+    }
+
     .lang-menu .menu-pending {
       font-size: 10px;
       color: var(--muted-warm);
@@ -1119,6 +1158,13 @@
 
       .sticky-header.scrolled .header-tib {
         padding-right: 80px;
+      }
+
+      .back-to-chapter-btn {
+        top: 82px;
+        right: 10px;
+        width: 38px;
+        height: 38px;
       }
 
       .lang-code {
@@ -1507,6 +1553,14 @@
     <div class="root-text-body" id="rootTextBody" hidden></div>
   </section>
   <div class="copy-toast" id="copyToast"></div>
+  <button class="back-to-chapter-btn" id="backToChapterBtn" type="button"
+    title="Return to the beginning of the chapter" aria-label="Return to the beginning of the chapter">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+      stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 19V5" />
+      <path d="m5 12 7-7 7 7" />
+    </svg>
+  </button>
   <script>
     const DATA = {
       "title_tib": "ཡོན་ཏན་རིན་པོ་ཆེའི་མཛོད་ཀྱི་སྤྱི་དོན་ས་བཅད",
@@ -17298,6 +17352,40 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
       window.addEventListener('scroll', updateSticky, { passive: true });
       updateSticky();
     }
+
+    (function setupBackToChapter() {
+      const btn = document.getElementById('backToChapterBtn');
+      const section = document.getElementById('rootTextSection');
+      const toggle = document.getElementById('rootTextToggle');
+      if (!btn || !section) return;
+
+      const findCurrentChapter = () => {
+        // Sticky header bottom edge. rt-subsection has scroll-margin-top: 160px,
+        // so matching the threshold keeps "current" in sync with the visible top.
+        const threshold = 160;
+        let current = null;
+        document.querySelectorAll('#rootTextBody .rt-subsection[id]').forEach(s => {
+          if (s.getBoundingClientRect().top <= threshold) current = s;
+        });
+        return current;
+      };
+
+      const update = () => {
+        const stickyBottom = stickyEl ? stickyEl.getBoundingClientRect().bottom : 0;
+        const rect = section.getBoundingClientRect();
+        const show = state.rootTextOpen && rect.top < stickyBottom && rect.bottom > stickyBottom;
+        btn.classList.toggle('visible', !!show);
+      };
+
+      btn.addEventListener('click', () => {
+        const target = findCurrentChapter() || section;
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+
+      window.addEventListener('scroll', update, { passive: true });
+      if (toggle) toggle.addEventListener('click', () => requestAnimationFrame(update));
+      update();
+    })();
   </script>
 </body>
 
