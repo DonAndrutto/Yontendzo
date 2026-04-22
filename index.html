@@ -90,6 +90,8 @@
       letter-spacing: 0.12em;
       color: #9a7a5a;
       margin-bottom: 3px;
+      line-height: 1.45;
+      padding-right: 96px;
     }
 
     .header-tib {
@@ -743,9 +745,11 @@
       color: var(--header-text);
       border: 1px solid rgba(245, 230, 200, 0.25);
       border-radius: 6px;
-      padding: 5px 9px;
+      padding: 0 10px;
+      height: 30px;
       font-family: inherit;
       font-size: 12px;
+      line-height: 1;
       text-decoration: none;
       transition: background 0.2s;
       box-sizing: border-box;
@@ -758,15 +762,18 @@
     .lang-select-btn {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
       background: rgba(255, 255, 255, 0.08);
       color: var(--header-text);
       border: 1px solid rgba(245, 230, 200, 0.25);
       border-radius: 6px;
-      padding: 5px 9px;
+      padding: 0 10px;
+      height: 30px;
       cursor: pointer;
       font-family: inherit;
       font-size: 12px;
+      line-height: 1;
       width: 100%;
       box-sizing: border-box;
     }
@@ -776,8 +783,10 @@
     }
 
     .lang-flag {
-      font-size: 18px;
+      font-size: 15px;
       line-height: 1;
+      display: inline-flex;
+      align-items: center;
     }
 
     .lang-code {
@@ -1093,6 +1102,10 @@
         gap: 8px;
       }
 
+      .header-label {
+        padding-right: 70px;
+      }
+
       .lang-code {
         display: none;
       }
@@ -1342,8 +1355,7 @@
   </div>
   <div class="sticky-header">
     <div class="app-header">
-      <div class="header-label" id="appHeaderLabel">Sa bche Explorer · Yonten Dzo · Complete Outline by Patrul Rinpoche
-      </div>
+      <div class="header-label" id="appHeaderLabel">Sa bche Explorer · Yonten Dzo ·<br>Complete Outline by Patrul Rinpoche</div>
       <span class="header-tib">ཡོན་ཏན་རིན་པོ་ཆེའི་མཛོད་ཀྱི་སྤྱི་དོན་ས་བཅད།</span>
       <span class="header-en" id="appSubtitle">Structural Outline of the Treasury of Precious Qualities</span>
       <div class="header-actions">
@@ -17192,7 +17204,16 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
       if (rootTextLabel) rootTextLabel.textContent = ui.rootText;
 
       const appHeaderLabel = document.getElementById('appHeaderLabel');
-      if (appHeaderLabel) appHeaderLabel.textContent = ui.appHeaderLabel;
+      if (appHeaderLabel) {
+        const parts = (ui.appHeaderLabel || '').split(' · ');
+        if (parts.length >= 3) {
+          appHeaderLabel.innerHTML =
+            escHtml(parts[0]) + ' · ' + escHtml(parts[1]) + ' ·<br>' +
+            escHtml(parts.slice(2).join(' · '));
+        } else {
+          appHeaderLabel.textContent = ui.appHeaderLabel;
+        }
+      }
 
       const appSubtitle = document.getElementById('appSubtitle');
       if (appSubtitle) appSubtitle.textContent = ui.appSubtitle;
