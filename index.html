@@ -22,12 +22,14 @@
       --header-bg: #231208;
       --header-text: #f5e6c8;
       --controls-bg: #f0e9dd;
+      --muted-warm: #8a6f4a;
+      --focus-ring: 0 0 0 2px var(--selected-border);
       --font-size-tib: 15px;
-      --font-size-en: 12px;
+      --font-size-en: 13px;
       --font-size-rt-tib: 16px;
       --font-size-rt-en: 14px;
       --font-size-rt-title: 13px;
-      --font-size-rt-label: 9px;
+      --font-size-rt-label: 10px;
     }
 
     * {
@@ -61,10 +63,29 @@
       background: var(--header-bg);
       color: var(--header-text);
       padding: 14px 22px 12px;
+      transition: padding 0.18s ease;
+    }
+
+    .sticky-header.scrolled .app-header {
+      padding: 6px 22px;
+    }
+
+    .sticky-header.scrolled .header-tib {
+      font-size: 14px;
+      line-height: 1.2;
+    }
+
+    .sticky-header.scrolled .header-en,
+    .sticky-header.scrolled .header-label {
+      display: none;
+    }
+
+    .sticky-header.scrolled .header-actions {
+      top: 4px;
     }
 
     .header-label {
-      font-size: 10px;
+      font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.12em;
       color: #9a7a5a;
@@ -74,7 +95,7 @@
     .header-tib {
       font-family: 'Noto Sans Tibetan', serif;
       font-size: 20px;
-      line-height: 2.0;
+      line-height: 1.3;
       color: var(--header-text);
       display: block;
     }
@@ -84,7 +105,7 @@
       color: #c0996a;
       font-style: italic;
       display: block;
-      margin-top: -4px;
+      margin-top: 2px;
     }
 
     .controls {
@@ -108,8 +129,9 @@
       left: 9px;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 13px;
-      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      color: var(--muted-warm);
       pointer-events: none;
     }
 
@@ -171,6 +193,18 @@
       opacity: 0.8;
     }
 
+    .btn--primary {
+      background: var(--accent);
+      color: #fef5e7;
+      border-color: var(--accent);
+    }
+
+    .btn--primary:hover {
+      background: #6b1f1f;
+      border-color: #6b1f1f;
+      color: #fef5e7;
+    }
+
     .divider {
       width: 1px;
       height: 20px;
@@ -198,7 +232,7 @@
     }
 
     .breadcrumb-bar.empty {
-      color: #b8a890;
+      color: var(--muted-warm);
       font-style: italic;
     }
 
@@ -220,28 +254,28 @@
 
     .crumb-tib {
       font-family: 'Noto Sans Tibetan', serif;
-      font-size: 12px;
+      font-size: 13px;
       line-height: 1.8;
     }
 
     .crumb-en {
-      font-size: 10px;
-      color: #b09070;
+      font-size: 12px;
+      color: var(--muted-warm);
       font-style: italic;
       font-weight: 400;
       line-height: 1.4;
     }
 
     .crumb-sep {
-      color: #cfc0a8;
+      color: #a89878;
       margin: 0 2px;
       align-self: flex-start;
       padding-top: 3px;
     }
 
     .crumb-id {
-      font-size: 10px;
-      color: #b09070;
+      font-size: 11px;
+      color: var(--muted-warm);
       font-weight: 600;
       margin-right: 3px;
     }
@@ -322,11 +356,14 @@
       flex: 1;
       min-width: 0;
       padding: 2px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
     }
 
     .node-id {
-      font-size: 10px;
-      color: #b89870;
+      font-size: 11px;
+      color: var(--muted-warm);
       font-weight: 600;
       letter-spacing: 0.04em;
       margin-right: 5px;
@@ -336,7 +373,7 @@
     .node-tib {
       font-family: 'Noto Sans Tibetan', serif;
       font-size: var(--font-size-tib);
-      line-height: 2.0;
+      line-height: 1.75;
       color: var(--text);
       word-break: break-word;
     }
@@ -346,8 +383,6 @@
       color: var(--text-muted);
       font-style: italic;
       display: block;
-      margin-top: -3px;
-      margin-left: 0;
       word-break: break-word;
     }
 
@@ -371,7 +406,7 @@
       background: none;
       border: 1px solid transparent;
       cursor: pointer;
-      color: #b09070;
+      color: var(--muted-warm);
       font-size: 13px;
       line-height: 1;
       padding: 2px 7px;
@@ -401,7 +436,7 @@
       background: none;
       border: none;
       cursor: pointer;
-      color: #b09070;
+      color: var(--muted-warm);
       font-size: 11px;
       padding: 1px 5px;
       border-radius: 3px;
@@ -520,27 +555,20 @@
       display: none;
     }
 
-    .depth-0 > .node-row { border-left: 6px solid #7c2d2d; }
-    .depth-1 > .node-row { border-left: 5px solid #843535; }
-    .depth-2 > .node-row { border-left: 5px solid #8c3d3d; }
-    .depth-3 > .node-row { border-left: 4px solid #944545; }
-    .depth-4 > .node-row { border-left: 4px solid #9c4d4d; }
-    .depth-5 > .node-row { border-left: 3px solid #a45555; }
-    .depth-6 > .node-row { border-left: 3px solid #ac5d5d; }
-    .depth-7 > .node-row { border-left: 3px solid #b46565; }
-    .depth-8 > .node-row { border-left: 2px solid #bc6d6d; }
-    .depth-9 > .node-row { border-left: 2px solid #c47575; }
-    .depth-10 > .node-row { border-left: 2px solid #cc7d7d; }
-    .depth-11 > .node-row { border-left: 2px solid #d48585; }
-    .depth-12 > .node-row { border-left: 1px solid #dc8d8d; }
-    .depth-13 > .node-row { border-left: 1px solid #e49595; }
-    .depth-14 > .node-row { border-left: 1px solid #ec9d9d; }
-    .depth-15 > .node-row { border-left: 1px solid #f4a5a5; }
-    .depth-16 > .node-row { border-left: 1px solid #f9adad; }
-    .depth-17 > .node-row { border-left: 1px solid #ffb5b5; }
-    .depth-18 > .node-row { border-left: 1px solid #ffbdbd; }
-    .depth-19 > .node-row { border-left: 1px dashed #ffc5c5; }
-    .depth-20 > .node-row { border-left: 1px dashed #ffcdcd; }
+    /* Depth bands: 4 perceptual tiers. Width steps by band; JS sets color via depthColor(). */
+    .tree-node > .node-row {
+      border-left-width: 1px;
+      border-left-style: solid;
+    }
+    .depth-0 > .node-row,
+    .depth-1 > .node-row,
+    .depth-2 > .node-row { border-left-width: 4px; }
+    .depth-3 > .node-row,
+    .depth-4 > .node-row,
+    .depth-5 > .node-row { border-left-width: 3px; }
+    .depth-6 > .node-row,
+    .depth-7 > .node-row,
+    .depth-8 > .node-row { border-left-width: 2px; }
 
     /* Ensure deep-depth structural guides on the tree-node are removed */
     .tree-node[class*="depth-"] {
@@ -559,8 +587,8 @@
     }
 
     .child-count {
-      font-size: 10px;
-      color: #b09070;
+      font-size: 11px;
+      color: var(--muted-warm);
       background: #f0e8d8;
       border-radius: 8px;
       padding: 0 5px;
@@ -796,7 +824,7 @@
 
     .lang-menu .menu-pending {
       font-size: 10px;
-      color: #b09070;
+      color: var(--muted-warm);
       margin-left: auto;
       font-style: italic;
     }
@@ -891,7 +919,7 @@
     .rt-stanza-tib {
       font-family: 'Noto Sans Tibetan', serif;
       font-size: var(--font-size-rt-tib, 16px);
-      line-height: 2.0;
+      line-height: 1.85;
       color: var(--text);
       white-space: pre-line;
       margin-bottom: 8px;
@@ -947,6 +975,31 @@
       text-decoration: underline;
     }
 
+    .btn:focus-visible,
+    .size-btn:focus-visible,
+    .toggle-btn:focus-visible,
+    .lang-btn:focus-visible,
+    .crumb:focus-visible,
+    .tree-section-toggle:focus-visible,
+    .intro-toggle:focus-visible,
+    .rt-subsection-header:focus-visible,
+    .rt-subsection-back:focus-visible,
+    .donate-btn:focus-visible,
+    .lang-select-btn:focus-visible,
+    .copy-path-btn:focus-visible,
+    .node-copy-btn:focus-visible,
+    .miller-item:focus-visible,
+    .node-row:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    .node-row:focus-visible,
+    .miller-item:focus-visible,
+    .crumb:focus-visible {
+      border-radius: 6px;
+    }
+
     .section-actions {
       display: flex;
       gap: 8px;
@@ -977,7 +1030,7 @@
 
     .rt-slot-empty {
       font-style: italic;
-      color: #b8a890;
+      color: #8a7a60;
     }
 
     .hide-tib .rt-stanza-tib {
@@ -1278,7 +1331,7 @@
     
     .miller-item .crumb-tib { font-family: 'Noto Sans Tibetan', serif; font-size: 14px; color: var(--text); line-height: 1.8; }
     .miller-item .crumb-en { font-size: 11px; color: var(--text-muted); font-style: italic; }
-    .miller-item .crumb-id { font-size: 10px; color: #b89870; font-weight: bold; margin-right: 4px; }
+    .miller-item .crumb-id { font-size: 10px; color: var(--muted-warm); font-weight: bold; margin-right: 4px; }
   </style>
 </head>
 
@@ -1316,7 +1369,7 @@
     </div>
     <div class="controls">
       <div class="search-wrap">
-        <span class="search-icon">&#x1F50D;</span>
+        <span class="search-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg></span>
         <input class="search-box" id="searchBox" type="text" placeholder="Search (diacritics optional)..."
           autocomplete="off" spellcheck="false">
         <button class="search-clear" id="searchClear" title="Clear search">&#x2715;</button>
@@ -1334,7 +1387,7 @@
         <button class="btn size-btn" id="btnSizeUp" title="Increase text size">+</button>
       </div>
       <div class="divider"></div>
-      <button class="btn" id="btnPrint" title="Print / Save as PDF">Print</button>
+      <button class="btn btn--primary" id="btnPrint" title="Print / Save as PDF">Print</button>
     </div>
   </div>
   <div class="intro-section">
@@ -3853,8 +3906,8 @@
     // Always expand the three top-level sections for orientation.
     Object.values(nodeIndex).forEach(({ node, depth }) => { if (depth === 0) state.expanded.add(node.id); });
 
-    const DEPTH_COLORS = ['#7c2d2d', '#a04020', '#c46a1a', '#c49a0a', '#7a9020', '#2a7a50', '#1a6888', '#2a4a9a', '#5a2a9a', '#8a1a7a', '#aa1a4a', '#7c2d2d'];
-    function depthColor(d) { return DEPTH_COLORS[Math.min(d, DEPTH_COLORS.length - 1)]; }
+    const DEPTH_BANDS = ['#7c2d2d', '#a04020', '#c46a1a', '#8a6f4a'];
+    function depthColor(d) { return DEPTH_BANDS[Math.min(Math.floor(d / 3), DEPTH_BANDS.length - 1)]; }
 
     function stripDiacritics(s) { return s.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
 
@@ -3932,6 +3985,10 @@
       const row = document.createElement('div');
       row.className = 'node-row' + (isSelected ? ' selected' : '') + (isMatch ? ' search-match' : '');
       row.style.borderLeftColor = !isSelected ? depthColor(actualDepth) : '';
+      row.tabIndex = 0;
+      row.setAttribute('role', 'button');
+      row.setAttribute('aria-label', node.tib + ' — ' + getLabel(node));
+      if (hasChildren) row.setAttribute('aria-expanded', String(isExpanded));
       const toggleBtn = document.createElement('button');
       toggleBtn.className = 'toggle-btn' + (hasChildren ? '' : ' leaf');
       if (hasChildren) {
@@ -3961,6 +4018,9 @@
       nodeCopyBtn.addEventListener('click', e => { e.stopPropagation(); copyPath(node.id, nodeCopyBtn); });
       row.appendChild(nodeCopyBtn);
       row.addEventListener('click', () => selectNode(node.id));
+      row.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectNode(node.id); }
+      });
       wrapper.appendChild(row);
       if (hasChildren) {
         const childWrap = document.createElement('div');
@@ -4019,9 +4079,14 @@
       bc.className = 'breadcrumb-bar';
       bc.innerHTML = path.map((node, i) => {
         const isLast = i === path.length - 1;
-        return `<span class="crumb" data-crumb-id="${escHtml(node.id)}" title="${escHtml(getLabel(node))}"><span class="crumb-top"><span class="crumb-id">${escHtml(node.id)}</span><span class="crumb-tib">${escHtml(node.tib)}</span></span><span class="crumb-en">${escHtml(getLabel(node))}</span></span>${isLast ? '' : '<span class="crumb-sep">\u203A</span>'}`;
+        return `<span class="crumb" data-crumb-id="${escHtml(node.id)}" role="button" tabindex="0" title="${escHtml(getLabel(node))}"><span class="crumb-top"><span class="crumb-id">${escHtml(node.id)}</span><span class="crumb-tib">${escHtml(node.tib)}</span></span><span class="crumb-en">${escHtml(getLabel(node))}</span></span>${isLast ? '' : '<span class="crumb-sep">\u203A</span>'}`;
       }).join('');
-      bc.querySelectorAll('.crumb').forEach(el => { el.addEventListener('click', () => selectNode(el.dataset.crumbId)); });
+      bc.querySelectorAll('.crumb').forEach(el => {
+        el.addEventListener('click', () => selectNode(el.dataset.crumbId));
+        el.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectNode(el.dataset.crumbId); }
+        });
+      });
       const copyBtn = document.createElement('button');
       copyBtn.className = 'copy-path-btn'; copyBtn.title = 'Copy path';
       copyBtn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" stroke="currentColor" stroke-width="1.5"/></svg>Copy';
@@ -17190,6 +17255,13 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
     setTargetLang(state.targetLang);
     applyLangFilter();
     applyTextSize();
+
+    const stickyEl = document.querySelector('.sticky-header');
+    if (stickyEl) {
+      const updateSticky = () => stickyEl.classList.toggle('scrolled', window.scrollY > 80);
+      window.addEventListener('scroll', updateSticky, { passive: true });
+      updateSticky();
+    }
   </script>
 </body>
 
