@@ -73,6 +73,7 @@
     .sticky-header.scrolled .header-tib {
       font-size: 14px;
       line-height: 1.2;
+      padding-right: 96px;
     }
 
     .sticky-header.scrolled .header-en,
@@ -82,6 +83,16 @@
 
     .sticky-header.scrolled .header-actions {
       top: 4px;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .sticky-header.scrolled .lang-select-btn {
+      width: auto;
+    }
+
+    .sticky-header.scrolled #donateLabel {
+      display: none;
     }
 
     .header-label {
@@ -1104,6 +1115,10 @@
 
       .header-label {
         padding-right: 70px;
+      }
+
+      .sticky-header.scrolled .header-tib {
+        padding-right: 80px;
       }
 
       .lang-code {
