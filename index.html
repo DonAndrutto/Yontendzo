@@ -728,6 +728,33 @@
       outline-offset: 1px;
     }
 
+    .sholoka-tag {
+      display: inline-block;
+      font-weight: 600;
+      font-style: normal;
+      color: #2a4a2a;
+      background: #e2ecd4;
+      padding: 0 6px;
+      border-radius: 9px;
+      margin-left: 4px;
+      font-size: 0.85em;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.12s, color 0.12s;
+      white-space: nowrap;
+    }
+
+    .sholoka-tag:hover {
+      background: #c6dca6;
+      color: #143018;
+    }
+
+    .sholoka-tag:focus-visible {
+      outline: 2px solid var(--selected-border);
+      outline-offset: 1px;
+    }
+
     .app-header {
       position: relative;
     }
@@ -1323,7 +1350,8 @@
         display: none !important;
       }
 
-      .chapter-tag {
+      .chapter-tag,
+      .sholoka-tag {
         background: transparent !important;
         color: #000 !important;
         padding: 0 !important;
@@ -3979,6 +4007,37 @@
       if (m) CHAPTER_NODE_BY_NUM[m[1]] = node.id;
     });
 
+    // Map outline node id -> { chapter, from, to } describing which sholoka(s)
+    // of the root text the node corresponds to. Inclusive range; from === to for a single sholoka.
+    // Chapter-root nodes (those carrying a "(Chapter N)" tag) are intentionally omitted —
+    // their existing chapter tag already jumps to the chapter as a whole.
+    const NODE_SHOLOKAS = {
+      // Chapter 1: དལ་འབྱོར་རྙེད་པར་དཀའ་བ — The Difficulty of Finding the Freedoms and Advantages
+      '2.1.1':       { chapter: 1, from: 1,  to: 1  },
+      '2.1.2':       { chapter: 1, from: 2,  to: 11 },
+      '2.1.2.1':     { chapter: 1, from: 2,  to: 2  },
+      '2.1.2.2':     { chapter: 1, from: 3,  to: 10 },
+      '2.1.2.2.1':   { chapter: 1, from: 3,  to: 6  },
+      '2.1.2.2.1.1': { chapter: 1, from: 3,  to: 3  },
+      '2.1.2.2.1.2': { chapter: 1, from: 4,  to: 4  },
+      '2.1.2.2.1.3': { chapter: 1, from: 5,  to: 5  },
+      '2.1.2.2.1.4': { chapter: 1, from: 6,  to: 6  },
+      '2.1.2.2.2':   { chapter: 1, from: 7,  to: 10 },
+      '2.1.2.2.2.1': { chapter: 1, from: 7,  to: 7  },
+      '2.1.2.2.2.2': { chapter: 1, from: 8,  to: 8  },
+      '2.1.2.2.2.3': { chapter: 1, from: 9,  to: 9  },
+      '2.1.2.2.2.4': { chapter: 1, from: 10, to: 10 },
+      '2.1.2.3':     { chapter: 1, from: 11, to: 11 },
+      '2.1.3':       { chapter: 1, from: 12, to: 14 },
+      '2.1.3.1':     { chapter: 1, from: 12, to: 12 },
+      '2.1.3.2':     { chapter: 1, from: 13, to: 13 },
+      '2.1.3.3':     { chapter: 1, from: 14, to: 14 },
+      '2.1.4':       { chapter: 1, from: 15, to: 15 },
+      '2.1.4.1':     { chapter: 1, from: 15, to: 15 },
+      '2.1.4.2':     { chapter: 1, from: 15, to: 15 },
+      '2.1.5':       { chapter: 1, from: 16, to: 16 },
+    };
+
     const state = {
       expanded: new Set(),
       selected: null,
@@ -4054,6 +4113,16 @@
       }
       if (nodeId === '3') {
         return `<a class="chapter-tag" href="#rt-colophon" data-chapter="colophon" role="button" tabindex="0">${html}</a>`;
+      }
+      // 3. Sholoka tag — node-level link to a specific sholoka or range of sholokas in the root text.
+      const s = NODE_SHOLOKAS[nodeId];
+      if (s) {
+        const label = s.from === s.to ? `ślo. ${s.from}` : `ślo. ${s.from}–${s.to}`;
+        const anchor = `rt-chapter-${s.chapter}-sholoka-${s.from}`;
+        const title = s.from === s.to
+          ? `Jump to root text — śloka ${s.from} (Chapter ${s.chapter})`
+          : `Jump to root text — ślokas ${s.from}–${s.to} (Chapter ${s.chapter})`;
+        html += ` <a class="sholoka-tag" href="#${anchor}" data-chapter="${s.chapter}" data-sholoka-from="${s.from}" data-sholoka-to="${s.to}" role="button" tabindex="0" title="${title}">${label}</a>`;
       }
       return html;
     }
@@ -4309,8 +4378,8 @@
           
           // Upon clicking a node in a column
           li.addEventListener('click', (e) => {
-            // If the user clicked a chapter tag, let the delegated handler handle it instead
-            if (e.target.closest('.chapter-tag')) return;
+            // If the user clicked a chapter tag or sholoka tag, let the delegated handler handle it instead
+            if (e.target.closest('.chapter-tag') || e.target.closest('.sholoka-tag')) return;
 
             // Cut off any deeper paths beyond the clicked column
             millerPath = millerPath.slice(0, depth);
@@ -17131,7 +17200,7 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
 
         const content = zipped.length > 0
           ? zipped.map(p => `
-            <div class="rt-stanza-pair">
+            <div class="rt-stanza-pair" id="rt-${escHtml(sec.key)}-sholoka-${escHtml(p.num)}" data-sholoka="${escHtml(p.num)}">
               <div class="rt-stanza-tib"><strong>${escHtml(p.num)}</strong> ${p.tib ? escHtml(p.tib) : ''}</div>
               <div class="rt-stanza-en">${p.en ? escHtml(p.en) : ''}</div>
             </div>
@@ -17208,6 +17277,28 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
       });
     }
 
+    // Open the chapter, scroll to the first sholoka in [from..to], and flash every
+    // sholoka in the range so the reader sees the full extent the outline node spans.
+    function jumpToSholoka(chapter, from, to) {
+      openRootTextSection();
+      const key = `chapter-${chapter}`;
+      state.rootTextChaptersOpen.add(key);
+      renderRootText();
+
+      requestAnimationFrame(() => {
+        const firstEl = document.getElementById(`rt-${key}-sholoka-${from}`);
+        if (!firstEl) return;
+        firstEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        for (let n = from; n <= to; n++) {
+          const el = document.getElementById(`rt-${key}-sholoka-${n}`);
+          if (!el) continue;
+          el.classList.remove('rt-flash');
+          void el.offsetWidth; // force reflow
+          el.classList.add('rt-flash');
+        }
+      });
+    }
+
     document.getElementById('rootTextToggle').addEventListener('click', () => {
       state.rootTextOpen = !state.rootTextOpen;
       document.getElementById('rootTextBody').hidden = !state.rootTextOpen;
@@ -17216,11 +17307,21 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
       if (state.rootTextOpen) renderRootText();
     });
 
-    // Delegated click handler for chapter-tag links inside the tree, miller, and root text views.
+    // Delegated click handler for chapter-tag and sholoka-tag links inside the tree, miller, and root text views.
     ['treeContainer', 'millerContainer', 'rootTextBody'].forEach(id => {
       const el = document.getElementById(id);
       if (el) {
         el.addEventListener('click', e => {
+          const sholokaTag = e.target.closest('.sholoka-tag');
+          if (sholokaTag) {
+            e.preventDefault();
+            e.stopPropagation();
+            const ch = parseInt(sholokaTag.dataset.chapter, 10);
+            const from = parseInt(sholokaTag.dataset.sholokaFrom, 10);
+            const to = parseInt(sholokaTag.dataset.sholokaTo, 10);
+            if (!isNaN(ch) && !isNaN(from) && !isNaN(to)) jumpToSholoka(ch, from, to);
+            return;
+          }
           const tag = e.target.closest('.chapter-tag');
           if (!tag) return;
           e.preventDefault();
@@ -17229,7 +17330,16 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
           if (n) jumpToRootChapter(n);
         });
         el.addEventListener('keydown', e => {
-          if ((e.key === 'Enter' || e.key === ' ') && e.target.classList && e.target.classList.contains('chapter-tag')) {
+          if (e.key !== 'Enter' && e.key !== ' ') return;
+          const cls = e.target.classList;
+          if (!cls) return;
+          if (cls.contains('sholoka-tag')) {
+            e.preventDefault();
+            const ch = parseInt(e.target.dataset.chapter, 10);
+            const from = parseInt(e.target.dataset.sholokaFrom, 10);
+            const to = parseInt(e.target.dataset.sholokaTo, 10);
+            if (!isNaN(ch) && !isNaN(from) && !isNaN(to)) jumpToSholoka(ch, from, to);
+          } else if (cls.contains('chapter-tag')) {
             e.preventDefault();
             jumpToRootChapter(e.target.dataset.chapter);
           }
