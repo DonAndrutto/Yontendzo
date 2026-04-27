@@ -306,12 +306,12 @@
       display: flex;
       align-items: flex-start;
       gap: 2px;
-      padding: 3px 6px 3px 0;
+      padding: 2px 6px 2px 0;
       border-radius: 6px;
       border-left: 3px solid transparent;
       cursor: pointer;
       transition: background 0.1s;
-      margin-bottom: 1px;
+      margin-bottom: 0;
     }
 
     .node-row:hover {
@@ -371,7 +371,7 @@
       padding: 2px 0;
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 1px;
     }
 
     .node-id {
@@ -1166,6 +1166,9 @@
     }
 
     .rt-stanza-pair {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
       margin-bottom: 24px;
       padding-bottom: 16px;
       border-bottom: 1px solid rgba(0, 0, 0, 0.05);
@@ -1175,6 +1178,35 @@
       border-bottom: none;
       margin-bottom: 0;
       padding-bottom: 0;
+    }
+
+    .rt-stanza-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .rt-stanza-nav {
+      flex-shrink: 0;
+      align-self: flex-start;
+      font-size: 10px;
+      font-family: var(--mono, monospace);
+      color: #b5a080;
+      background: none;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      padding: 2px 5px;
+      cursor: pointer;
+      opacity: 0.65;
+      transition: opacity 0.12s, background 0.12s, border-color 0.12s, color 0.12s;
+      line-height: 1.4;
+      white-space: nowrap;
+    }
+
+    .rt-stanza-nav:hover {
+      background: #fce8cc;
+      border-color: #e8c898;
+      color: #8b4c1a;
+      opacity: 1;
     }
 
     .rt-stanza-tib {
@@ -1885,7 +1917,7 @@
           "children": [
             {
               "id": "2.1",
-              "tib": "ཆོས་ལ་བློ་འཇུག་པའི་རྒྱུ་དལ་འབྱོར་རྙེད་པར་དཀའ་བསྒོམ་པའི་ལེའུ།",
+              "tib": "ཆོས་ལ་བློ་འཇུག་པའི་རྒྱུ་དལ་འབྱོར་རྙེད་པར་དཀའ་བསྒོམ་པ (ལེའུ་དང་པོ)",
               "en": "Explaining the difficulty of finding the freedoms and advantages (Chapter 1)",
               "children": [
                 {
@@ -2036,7 +2068,7 @@
             },
             {
               "id": "2.2",
-              "tib": "ཚེ་མི་རྟག་པ་བསྒོམ་པའི་ལེའུ",
+              "tib": "བརྩོན་འགྲུས་ཀྱི་ལྕག་འདེབས་པ་ཚེ་མི་རྟག་པ་བསྒོམ་པ (ལེའུ་གཉིས་པ)",
               "en": "Meditation on the impermanence of life (Chapter 2)",
               "children": [
                 {
@@ -2110,7 +2142,7 @@
               "children": [
                 {
                   "id": "2.3.1",
-                  "tib": "རྒྱུ་འབྲས་ཀྱི་སྤང་བླང་བཤད་པ",
+                  "tib": "སྐྱེས་བུ་ཆུང་ངུ་དང་ཐུན་མོང་པའི་ལམ་རྒྱུ་འབྲས་ཀྱི་སྤང་བླང་བྱེད་པ (ལེའུ་གསུམ་པ)",
                   "en": "What to adopt and abandon regarding cause and effect (Chapter 3)",
                   "children": [
                     {
@@ -2352,7 +2384,7 @@
                 },
                 {
                   "id": "2.3.2",
-                  "tib": "བདེན་པ་བཞི་ལ་བླང་དོར་བྱེད་པ",
+                  "tib": "སྐྱེས་བུ་འབྲིང་དང་ཐུན་མོང་བའི་ལམ་དུ་བདེན་པ་བཞི་ལ་བླང་དོར་བྱེད་པ་འཁོར་བའི་སྡུག་བསྔལ་གཙོ་བོར་སྟོན་པ (ལེའུ་བཞི་པ)",
                   "en": "The Four Truths, emphasizing the suffering of Samsara (Chapter 4)",
                   "children": [
                     {
@@ -2693,7 +2725,7 @@
                   "children": [
                     {
                       "id": "2.3.3.1",
-                      "tib": "འཁོར་ལོ་ཆེན་པོ་བཞི་བཤད་པའི་ལེའུ",
+                      "tib": "ལམ་སྟེགས་སྔོན་འགྲོའི་ཆོས་འཁོར་ལོ་ཆེན་པོ་བཞི་བཤད་པ (ལེའུ་ལྔ་པ)",
                       "en": "The Four Great Wheels — preliminary steps (Chapter 5)",
                       "children": [
                         {
@@ -2782,7 +2814,7 @@
                     },
                     {
                       "id": "2.3.3.2",
-                      "tib": "སྐྱབས་སུ་འགྲོ་བ་བཤད་པའི་ལེའུ",
+                      "tib": "ལམ་གྱི་རྟེན་གཞི་སྐྱབས་སུ་འགྲོ་བ་བཤད་པ (ལེའུ་དྲུག་པ)",
                       "en": "Going for refuge (Chapter 6)",
                       "children": [
                         {
@@ -2848,7 +2880,7 @@
                           "children": [
                             {
                               "id": "2.3.3.3.1.1",
-                              "tib": "བློ་སྦྱོང་བ། ཚད་མེད་བཞི",
+                              "tib": "བློ་སྦྱོང་བ་ཚད་མེད་བཞི་བཤད་པ (ལེའུ་བདུན་པ)",
                               "en": "Mind training: the Four Immeasurables (Chapter 7)",
                               "children": [
                                 {
@@ -2867,7 +2899,7 @@
                             },
                             {
                               "id": "2.3.3.3.1.2",
-                              "tib": "བྱང་ཆུབ་ཀྱི་སེམས་ཡོངས་སུ་བཟུང་བ",
+                              "tib": "དམ་བཅའ་བ་བྱང་ཆུབ་ཀྱི་སེམས་ཡོངས་སུ་བཟུང་བ (ལེའུ་བརྒྱད་པ)",
                               "en": "Fully embracing Bodhicitta (Chapter 8)",
                               "children": [
                                 {
@@ -3008,7 +3040,7 @@
                             },
                             {
                               "id": "2.3.3.3.1.3",
-                              "tib": "སྨོན་འཇུག་བསླབ་བྱའི་ལེའུ",
+                              "tib": "བསླབ་པ་བཟུང་བ་སྨོན་འཇུག་བསླབ་བྱ་བཤད་པ (ལེའུ་དགུ་པ)",
                               "en": "Training: aspiring and engaging Bodhicitta (Chapter 9)",
                               "children": [
                                 {
@@ -3245,7 +3277,7 @@
                         },
                         {
                           "id": "2.3.3.3.2",
-                          "tib": "གསང་སྔགས་རྡོ་རྗེ་ཐེག་པ་ལྟར་བཤད",
+                          "tib": "བླ་ན་མེད་པའི་རྒྱུད་སྡེ་བྱེ་བྲག་ཏུ་བཤད་པ (ལེའུ་བཅུ་པ)",
                           "en": "Hidden meaning: Secret Mantra Vajrayana (Chapter 10)",
                           "children": [
                             {
@@ -3491,7 +3523,7 @@
                           "children": [
                             {
                               "id": "2.3.3.3.3.1",
-                              "tib": "གཞི་གཏན་ལ་དབབ་པ",
+                              "tib": "གཞི་གཏན་ལ་དབབ་པ (ལེའུ་བཅུ་གཅིག་པ)",
                               "en": "Determining the ground (Chapter 11)",
                               "children": [
                                 {
@@ -3567,7 +3599,7 @@
                             },
                             {
                               "id": "2.3.3.3.3.2",
-                              "tib": "ལམ་ཉམས་སུ་བླང་ཚུལ",
+                              "tib": "ལམ་ཉམས་སུ་བླང་ཚུལ་བཤད་པ (ལེའུ་བཅུ་གཉིས་པ)",
                               "en": "Practicing the path (Chapter 12)",
                               "children": [
                                 {
@@ -3743,7 +3775,7 @@
                             },
                             {
                               "id": "2.3.3.3.3.3",
-                              "tib": "འབྲས་བུ་ལྷུན་གྲུབ་ཆེན་པོའི་གོ་འཕང",
+                              "tib": "འབྲས་བུ་ལྷུན་གྲུབ་ཆེན་པོའི་གོ་འཕང་བཤད་པ (ལེའུ་བཅུ་གསུམ་པ)",
                               "en": "Great spontaneous accomplishment of the result (Chapter 13)",
                               "children": [
                                 {
@@ -4315,19 +4347,19 @@
         chapterPrefix: "Chapter",
         colophon: "Colophon",
         chapterTitles: [
-          "The Value of Human Existence",
-          "Impermanence",
-          "The Law of Karma",
-          "The Sufferings of Samsara",
-          "The Four Wheels",
-          "Refuge",
-          "The Four Boundless Attitudes",
-          "The Vow of Bodhichitta",
-          "The Bodhisattva Precepts",
-          "The Pitaka of the Vidyadharas",
-          "The Ground of Great Completeness",
-          "The Extraordinary Path of Practice of the Great Completeness",
-          "The Ultimate Result, the Kayas and Wisdoms"
+          "Meditating on the Difficulty of Obtaining a Free and Privileged Existence, the Cause for Turning the Mind Towards the Dharma",
+          "Meditating on the Impermanence of Life, the Spur to Diligence",
+          "What to Adopt and Abandon Regarding Cause and Effect, the Path in Common with the Individual of Lesser Capacity",
+          "Accepting and Rejecting; the Four Truths on the Path in Common with the Individual of Middling Capacity, Principally Teaching the Suffering of Samsara",
+          "The Four Great Wheels, the Dharmas of the Preliminary Steps of the Path",
+          "Going for Refuge, the Foundational Basis of the Path",
+          "The Four Immeasurables for Training the Mind",
+          "Taking the Vow, Completely Embracing Bodhicitta",
+          "The Precepts of Aspiration and Application, Holding the Training",
+          "Specifically Explaining the Unsurpassed Tantras",
+          "Ascertaining the Ground",
+          "How to Practice the Path",
+          "The State of the Great Spontaneously Accomplished Fruition"
         ]
       },
       pl: {
@@ -4348,19 +4380,19 @@
         chapterPrefix: "ROZDZIAŁ",
         colophon: "Kolofon",
         chapterTitles: [
-          "Wartość ludzkiego istnienia",
-          "Nietrwałość",
-          "Prawo karmy",
-          "Cierpienia samsary",
-          "Cztery koła",
-          "Schronienie",
-          "Cztery bezmierne postawy",
-          "Ślubowanie bodhićitty",
-          "Wskazania bodhisattwy",
-          "Piṭaka widjadhārów",
-          "Podstawa Wielkiej Doskonałości",
-          "Niezwykła ścieżka praktyki Wielkiej Doskonałości",
-          "Ostateczny owoc — kaje i mądrości"
+          "Medytacja nad trudnością uzyskania wolnej i uprzywilejowanej egzystencji, jako przyczyna skierowania umysłu ku Dharmie",
+          "Medytacja nad nietrwałością życia, jako bodziec do pilności",
+          "Co należy przyjąć, a co odrzucić w kwestii przyczyny i skutku, na ścieżce wspólnej dla osoby o mniejszych zdolnościach",
+          "Przyjmowanie i Odrzucanie; Cztery Prawdy na ścieżce wspólnej osobom o średnich zdolnościach, głównie ukazujące cierpienia samsary",
+          "Cztery Wielkie Koła, Dharmy wstępnych etapów ścieżki",
+          "Przyjęcie Schronienia, fundamentalna podstawa ścieżki",
+          "Cztery Niezmierzoności dla treningu umysłu",
+          "Złożenie ślubowania, całkowite przyjęcie Bodhiczitty",
+          "Wskazania aspiracji i działania, utrzymywanie treningu",
+          "Szczegółowe wyjaśnienie Najwyższych Tantr",
+          "Ostateczne ustalenie Podstawy",
+          "Sposób praktykowania ścieżki",
+          "Stan wielkiego, spontanicznie obecnego Owocu"
         ]
       },
       ru: {
@@ -4715,6 +4747,24 @@
       '3.2': { chapter: 'colophon', from: 4, to: 7 },
       '3.3': { chapter: 'colophon', from: 7, to: 7 },
     };
+
+    // Reverse lookup: 'chapter-verse' -> most specific outline node ID.
+    // Sorted by range size asc then depth desc so the first match is the most precise.
+    const VERSE_TO_NODE = (() => {
+      const map = {};
+      const entries = Object.entries(NODE_SHOLOKAS).sort((a, b) => {
+        const ra = a[1].to - a[1].from, rb = b[1].to - b[1].from;
+        if (ra !== rb) return ra - rb;
+        return (b[0].match(/\./g) || []).length - (a[0].match(/\./g) || []).length;
+      });
+      for (const [nodeId, { chapter, from, to }] of entries) {
+        for (let n = from; n <= to; n++) {
+          const key = `${chapter}-${n}`;
+          if (!map[key]) map[key] = nodeId;
+        }
+      }
+      return map;
+    })();
 
     const state = {
       expanded: new Set(),
@@ -17805,19 +17855,19 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
 
     function blankSlot() { return { tib: '', en: '', pl: '', ru: '', de: '', fr: '' }; }
     const CHAPTER_TITLES = [
-      "The Value of Human Existence",
-      "Impermanence",
-      "The Law of Karma",
-      "The Sufferings of Samsara",
-      "The Four Wheels",
-      "Refuge",
-      "The Four Boundless Attitudes",
-      "The Vow of Bodhichitta",
-      "The Bodhisattva Precepts",
-      "The Pitaka of the Vidyadharas",
-      "The Ground of Great Completeness",
-      "The Extraordinary Path of Practice of the Great Completeness",
-      "The Ultimate Result, the Kayas and Wisdoms"
+      "Meditating on the Difficulty of Obtaining a Free and Privileged Existence, the Cause for Turning the Mind Towards the Dharma",
+      "Meditating on the Impermanence of Life, the Spur to Diligence",
+      "What to Adopt and Abandon Regarding Cause and Effect, the Path in Common with the Individual of Lesser Capacity",
+      "Accepting and Rejecting; the Four Truths on the Path in Common with the Individual of Middling Capacity, Principally Teaching the Suffering of Samsara",
+      "The Four Great Wheels, the Dharmas of the Preliminary Steps of the Path",
+      "Going for Refuge, the Foundational Basis of the Path",
+      "The Four Immeasurables for Training the Mind",
+      "Taking the Vow, Completely Embracing Bodhicitta",
+      "The Precepts of Aspiration and Application, Holding the Training",
+      "Specifically Explaining the Unsurpassed Tantras",
+      "Ascertaining the Ground",
+      "How to Practice the Path",
+      "The State of the Great Spontaneously Accomplished Fruition"
     ];
 
     const ROOT_TEXT = {
@@ -17891,13 +17941,23 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
         const isOpen = state.rootTextChaptersOpen.has(sec.key);
         const zipped = zipStanzas(sec.tib, sec[lang]);
 
+        const chapterNum = sec.key.startsWith('chapter-') ? sec.key.replace('chapter-', '')
+          : sec.key === 'colophon' ? 'colophon' : null;
+
         const content = zipped.length > 0
-          ? zipped.map(p => `
+          ? zipped.map(p => {
+            const verseNodeId = chapterNum ? VERSE_TO_NODE[`${chapterNum}-${p.num}`] : null;
+            const navBtn = verseNodeId
+              ? `<button class="rt-stanza-nav" data-node-id="${escHtml(verseNodeId)}" title="${escHtml(verseNodeId)}">${escHtml(verseNodeId)}</button>`
+              : '';
+            return `
             <div class="rt-stanza-pair" id="rt-${escHtml(sec.key)}-sholoka-${escHtml(p.num)}" data-sholoka="${escHtml(p.num)}">
-              <div class="rt-stanza-tib"><strong>${escHtml(p.num)}</strong> ${p.tib ? escHtml(p.tib) : ''}</div>
-              <div class="rt-stanza-en">${p.en ? escHtml(p.en) : ''}</div>
-            </div>
-          `).join('')
+              <div class="rt-stanza-body">
+                <div class="rt-stanza-tib"><strong>${escHtml(p.num)}</strong> ${p.tib ? escHtml(p.tib) : ''}</div>
+                <div class="rt-stanza-en">${p.en ? escHtml(p.en) : ''}</div>
+              </div>${navBtn}
+            </div>`;
+          }).join('')
           : `<div class="rt-slot-empty">Text will appear here</div>`;
 
         const backBtn = sec.treeNodeId
@@ -17930,6 +17990,21 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
         btn.addEventListener('click', e => {
           e.stopPropagation();
           const id = btn.dataset.treeId;
+          if (id && nodeIndex[id]) {
+            selectNode(id);
+            if (!isMillerMode) {
+              requestAnimationFrame(() => {
+                const el = document.querySelector(`[data-id="${CSS.escape(id)}"]`);
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              });
+            }
+          }
+        });
+      });
+      body.querySelectorAll('.rt-stanza-nav').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          const id = btn.dataset.nodeId;
           if (id && nodeIndex[id]) {
             selectNode(id);
             if (!isMillerMode) {
