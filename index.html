@@ -4455,6 +4455,12 @@
     // Verses from Letter to a Friend (བཤེས་སྤྲིང་) by Nāgārjuna cited in the sabche supplement
     // at section 2.3.2.1.1.2.1.2.1.6. Verse numbers follow the standard Tibetan edition.
     const LTAF_VERSES = [
+      { num: 89,
+        tib: 'དུད་འགྲོའི་སྐྱེ་གནས་ན་ཡང་གསོད་པ་དང་། །བཅིང་དང་བརྡེག་སོགས་སྡུག་བསྔལ་སྣ་ཚོགས་པ། །ཞི་འགྱུར་དགེ་བ་སྤངས་པ་རྣམས་ལ་ནི། །གཅིག་ལ་གཅིག་ཟ་ཤིན་ཏུ་མི་བཟད་པ། །',
+        en: 'For animals there\'s multifold distress— they\'re slaughtered, tied up, beaten, and the rest. For those denied the virtue that brings peace there\'s agony as one devours another.' },
+      { num: 90,
+        tib: 'ཁ་ཅིག་མུ་ཏིག་བལ་དང་རུས་པ་ཁྲག། ཤ་དང་པགས་པའི་ཆེད་དུ་འཆི་བར་འགྱུར། །དབང་མེད་གཞན་དག་རྡོག་པ་ལག་པ་དང་། །ལྕག་དང་ལྕགས་ཀྱུ་གདབ་པས་བཏབ་སྟེ་བཀོལ། །',
+        en: 'Some of them are killed just for their pearls, their wool, or bones, their meat or skins and fur, and other helpless beasts are forced to work, they\'re kicked or struck with hands, with whips and goads.' },
       { num: 91,
         tib: 'ཡི་དྭགས་ན་ཡང་འདོད་པས་ཕོངས་པ་ཡིས། །བསྐྱེད་པའི་སྡུག་བསྔལ་རྒྱུན་ཆགས་མི་འཆོས་པ། །བཀྲེས་སྐོམ་གྲང་དྲོ་ངལ་དང་འཇིགས་པ་ཡིས། །བསྐྱེད་པ་ཤིན་ཏུ་མི་བཟད་བསྟེན་འཚལ་ལོ། །',
         en: 'For pretas too there\'s not the slightest break in suffering from their unfulfilled desires. What dire misery they must endure from hunger, thirst, cold, heat, fatigue, and fear.' },
@@ -4480,12 +4486,15 @@
 
     // Maps sabche node IDs in the LtaF supplement section to verse ranges in LTAF_VERSES.
     const NODE_CROSS_REFS = {
-      '2.3.2.1.1.2.1.2.1.6':     { from: 91, to: 97 },
+      '2.3.2.1.1.2.1.2.1.6':     { from: 89, to: 97 },
       '2.3.2.1.1.2.1.2.1.6.1':   { from: 91, to: 97 },
       '2.3.2.1.1.2.1.2.1.6.1.1': { from: 91, to: 91 },
       '2.3.2.1.1.2.1.2.1.6.1.2': { from: 92, to: 94 },
       '2.3.2.1.1.2.1.2.1.6.1.3': { from: 95, to: 95 },
       '2.3.2.1.1.2.1.2.1.6.1.4': { from: 96, to: 96 },
+      '2.3.2.1.1.2.1.2.1.6.2':   { from: 89, to: 90 },
+      '2.3.2.1.1.2.1.2.1.6.2.1': { from: 89, to: 89 },
+      '2.3.2.1.1.2.1.2.1.6.2.2': { from: 90, to: 90 },
     };
 
     // Map outline node id -> { chapter, from, to } describing which sholoka(s)
