@@ -495,6 +495,172 @@
       transform: translateX(-50%) translateY(0);
     }
 
+    /* Cross-reference tag (links to a verse in an external text) */
+    .cross-ref-tag {
+      display: inline-block;
+      font-weight: 600;
+      font-style: normal;
+      color: #1a4a5a;
+      background: #d4ecf4;
+      padding: 0 6px;
+      border-radius: 9px;
+      margin-left: 4px;
+      font-size: 0.85em;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.12s, color 0.12s;
+      white-space: nowrap;
+      border: none;
+      vertical-align: middle;
+      font-family: inherit;
+      line-height: inherit;
+    }
+
+    .cross-ref-tag:hover {
+      background: #aad5e5;
+      color: #0d2a35;
+    }
+
+    .cross-ref-tag:focus-visible {
+      outline: 2px solid #2a7a8a;
+      outline-offset: 1px;
+    }
+
+    /* Cross-reference modal */
+    .cross-ref-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.50);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      animation: crFadeIn 0.13s ease-out;
+    }
+
+    @keyframes crFadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .cross-ref-modal {
+      background: var(--surface);
+      border-radius: 10px;
+      box-shadow: 0 8px 48px rgba(0, 0, 0, 0.38);
+      max-width: 680px;
+      width: 100%;
+      max-height: 82vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: crSlideIn 0.15s ease-out;
+    }
+
+    @keyframes crSlideIn {
+      from { transform: translateY(10px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+
+    .cross-ref-modal-header {
+      background: #1a3a4a;
+      color: #e6f3f8;
+      padding: 14px 18px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .cross-ref-modal-title-area {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .cross-ref-modal-source {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    .cross-ref-modal-source-tib {
+      font-family: 'Noto Sans Tibetan', serif;
+      font-size: 13px;
+      opacity: 0.75;
+    }
+
+    .cross-ref-modal-verse-label {
+      font-size: 12px;
+      opacity: 0.65;
+      margin-top: 1px;
+    }
+
+    .cross-ref-modal-close {
+      background: rgba(255, 255, 255, 0.10);
+      border: none;
+      color: #e6f3f8;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 14px;
+      flex-shrink: 0;
+      margin-top: 1px;
+      transition: background 0.12s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cross-ref-modal-close:hover {
+      background: rgba(255, 255, 255, 0.22);
+    }
+
+    .cross-ref-modal-close:focus-visible {
+      outline: 2px solid #7cc8d8;
+      outline-offset: 1px;
+    }
+
+    .cross-ref-modal-body {
+      overflow-y: auto;
+      padding: 20px 22px;
+    }
+
+    .cross-ref-stanza {
+      margin-bottom: 20px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cross-ref-stanza:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .cross-ref-verse-tib {
+      font-family: 'Noto Sans Tibetan', serif;
+      font-size: var(--font-size-rt-tib);
+      line-height: 1.85;
+      margin-bottom: 8px;
+    }
+
+    .cross-ref-verse-num {
+      font-weight: 700;
+      color: #1a4a5a;
+      margin-right: 5px;
+    }
+
+    .cross-ref-verse-en {
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: var(--font-size-rt-en);
+      line-height: 1.65;
+    }
+
     .lang-toggles {
       display: flex;
       gap: 2px;
@@ -1267,6 +1433,7 @@
       .breadcrumb-bar,
       .intro-section,
       .copy-toast,
+      .cross-ref-backdrop,
       .node-copy-btn,
       .toggle-btn,
       .copy-path-btn,
@@ -1618,6 +1785,22 @@
     <div class="root-text-body" id="rootTextBody" hidden></div>
   </section>
   <div class="copy-toast" id="copyToast"></div>
+
+  <div class="cross-ref-backdrop" id="crossRefModal" hidden
+       role="dialog" aria-modal="true" aria-labelledby="crossRefModalTitle">
+    <div class="cross-ref-modal">
+      <div class="cross-ref-modal-header">
+        <div class="cross-ref-modal-title-area">
+          <span class="cross-ref-modal-source" id="crossRefModalTitle">Letter to a Friend &middot; N&#x101;g&#x101;rjuna</span>
+          <span class="cross-ref-modal-source-tib">བཤེས་སྤྲིང་</span>
+          <span class="cross-ref-modal-verse-label" id="crossRefModalVerseLabel"></span>
+        </div>
+        <button class="cross-ref-modal-close" id="crossRefModalClose" aria-label="Close">&#x2715;</button>
+      </div>
+      <div class="cross-ref-modal-body" id="crossRefModalBody"></div>
+    </div>
+  </div>
+
   <button class="back-to-chapter-btn" id="backToChapterBtn" type="button" title="Return to the beginning of the chapter"
     aria-label="Return to the beginning of the chapter">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
@@ -4269,6 +4452,51 @@
       if (m) CHAPTER_NODE_BY_NUM[m[1]] = node.id;
     });
 
+    // Verses from Letter to a Friend (བཤེས་སྤྲིང་) by Nāgārjuna cited in the sabche supplement
+    // at section 2.3.2.1.1.2.1.2.1.6. Verse numbers follow the standard Tibetan edition.
+    const LTAF_VERSES = [
+      { num: 89,
+        tib: 'དུད་འགྲོའི་སྐྱེ་གནས་ན་ཡང་གསོད་པ་དང་། །བཅིང་དང་བརྡེག་སོགས་སྡུག་བསྔལ་སྣ་ཚོགས་པ། །ཞི་འགྱུར་དགེ་བ་སྤངས་པ་རྣམས་ལ་ནི། །གཅིག་ལ་གཅིག་ཟ་ཤིན་ཏུ་མི་བཟད་པ། །',
+        en: 'For animals there\'s multifold distress— they\'re slaughtered, tied up, beaten, and the rest. For those denied the virtue that brings peace there\'s agony as one devours another.' },
+      { num: 90,
+        tib: 'ཁ་ཅིག་མུ་ཏིག་བལ་དང་རུས་པ་ཁྲག། ཤ་དང་པགས་པའི་ཆེད་དུ་འཆི་བར་འགྱུར། །དབང་མེད་གཞན་དག་རྡོག་པ་ལག་པ་དང་། །ལྕག་དང་ལྕགས་ཀྱུ་གདབ་པས་བཏབ་སྟེ་བཀོལ། །',
+        en: 'Some of them are killed just for their pearls, their wool, or bones, their meat or skins and fur, and other helpless beasts are forced to work, they\'re kicked or struck with hands, with whips and goads.' },
+      { num: 91,
+        tib: 'ཡི་དྭགས་ན་ཡང་འདོད་པས་ཕོངས་པ་ཡིས། །བསྐྱེད་པའི་སྡུག་བསྔལ་རྒྱུན་ཆགས་མི་འཆོས་པ། །བཀྲེས་སྐོམ་གྲང་དྲོ་ངལ་དང་འཇིགས་པ་ཡིས། །བསྐྱེད་པ་ཤིན་ཏུ་མི་བཟད་བསྟེན་འཚལ་ལོ། །',
+        en: 'For pretas too there\'s not the slightest break in suffering from their unfulfilled desires. What dire misery they must endure from hunger, thirst, cold, heat, fatigue, and fear.' },
+      { num: 92,
+        tib: 'ཁ་ཅིག་ཁ་ནི་ཁབ་ཀྱི་མིག་ཙམ་ལ། །ལྟོ་བ་རི་ཡི་གཏོས་ཙམ་བཀྲེས་པས་ཉེན། །མི་གཙང་གྱི་ནར་བོར་བ་ཅུང་ཟད་ཀྱང་། །འཚལ་བའི་མཐུ་དང་ལྡན་པ་མ་ལགས་སོ། །',
+        en: 'Some, their mouths like needles\' eyes, their bellies huge as mountains, ache from want of food. They do not even have the strength to eat discarded scraps, the smallest bits of filth.' },
+      { num: 93,
+        tib: 'ཁ་ཅིག་ལྤགས་རུས་ལུས་ཤིང་གཅེར་བུ་སྟེ། །ཏ་ལའི་ཡང་ཐོག་སྐམ་པ་ལྟ་བུ་ལགས། །ཁ་ཅིག་མཚན་ཞིང་ཁ་ནས་འབར་བ་སྟེ། །ཟས་སུ་འབར་བའི་ཁ་བབས་བྱེ་མ་འཚལ། །',
+        en: 'Some, their naked bodies skin and bone, are like the dried-out tops of tala trees. And some have mouths that belch forth fire by night: into their burning mouths sand falls as food.' },
+      { num: 94,
+        tib: 'སྨད་རིགས་འགས་ནི་རྣག་དང་ཕྱི་ས་དང་། །ཁྲག་སོགས་མི་གཙང་བ་ཡང་མི་རྙེད་དེ། །ཕན་ཚུན་གདོང་དུ་འཚོག་ཅིང་མགྲིན་པ་ནས། །ལྦ་བ་བྱུང་བ་སྨིན་པའི་རྣག་འཚལ་ལོ། །',
+        en: 'A few unlucky ones don\'t even find some dirt to eat—pus, excrement, or blood. They hit each other in the face and eat the pus that festers from their swollen necks.' },
+      { num: 95,
+        tib: 'ཡི་དྭགས་རྣམས་ལ་སོས་ཀའི་དུས་སུ་ནི། །ཟླ་བའང་ཚ་ལ་དགུན་ནི་ཉི་མའང་གྲང་། །ལྗོན་ཤིང་འབྲས་བུ་མེད་འགྱུར་འདི་དག་གིས། །བལྟས་པ་ཙམ་གྱིས་ཀླུང་ཡང་བསྐམ་པར་འགྱུར། །',
+        en: 'For hungry ghosts the summer moon\'s too hot, in wintertime the sun is far too cold, fine trees in orchards wilt and lose their fruit, and simply from their gaze great streams run dry.' },
+      { num: 96,
+        tib: 'བར་ཆད་མེད་པར་སྡུག་བསྔལ་བསྟེན་གྱུར་པ། །ཉེས་པར་སྤྱད་པའི་ལས་ཀྱི་ཞགས་པ་ནི། །སྲ་བས་བཅིངས་པའི་ལུས་ཅན་ཁ་ཅིག་ལོ། །ལྔ་སྟོང་དག་དང་ཁྲིར་ཡང་འཆི་མི་འགྱུར། །',
+        en: 'And some have bodies bound by that tight noose, their karmic store of previous evil deeds, now borne as constant misery and pain; for five, ten thousand years they will not die.' },
+      { num: 97,
+        tib: 'དེ་ལྟར་ཡི་དྭགས་རྣམས་ཀྱིས་སྣ་ཚོགས་པའི། །སྡུག་བསྔལ་རོ་གཅིག་ཐོབ་པ་གང་ལགས་པ། །དེ་ཡི་རྒྱུ་ནི་སྐྱེ་བོ་འཇུངས་དགའ་བ། །སེར་སྣ་འཕགས་མིན་ལགས་པར་སངས་རྒྱས་གསུངས། །',
+        en: 'The cause of these the pretas\' varied woes and all such kindred torments one might get is being greedy, this the Buddha said: stinginess is not for the sublime.' },
+    ];
+
+    // Maps sabche node IDs in the LtaF supplement section to verse ranges in LTAF_VERSES.
+    const NODE_CROSS_REFS = {
+      '2.3.2.1.1.2.1.2.1.6':     { from: 89, to: 97 },
+      '2.3.2.1.1.2.1.2.1.6.1':   { from: 91, to: 97 },
+      '2.3.2.1.1.2.1.2.1.6.1.1': { from: 91, to: 91 },
+      '2.3.2.1.1.2.1.2.1.6.1.2': { from: 92, to: 94 },
+      '2.3.2.1.1.2.1.2.1.6.1.3': { from: 95, to: 95 },
+      '2.3.2.1.1.2.1.2.1.6.1.4': { from: 96, to: 96 },
+      '2.3.2.1.1.2.1.2.1.6.2':   { from: 89, to: 90 },
+      '2.3.2.1.1.2.1.2.1.6.2.1': { from: 89, to: 89 },
+      '2.3.2.1.1.2.1.2.1.6.2.2': { from: 90, to: 90 },
+    };
+
     // Map outline node id -> { chapter, from, to } describing which sholoka(s)
     // of the root text the node corresponds to. Inclusive range; from === to for a single sholoka.
     // Chapter-root nodes (those carrying a "(Chapter N)" tag) are intentionally omitted —
@@ -4580,6 +4808,15 @@
         const title = isPl ? titlePl : titleEn;
         html += ` <a class="sholoka-tag" href="#${anchor}" data-chapter="${s.chapter}" data-sholoka-from="${s.from}" data-sholoka-to="${s.to}" role="button" tabindex="0" title="${title}">${label}</a>`;
       }
+      // 4. Cross-ref tag — node references a verse in an external text (Letter to a Friend).
+      const cr = NODE_CROSS_REFS[nodeId];
+      if (cr) {
+        const crLabel = cr.from === cr.to ? `LtaF ${cr.from}` : `LtaF ${cr.from}–${cr.to}`;
+        const crTitle = cr.from === cr.to
+          ? `View verse ${cr.from} from Letter to a Friend (Nāgārjuna)`
+          : `View verses ${cr.from}–${cr.to} from Letter to a Friend (Nāgārjuna)`;
+        html += ` <button class="cross-ref-tag" data-cross-ref-from="${cr.from}" data-cross-ref-to="${cr.to}" title="${crTitle}">${crLabel}</button>`;
+      }
       return html;
     }
 
@@ -4835,7 +5072,7 @@
             // Upon clicking a node in a column
             li.addEventListener('click', (e) => {
               // If the user clicked a chapter tag or sholoka tag, let the delegated handler handle it instead
-              if (e.target.closest('.chapter-tag') || e.target.closest('.sholoka-tag')) return;
+              if (e.target.closest('.chapter-tag') || e.target.closest('.sholoka-tag') || e.target.closest('.cross-ref-tag')) return;
 
               // Cut off any deeper paths beyond the clicked column
               millerPath = millerPath.slice(0, depth);
@@ -17763,11 +18000,53 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
       if (state.rootTextOpen) renderRootText();
     });
 
-    // Delegated click handler for chapter-tag and sholoka-tag links inside the tree, miller, and root text views.
+    // --- Cross-reference modal (Letter to a Friend supplement) ---
+    let _crossRefPrevFocus = null;
+
+    function openCrossRefModal(from, to) {
+      const verses = LTAF_VERSES.filter(v => v.num >= from && v.num <= to);
+      const label = from === to ? `Verse ${from}` : `Verses ${from}–${to}`;
+      document.getElementById('crossRefModalVerseLabel').textContent = label;
+      document.getElementById('crossRefModalBody').innerHTML = verses.map(v => `
+        <div class="cross-ref-stanza">
+          <div class="cross-ref-verse-tib"><span class="cross-ref-verse-num">(${v.num})</span>${escHtml(v.tib)}</div>
+          <div class="cross-ref-verse-en">${escHtml(v.en)}</div>
+        </div>`).join('');
+      _crossRefPrevFocus = document.activeElement;
+      const modal = document.getElementById('crossRefModal');
+      modal.hidden = false;
+      document.getElementById('crossRefModalClose').focus();
+    }
+
+    function closeCrossRefModal() {
+      document.getElementById('crossRefModal').hidden = true;
+      if (_crossRefPrevFocus) { _crossRefPrevFocus.focus(); _crossRefPrevFocus = null; }
+    }
+
+    (function initCrossRefModal() {
+      const modal = document.getElementById('crossRefModal');
+      document.getElementById('crossRefModalClose').addEventListener('click', closeCrossRefModal);
+      modal.addEventListener('click', e => { if (e.target === modal) closeCrossRefModal(); });
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && !modal.hidden) { e.preventDefault(); closeCrossRefModal(); }
+      });
+    })();
+
+    // Delegated click handler for chapter-tag, sholoka-tag, and cross-ref-tag links
+    // inside the tree, miller, and root text views.
     ['treeContainer', 'millerContainer', 'rootTextBody'].forEach(id => {
       const el = document.getElementById(id);
       if (el) {
         el.addEventListener('click', e => {
+          const crossRefTag = e.target.closest('.cross-ref-tag');
+          if (crossRefTag) {
+            e.preventDefault();
+            e.stopPropagation();
+            const from = parseInt(crossRefTag.dataset.crossRefFrom, 10);
+            const to = parseInt(crossRefTag.dataset.crossRefTo, 10);
+            if (!isNaN(from) && !isNaN(to)) openCrossRefModal(from, to);
+            return;
+          }
           const sholokaTag = e.target.closest('.sholoka-tag');
           if (sholokaTag) {
             e.preventDefault();
@@ -17781,7 +18060,7 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
           const tag = e.target.closest('.chapter-tag');
           if (!tag) return;
           e.preventDefault();
-          e.stopPropagation(); // prevent other logic firing
+          e.stopPropagation();
           const n = tag.dataset.chapter;
           if (n) jumpToRootChapter(n);
         });
@@ -17789,7 +18068,12 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
           if (e.key !== 'Enter' && e.key !== ' ') return;
           const cls = e.target.classList;
           if (!cls) return;
-          if (cls.contains('sholoka-tag')) {
+          if (cls.contains('cross-ref-tag')) {
+            e.preventDefault();
+            const from = parseInt(e.target.dataset.crossRefFrom, 10);
+            const to = parseInt(e.target.dataset.crossRefTo, 10);
+            if (!isNaN(from) && !isNaN(to)) openCrossRefModal(from, to);
+          } else if (cls.contains('sholoka-tag')) {
             e.preventDefault();
             const ch = parseInt(e.target.dataset.chapter, 10);
             const from = parseInt(e.target.dataset.sholokaFrom, 10);
