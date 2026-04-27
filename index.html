@@ -419,6 +419,22 @@
       display: none;
     }
 
+    .hide-en .crumb-en {
+      display: none !important;
+    }
+
+    .node-extra-tags-tib {
+      display: none;
+    }
+
+    .hide-en .node-extra-tags-tib {
+      display: inline;
+    }
+
+    .node-extra-tags-en {
+      display: inline;
+    }
+
     .copy-path-btn {
       margin-left: auto;
       flex-shrink: 0;
@@ -4890,6 +4906,7 @@
 
     function wrapTibChapterTags(html, nodeId) {
       if (nodeId === '1') return `<a class="chapter-tag" href="#rt-prologue" data-chapter="prologue" role="button" tabindex="0">${html}</a>`;
+      if (nodeId === '2') return `<span class="chapter-tag" style="cursor: default;">${html}</span>`;
       if (nodeId === '3') return `<a class="chapter-tag" href="#rt-colophon" data-chapter="colophon" role="button" tabindex="0">${html}</a>`;
       return html.replace(/\(ལེའུ་([^\)]+)\)/g, (full, name) => {
         const num = TIB_CHAPTER_MAP[name.trim()];
@@ -4902,6 +4919,7 @@
         `<a class="chapter-tag" href="#rt-chapter-${n}" data-chapter="${n}" role="button" tabindex="0">${full}</a>`
       );
       if (nodeId === '1') return `<a class="chapter-tag" href="#rt-prologue" data-chapter="prologue" role="button" tabindex="0">${html}</a>`;
+      if (nodeId === '2') return `<span class="chapter-tag" style="cursor: default;">${html}</span>`;
       if (nodeId === '3') return `<a class="chapter-tag" href="#rt-colophon" data-chapter="colophon" role="button" tabindex="0">${html}</a>`;
       return html;
     }
@@ -4972,22 +4990,21 @@
       }
       const content = document.createElement('div');
       content.className = 'node-content';
+      const extraTags = getExtraTags(node.id);
+
       const tibSpan = document.createElement('span');
       tibSpan.className = 'node-tib';
       tibSpan.innerHTML = `<span class="node-id">${escHtml(node.id)}</span>` + wrapTibChapterTags(highlight(node.tib, q), node.id);
+      if (extraTags) tibSpan.innerHTML += ` <span class="node-extra-tags-tib" style="margin-left:4px;">${extraTags}</span>`;
+
       const enSpan = document.createElement('span');
       enSpan.className = 'node-en';
       enSpan.innerHTML = wrapChapterTags(highlight(getLabel(node), q), node.id);
+      if (extraTags) enSpan.innerHTML += ` <span class="node-extra-tags-en" style="margin-left:4px;">${extraTags}</span>`;
+
       if (hasChildren) enSpan.innerHTML += ` <span class="child-count">${node.children.length}</span>`;
       content.appendChild(tibSpan);
       content.appendChild(enSpan);
-      const extraTags = getExtraTags(node.id);
-      if (extraTags) {
-        const tagsSpan = document.createElement('span');
-        tagsSpan.className = 'node-extra-tags';
-        tagsSpan.innerHTML = extraTags;
-        content.appendChild(tagsSpan);
-      }
       row.appendChild(toggleBtn);
       row.appendChild(content);
       const nodeCopyBtn = document.createElement('button');
@@ -5170,10 +5187,16 @@
 
             li.className = 'miller-item' + (isActive ? ' active' : '');
 
-            const tibText = state.showTib ? `<div class="crumb-tib">${escHtml(node.tib)}</div>` : '';
+            const tibText = state.showTib ? `<div class="crumb-tib">${wrapTibChapterTags(escHtml(node.tib), node.id)}</div>` : '';
+            
+            const extraTags = getExtraTags(node.id);
+            const extraTagsHtml = extraTags ? `<span class="node-extra-tags" style="margin-left:4px;">${extraTags}</span>` : '';
+
             let enText = '';
             if (state.showTarget) {
-              enText = `<div class="crumb-en">${wrapChapterTags(escHtml(getLabel(node)), node.id)}</div>`;
+              enText = `<div class="crumb-en">${wrapChapterTags(escHtml(getLabel(node)), node.id)}${extraTagsHtml}</div>`;
+            } else if (extraTags) {
+              enText = `<div class="crumb-en">${extraTagsHtml}</div>`;
             }
 
             let countHtml = '';
