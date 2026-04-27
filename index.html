@@ -16,8 +16,8 @@
       --text: #1c1a17;
       --text-muted: #6b5f50;
       --accent: #8b2c2c;
-      --selected-bg: #fef5e7;
-      --selected-border: #c46a1a;
+      --selected-bg: #f7e9d1;
+      --selected-border: #8b2c2c;
       --match-bg: #fffde7;
       --header-bg: #231208;
       --header-text: #f5e6c8;
@@ -307,7 +307,7 @@
       align-items: flex-start;
       gap: 2px;
       padding: 2px 6px 2px 0;
-      border-radius: 6px;
+      border-radius: 0 6px 6px 0;
       border-left: 3px solid transparent;
       cursor: pointer;
       transition: background 0.1s;
@@ -320,7 +320,8 @@
 
     .node-row.selected {
       background: var(--selected-bg) !important;
-      border-left-color: var(--selected-border) !important;
+      border-left: 4px solid var(--selected-border) !important;
+      box-shadow: inset 0 0 0 1px rgba(139, 44, 44, 0.05), 0 1px 3px rgba(0, 0, 0, 0.06);
     }
 
     .node-row.search-match {
@@ -397,6 +398,11 @@
       font-style: italic;
       display: block;
       word-break: break-word;
+    }
+
+    .node-extra-tags {
+      display: block;
+      margin-top: 2px;
     }
 
     .hide-tib .node-tib {
@@ -893,6 +899,10 @@
       transition: background 0.12s, color 0.12s;
     }
 
+    .node-tib .chapter-tag {
+      font-weight: normal;
+    }
+
     .chapter-tag:hover {
       background: #f0d8a8;
       color: #2a1208;
@@ -1188,17 +1198,16 @@
     .rt-stanza-nav {
       flex-shrink: 0;
       align-self: flex-start;
-      font-size: 10px;
-      font-family: var(--mono, monospace);
+      font-size: 14px;
       color: #b5a080;
       background: none;
       border: 1px solid transparent;
       border-radius: 4px;
-      padding: 2px 5px;
+      padding: 0 4px;
       cursor: pointer;
       opacity: 0.65;
       transition: opacity 0.12s, background 0.12s, border-color 0.12s, color 0.12s;
-      line-height: 1.4;
+      line-height: 1;
       white-space: nowrap;
     }
 
@@ -2712,7 +2721,7 @@
                     },
                     {
                       "id": "2.3.2.2",
-                      "tib": "",
+                      "tib": "རྩ་བའི་གཉིས་པ་དེ་ཉིད་སྐྱེ་མེད་དུ་ཤེས་པས་དོན་བསྡུ་བ།",
                       "en": "Summarizing the meaning by knowing that itself to be unborn.",
                       "children": []
                     }
@@ -4830,19 +4839,42 @@
     // and the label degrades gracefully to plain text — that is acceptable.
     // Wrap "(Chapter N)" or "(Rozdział N)" in a styled, clickable tag.
     // Also wraps the entire text for Node 1 (Preamble) and Node 3 (Conclusion).
+    const TIB_CHAPTER_MAP = {
+      "དང་པོ": 1,
+      "གཉིས་པ": 2,
+      "གསུམ་པ": 3,
+      "བཞི་པ": 4,
+      "ལྔ་པ": 5,
+      "དྲུག་པ": 6,
+      "བདུན་པ": 7,
+      "བརྒྱད་པ": 8,
+      "དགུ་པ": 9,
+      "བཅུ་པ": 10,
+      "བཅུ་གཅིག་པ": 11,
+      "བཅུ་གཉིས་པ": 12,
+      "བཅུ་གསུམ་པ": 13
+    };
+
+    function wrapTibChapterTags(html, nodeId) {
+      if (nodeId === '1') return `<a class="chapter-tag" href="#rt-prologue" data-chapter="prologue" role="button" tabindex="0">${html}</a>`;
+      if (nodeId === '3') return `<a class="chapter-tag" href="#rt-colophon" data-chapter="colophon" role="button" tabindex="0">${html}</a>`;
+      return html.replace(/\(ལེའུ་([^\)]+)\)/g, (full, name) => {
+        const num = TIB_CHAPTER_MAP[name.trim()];
+        return num ? `<a class="chapter-tag" href="#rt-chapter-${num}" data-chapter="${num}" role="button" tabindex="0">${full}</a>` : full;
+      });
+    }
+
     function wrapChapterTags(html, nodeId) {
-      // 1. Chapters
       html = html.replace(/\((?:Chapter|Rozdział)\s+(\d+)\)/gi, (full, n) =>
         `<a class="chapter-tag" href="#rt-chapter-${n}" data-chapter="${n}" role="button" tabindex="0">${full}</a>`
       );
-      // 2. Headings for Node 1 (Preamble/Prologue) and Node 3 (End/Colophon)
-      if (nodeId === '1') {
-        return `<a class="chapter-tag" href="#rt-prologue" data-chapter="prologue" role="button" tabindex="0">${html}</a>`;
-      }
-      if (nodeId === '3') {
-        return `<a class="chapter-tag" href="#rt-colophon" data-chapter="colophon" role="button" tabindex="0">${html}</a>`;
-      }
-      // 3. Sholoka tag — node-level link to a specific sholoka or range of sholokas in the root text.
+      if (nodeId === '1') return `<a class="chapter-tag" href="#rt-prologue" data-chapter="prologue" role="button" tabindex="0">${html}</a>`;
+      if (nodeId === '3') return `<a class="chapter-tag" href="#rt-colophon" data-chapter="colophon" role="button" tabindex="0">${html}</a>`;
+      return html;
+    }
+
+    function getExtraTags(nodeId) {
+      let tags = '';
       const s = NODE_SHOLOKAS[nodeId];
       if (s) {
         const isPl = state.targetLang === 'pl';
@@ -4856,18 +4888,17 @@
           ? `Skocz do tekstu źródłowego — śloka ${s.from} (Rozdział ${s.chapter})`
           : `Skocz do tekstu źródłowego — śloki ${s.from}–${s.to} (Rozdział ${s.chapter})`;
         const title = isPl ? titlePl : titleEn;
-        html += ` <a class="sholoka-tag" href="#${anchor}" data-chapter="${s.chapter}" data-sholoka-from="${s.from}" data-sholoka-to="${s.to}" role="button" tabindex="0" title="${title}">${label}</a>`;
+        tags += `<a class="sholoka-tag" href="#${anchor}" data-chapter="${s.chapter}" data-sholoka-from="${s.from}" data-sholoka-to="${s.to}" role="button" tabindex="0" title="${title}">${label}</a>`;
       }
-      // 4. Cross-ref tag — node references a verse in an external text (Letter to a Friend).
       const cr = NODE_CROSS_REFS[nodeId];
       if (cr) {
         const crLabel = cr.from === cr.to ? `LtaF ${cr.from}` : `LtaF ${cr.from}–${cr.to}`;
         const crTitle = cr.from === cr.to
           ? `View verse ${cr.from} from Letter to a Friend (Nāgārjuna)`
           : `View verses ${cr.from}–${cr.to} from Letter to a Friend (Nāgārjuna)`;
-        html += ` <button class="cross-ref-tag" data-cross-ref-from="${cr.from}" data-cross-ref-to="${cr.to}" title="${crTitle}">${crLabel}</button>`;
+        tags += (tags ? ' ' : '') + `<button class="cross-ref-tag" data-cross-ref-from="${cr.from}" data-cross-ref-to="${cr.to}" title="${crTitle}">${crLabel}</button>`;
       }
-      return html;
+      return tags;
     }
 
     function renderTree() {
@@ -4910,13 +4941,20 @@
       content.className = 'node-content';
       const tibSpan = document.createElement('span');
       tibSpan.className = 'node-tib';
-      tibSpan.innerHTML = `<span class="node-id">${escHtml(node.id)}</span>` + highlight(node.tib, q);
+      tibSpan.innerHTML = `<span class="node-id">${escHtml(node.id)}</span>` + wrapTibChapterTags(highlight(node.tib, q), node.id);
       const enSpan = document.createElement('span');
       enSpan.className = 'node-en';
       enSpan.innerHTML = wrapChapterTags(highlight(getLabel(node), q), node.id);
       if (hasChildren) enSpan.innerHTML += ` <span class="child-count">${node.children.length}</span>`;
       content.appendChild(tibSpan);
       content.appendChild(enSpan);
+      const extraTags = getExtraTags(node.id);
+      if (extraTags) {
+        const tagsSpan = document.createElement('span');
+        tagsSpan.className = 'node-extra-tags';
+        tagsSpan.innerHTML = extraTags;
+        content.appendChild(tagsSpan);
+      }
       row.appendChild(toggleBtn);
       row.appendChild(content);
       const nodeCopyBtn = document.createElement('button');
@@ -17948,7 +17986,7 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
           ? zipped.map(p => {
             const verseNodeId = chapterNum ? VERSE_TO_NODE[`${chapterNum}-${p.num}`] : null;
             const navBtn = verseNodeId
-              ? `<button class="rt-stanza-nav" data-node-id="${escHtml(verseNodeId)}" title="${escHtml(verseNodeId)}">${escHtml(verseNodeId)}</button>`
+              ? `<button class="rt-stanza-nav" data-node-id="${escHtml(verseNodeId)}" title="Jump to outline node ${escHtml(verseNodeId)}">&#x2190;</button>`
               : '';
             return `
             <div class="rt-stanza-pair" id="rt-${escHtml(sec.key)}-sholoka-${escHtml(p.num)}" data-sholoka="${escHtml(p.num)}">
