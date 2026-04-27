@@ -4617,8 +4617,6 @@
       '2.2.2.4.4':   { chapter: 2, from: 8,  to: 10 },
 
       // Chapter 3: རྒྱུ་འབྲས་ཀྱི་སྤང་བླང་བཤད་པ — Cause and Effect
-      '2.3':           { chapter: 3, from: 1,  to: 43 },
-      '2.3.1':         { chapter: 3, from: 1,  to: 43 },
       '2.3.1.1':       { chapter: 3, from: 1,  to: 40 },
       '2.3.1.1.1':     { chapter: 3, from: 1,  to: 16 },
       '2.3.1.1.1.1':   { chapter: 3, from: 1,  to: 3  },
@@ -4658,8 +4656,6 @@
       '2.3.1.2.2':     { chapter: 3, from: 42, to: 43 },
 
       // Chapter 4: འཁོར་བའི་ཉེས་དམིགས་བསྒོམ་པའི་ལེའུ — The Defects of Samsara (The Four Truths)
-      '2.3.2':               { chapter: 4, from: 1,  to: 47 },
-      '2.3.2.1':             { chapter: 4, from: 1,  to: 47 },
       '2.3.2.1.1':           { chapter: 4, from: 1,  to: 44 },
       '2.3.2.1.1.1':         { chapter: 4, from: 1,  to: 1 },
       '2.3.2.1.1.2':         { chapter: 4, from: 2,  to: 44 },
@@ -4721,9 +4717,6 @@
       '2.3.3.2.2.7': { chapter: 6, from: 24, to: 24 },
 
       // Chapter 7: ཚད་མེད་བཞི་བསྒོམ་པའི་ལེའུ — The Four Boundless Attitudes
-      '2.3.3.3': { chapter: 7, from: 1, to: 18 },
-      '2.3.3.3.1': { chapter: 7, from: 1, to: 18 },
-      '2.3.3.3.1.1': { chapter: 7, from: 1, to: 18 },
       '2.3.3.3.1.1.1': { chapter: 7, from: 1, to: 3 },
       '2.3.3.3.1.1.2': { chapter: 7, from: 4, to: 18 },
       '2.3.3.3.1.1.2.1': { chapter: 7, from: 4, to: 7 },
@@ -18127,7 +18120,8 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
     // sholoka in the range so the reader sees the full extent the outline node spans.
     function jumpToSholoka(chapter, from, to) {
       openRootTextSection();
-      const key = `chapter-${chapter}`;
+      const isNum = !isNaN(chapter);
+      const key = isNum ? `chapter-${chapter}` : chapter;
       state.rootTextChaptersOpen.add(key);
       renderRootText();
 
@@ -18204,10 +18198,11 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
           if (sholokaTag) {
             e.preventDefault();
             e.stopPropagation();
-            const ch = parseInt(sholokaTag.dataset.chapter, 10);
+            let ch = sholokaTag.dataset.chapter;
+            if (!isNaN(parseInt(ch, 10))) ch = parseInt(ch, 10);
             const from = parseInt(sholokaTag.dataset.sholokaFrom, 10);
             const to = parseInt(sholokaTag.dataset.sholokaTo, 10);
-            if (!isNaN(ch) && !isNaN(from) && !isNaN(to)) jumpToSholoka(ch, from, to);
+            if (ch && !isNaN(from) && !isNaN(to)) jumpToSholoka(ch, from, to);
             return;
           }
           const tag = e.target.closest('.chapter-tag');
@@ -18228,10 +18223,11 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
             if (!isNaN(from) && !isNaN(to)) openCrossRefModal(from, to);
           } else if (cls.contains('sholoka-tag')) {
             e.preventDefault();
-            const ch = parseInt(e.target.dataset.chapter, 10);
+            let ch = e.target.dataset.chapter;
+            if (!isNaN(parseInt(ch, 10))) ch = parseInt(ch, 10);
             const from = parseInt(e.target.dataset.sholokaFrom, 10);
             const to = parseInt(e.target.dataset.sholokaTo, 10);
-            if (!isNaN(ch) && !isNaN(from) && !isNaN(to)) jumpToSholoka(ch, from, to);
+            if (ch && !isNaN(from) && !isNaN(to)) jumpToSholoka(ch, from, to);
           } else if (cls.contains('chapter-tag')) {
             e.preventDefault();
             jumpToRootChapter(e.target.dataset.chapter);
