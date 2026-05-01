@@ -95,6 +95,84 @@
       display: none;
     }
 
+    .active-node-bar {
+      padding: 7px 22px 8px;
+      background: linear-gradient(to bottom, rgba(245, 238, 225, 0.92), rgba(245, 238, 225, 0.72));
+      backdrop-filter: blur(10px) saturate(115%);
+      -webkit-backdrop-filter: blur(10px) saturate(115%);
+      border-top: 1px solid rgba(139, 76, 26, 0.08);
+      border-bottom: 1px solid rgba(139, 76, 26, 0.14);
+      cursor: pointer;
+      font-size: 13px;
+      line-height: 1.35;
+      transition: opacity 0.18s ease, padding 0.18s ease;
+      user-select: none;
+    }
+
+    .active-node-bar[hidden] {
+      display: none;
+    }
+
+    .active-node-bar:hover {
+      background: linear-gradient(to bottom, rgba(245, 238, 225, 1), rgba(245, 238, 225, 0.9));
+    }
+
+    .active-node-bar:focus-visible {
+      outline: 2px solid var(--selected-border);
+      outline-offset: -2px;
+    }
+
+    .sticky-header.scrolled .active-node-bar {
+      padding: 5px 22px 6px;
+    }
+
+    .anb-inner {
+      display: flex;
+      gap: 6px;
+      align-items: baseline;
+      flex-wrap: wrap;
+    }
+
+    .anb-outer,
+    .anb-inner-node {
+      display: inline-flex;
+      gap: 6px;
+      align-items: baseline;
+      min-width: 0;
+    }
+
+    .anb-sep {
+      color: #b5a080;
+      opacity: 0.7;
+      font-weight: 600;
+    }
+
+    .anb-sep[hidden] {
+      display: none;
+    }
+
+    .active-node-bar .node-tib {
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .active-node-bar .node-en {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-style: italic;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 600px) {
+      .active-node-bar {
+        padding: 6px 14px 7px;
+        font-size: 12px;
+      }
+      .sticky-header.scrolled .active-node-bar {
+        padding: 4px 14px 5px;
+      }
+    }
+
     .header-label {
       font-size: 11px;
       text-transform: uppercase;
@@ -1134,7 +1212,7 @@
       border-bottom: 1px solid var(--border);
       background: white;
       overflow: hidden;
-      scroll-margin-top: 160px;
+      scroll-margin-top: 200px;
     }
 
     .rt-subsection-header {
@@ -1212,26 +1290,7 @@
     }
 
     .rt-stanza-nav {
-      flex-shrink: 0;
-      align-self: flex-start;
-      font-size: 14px;
-      color: #b5a080;
-      background: none;
-      border: 1px solid transparent;
-      border-radius: 4px;
-      padding: 0 4px;
-      cursor: pointer;
-      opacity: 0.65;
-      transition: opacity 0.12s, background 0.12s, border-color 0.12s, color 0.12s;
-      line-height: 1;
-      white-space: nowrap;
-    }
-
-    .rt-stanza-nav:hover {
-      background: #fce8cc;
-      border-color: #e8c898;
-      color: #8b4c1a;
-      opacity: 1;
+      display: none;
     }
 
     .rt-stanza-tib {
@@ -1458,7 +1517,7 @@
     }
 
     .tree-anchor {
-      scroll-margin-top: 140px;
+      scroll-margin-top: 180px;
     }
 
     .print-header {
@@ -1750,6 +1809,13 @@
       </div>
       <div class="divider"></div>
       <button class="btn btn--primary" id="btnPrint" title="Print / Save as PDF">Print</button>
+    </div>
+    <div id="activeNodeBar" class="active-node-bar" role="button" tabindex="0" aria-label="Jump to current outline node" hidden>
+      <div class="anb-inner">
+        <span class="anb-outer"></span>
+        <span class="anb-sep" hidden>:</span>
+        <span class="anb-inner-node"></span>
+      </div>
     </div>
   </div>
   <div class="intro-section">
@@ -6036,6 +6102,56 @@
       return map;
     })();
 
+    // Active-node bar: derive [outerNodeId?, innerNodeId] for a given (chapter, verse).
+    // Leaf preference: smallest range, then forward-looking (from === verse), then a
+    // forward-opening ancestor, then deepest. Outer = nearest range-bearing ancestor
+    // with a strictly larger range than the leaf.
+    function chainForVerse(chapter, verse) {
+      const candidates = [];
+      for (const [id, s] of Object.entries(NODE_SHOLOKAS)) {
+        if (s.chapter === chapter && verse >= s.from && verse <= s.to) {
+          candidates.push({ id, range: s });
+        }
+      }
+      if (!candidates.length) return [];
+
+      const ancestorOpens = id => {
+        let pid = nodeIndex[id] ? nodeIndex[id].parentId : null;
+        while (pid) {
+          const ps = NODE_SHOLOKAS[pid];
+          const ls = NODE_SHOLOKAS[id];
+          if (ps && ps.chapter === chapter && (ps.from < ls.from || ps.to > ls.to)) {
+            return ps.from === verse;
+          }
+          pid = nodeIndex[pid] ? nodeIndex[pid].parentId : null;
+        }
+        return false;
+      };
+
+      candidates.sort((a, b) => {
+        const ra = a.range.to - a.range.from, rb = b.range.to - b.range.from;
+        if (ra !== rb) return ra - rb;
+        const aF = a.range.from === verse ? 0 : 1, bF = b.range.from === verse ? 0 : 1;
+        if (aF !== bF) return aF - bF;
+        const aA = ancestorOpens(a.id) ? 0 : 1, bA = ancestorOpens(b.id) ? 0 : 1;
+        if (aA !== bA) return aA - bA;
+        return (b.id.match(/\./g) || []).length - (a.id.match(/\./g) || []).length;
+      });
+
+      const leafId = candidates[0].id;
+      const leafRange = NODE_SHOLOKAS[leafId];
+      let pid = nodeIndex[leafId] ? nodeIndex[leafId].parentId : null;
+      while (pid) {
+        const ps = NODE_SHOLOKAS[pid];
+        if (ps && ps.chapter === chapter &&
+            (ps.from < leafRange.from || ps.to > leafRange.to)) {
+          return [pid, leafId];
+        }
+        pid = nodeIndex[pid] ? nodeIndex[pid].parentId : null;
+      }
+      return [leafId];
+    }
+
     const state = {
       expanded: new Set(),
       selected: null,
@@ -6045,7 +6161,10 @@
       targetLang: 'en',              // currently selected target language
       rootTextOpen: false,           // root text section collapsed by default
       rootTextChaptersOpen: new Set(),
-      textSize: 0
+      textSize: 0,
+      pinnedNodeId: null,            // node id "pinned" in the active-node bar
+      currentVerse: null,            // {chapter, sholoka} of topmost visible stanza
+      currentChapterKey: null        // 'chapter-10' | 'prologue' | 'colophon' | null
     };
     // Default expansion: reveal every chapter row by expanding each chapter's ancestors.
     // Chapter nodes themselves stay collapsed — their sub-topics are hidden until clicked.
@@ -6241,12 +6360,109 @@
 
     function toggleExpand(id) { if (state.expanded.has(id)) state.expanded.delete(id); else state.expanded.add(id); renderTree(); updateBreadcrumb(); }
 
+    // Active-node bar render. Uses state.pinnedNodeId, state.currentVerse, state.currentChapterKey.
+    function renderNodeInline(nodeId) {
+      const entry = nodeIndex[nodeId];
+      if (!entry) return '';
+      const n = entry.node;
+      return `<span class="node-tib">${escHtml(n.tib || '')}</span>` +
+             `<span class="node-en">${escHtml(getLabel(n) || '')}</span>`;
+    }
+
+    function chapterTitleHTML() {
+      const key = state.currentChapterKey;
+      if (!key) return '';
+      const sec = rootTextSubsections().find(s => s.key === key);
+      if (!sec) return '';
+      return `<span class="node-en">${escHtml(getRTLabel(sec))}</span>`;
+    }
+
+    function renderActiveNodeBar() {
+      const bar = document.getElementById('activeNodeBar');
+      if (!bar) return;
+      const outer = bar.querySelector('.anb-outer');
+      const sep = bar.querySelector('.anb-sep');
+      const inner = bar.querySelector('.anb-inner-node');
+
+      let chain = [];
+      if (state.pinnedNodeId && nodeIndex[state.pinnedNodeId]) {
+        const pid = nodeIndex[state.pinnedNodeId].parentId;
+        chain = (pid && NODE_SHOLOKAS[pid]) ? [pid, state.pinnedNodeId] : [state.pinnedNodeId];
+      } else if (state.currentVerse) {
+        chain = chainForVerse(state.currentVerse.chapter, state.currentVerse.sholoka);
+      }
+
+      if (chain.length === 0) {
+        const titleHTML = chapterTitleHTML();
+        if (!titleHTML) { bar.hidden = true; bar.dataset.targetNodeId = ''; return; }
+        bar.hidden = false;
+        outer.innerHTML = '';
+        sep.hidden = true;
+        inner.innerHTML = titleHTML;
+        bar.dataset.targetNodeId = '';
+        return;
+      }
+
+      bar.hidden = false;
+      sep.hidden = chain.length < 2;
+      outer.innerHTML = chain.length === 2 ? renderNodeInline(chain[0]) : '';
+      inner.innerHTML = renderNodeInline(chain[chain.length - 1]);
+      bar.dataset.targetNodeId = chain[chain.length - 1];
+    }
+
+    // Scroll-driven update of state.currentVerse / state.currentChapterKey + pin release.
+    let _activeBarRaf = 0;
+    function updateActiveBar() {
+      if (_activeBarRaf) return;
+      _activeBarRaf = requestAnimationFrame(() => {
+        _activeBarRaf = 0;
+        const threshold = 200;
+
+        let currentChapterKey = null;
+        let currentChapterEl = null;
+        document.querySelectorAll('#rootTextBody .rt-subsection[id]').forEach(s => {
+          if (s.getBoundingClientRect().top <= threshold) {
+            currentChapterEl = s;
+            currentChapterKey = s.dataset.key || null;
+          }
+        });
+        state.currentChapterKey = currentChapterKey;
+
+        let currentVerse = null;
+        if (currentChapterEl) {
+          let topmostBelow = null;
+          currentChapterEl.querySelectorAll('.rt-stanza-pair').forEach(s => {
+            if (s.getBoundingClientRect().top <= threshold) topmostBelow = s;
+          });
+          if (topmostBelow) {
+            const chapMatch = currentChapterEl.id.match(/rt-chapter-(\d+)/);
+            const chapter = chapMatch ? parseInt(chapMatch[1], 10) : currentChapterKey;
+            const sholoka = parseInt(topmostBelow.dataset.sholoka, 10);
+            if (!isNaN(sholoka)) currentVerse = { chapter, sholoka };
+          }
+        }
+        state.currentVerse = currentVerse;
+
+        if (state.pinnedNodeId && currentVerse) {
+          const r = NODE_SHOLOKAS[state.pinnedNodeId];
+          if (r && r.chapter === currentVerse.chapter && currentVerse.sholoka >= r.from) {
+            state.pinnedNodeId = null;
+          }
+        }
+
+        renderActiveNodeBar();
+      });
+    }
+
     function selectNode(id) {
       state.selected = (state.selected === id) ? null : id;
       if (state.selected) {
         ensureTreeSectionOpen();
         let cur = nodeIndex[id];
         while (cur && cur.parentId) { state.expanded.add(cur.parentId); cur = nodeIndex[cur.parentId]; }
+        state.pinnedNodeId = state.selected;
+      } else {
+        state.pinnedNodeId = null;
       }
 
       if (isMillerMode && state.selected) {
@@ -6257,6 +6473,7 @@
       }
 
       updateBreadcrumb();
+      renderActiveNodeBar();
 
       if (state.selected && !isMillerMode) {
         const el = document.querySelector(`[data-id="${CSS.escape(state.selected)}"]`);
@@ -19322,6 +19539,8 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
           }
         });
       });
+
+      if (typeof updateActiveBar === 'function') updateActiveBar();
     }
 
     function openRootTextSection() {
@@ -19330,6 +19549,7 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
       document.getElementById('rootTextBody').hidden = false;
       document.getElementById('rootTextArrow').classList.add('open');
       document.getElementById('rootTextToggle').setAttribute('aria-expanded', 'true');
+      if (typeof updateActiveBar === 'function') updateActiveBar();
     }
 
     function jumpToRootChapter(n) {
@@ -19601,6 +19821,29 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
       window.addEventListener('scroll', updateSticky, { passive: true });
       updateSticky();
     }
+
+    (function setupActiveNodeBar() {
+      const bar = document.getElementById('activeNodeBar');
+      if (!bar) return;
+      const goToTarget = () => {
+        const id = bar.dataset.targetNodeId;
+        if (!id || !nodeIndex[id]) return;
+        selectNode(id);
+        if (!isMillerMode) {
+          requestAnimationFrame(() => {
+            const el = document.querySelector(`[data-id="${CSS.escape(id)}"]`);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          });
+        }
+      };
+      bar.addEventListener('click', goToTarget);
+      bar.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goToTarget(); }
+      });
+      window.addEventListener('scroll', updateActiveBar, { passive: true });
+      updateActiveBar();
+      renderActiveNodeBar();
+    })();
 
     (function setupBackToChapter() {
       const btn = document.getElementById('backToChapterBtn');
