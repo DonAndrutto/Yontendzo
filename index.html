@@ -1063,13 +1063,13 @@
       border: 1px solid rgba(245, 230, 200, 0.25);
       border-radius: 6px;
       padding: 0 10px;
-      height: 30px;
+      height: 32px;
       font-family: inherit;
       font-size: 12px;
-      line-height: 1;
       text-decoration: none;
       transition: background 0.2s;
       box-sizing: border-box;
+      overflow: visible;
     }
 
     .donate-btn:hover {
@@ -1086,13 +1086,13 @@
       border: 1px solid rgba(245, 230, 200, 0.25);
       border-radius: 6px;
       padding: 0 10px;
-      height: 30px;
+      height: 32px;
       cursor: pointer;
       font-family: inherit;
       font-size: 12px;
-      line-height: 1;
       width: 100%;
       box-sizing: border-box;
+      overflow: visible;
     }
 
     .lang-select-btn:hover {
@@ -1100,10 +1100,11 @@
     }
 
     .lang-flag {
-      font-size: 15px;
+      font-size: 14px;
       line-height: 1;
       display: inline-flex;
       align-items: center;
+      overflow: visible;
     }
 
     .lang-code {
@@ -1775,7 +1776,7 @@
         <a href="https://www.paypal.com/donate/?business=JZS5LVZKPPY5J&no_recurring=0&item_name=Help+fund+Dharma+translation+projects.&currency_code=USD"
           target="_blank" rel="noopener noreferrer" class="donate-btn" aria-label="Donate">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
-            stroke="#fc8181" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            overflow="visible" stroke="#fc8181" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path
               d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z">
             </path>
@@ -1791,7 +1792,7 @@
             <circle cx="7" cy="7" r="4.5" />
             <path d="m10.5 10.5 3 3" />
           </svg></span>
-        <input class="search-box" id="searchBox" type="text" placeholder="Search (diacritics optional)..."
+        <input class="search-box" id="searchBox" type="text" placeholder="Search Outline (diacritics optional)..."
           autocomplete="off" spellcheck="false">
         <button class="search-clear" id="searchClear" title="Clear search">&#x2715;</button>
       </div>
@@ -5444,7 +5445,7 @@
 
     const UI_STRINGS = {
       en: {
-        searchPlaceholder: "Search (diacritics optional)...",
+        searchPlaceholder: "Search Outline (diacritics optional)...",
         aboutToggle: "About this text",
         expandAll: "Expand All",
         collapseAll: "Collapse All",
@@ -6162,7 +6163,6 @@
       rootTextOpen: false,           // root text section collapsed by default
       rootTextChaptersOpen: new Set(),
       textSize: 0,
-      pinnedNodeId: null,            // node id "pinned" in the active-node bar
       currentVerse: null,            // {chapter, sholoka} of topmost visible stanza
       currentChapterKey: null        // 'chapter-10' | 'prologue' | 'colophon' | null
     };
@@ -6360,21 +6360,15 @@
 
     function toggleExpand(id) { if (state.expanded.has(id)) state.expanded.delete(id); else state.expanded.add(id); renderTree(); updateBreadcrumb(); }
 
-    // Active-node bar render. Uses state.pinnedNodeId, state.currentVerse, state.currentChapterKey.
-    function renderNodeInline(nodeId) {
+    // Active-node bar render. Uses state.currentVerse, state.currentChapterKey.
+    function renderNodeInline(nodeId, trimColon) {
       const entry = nodeIndex[nodeId];
       if (!entry) return '';
       const n = entry.node;
+      let enLabel = getLabel(n) || '';
+      if (trimColon) enLabel = enLabel.replace(/\s*:\s*$/, '');
       return `<span class="node-tib">${escHtml(n.tib || '')}</span>` +
-             `<span class="node-en">${escHtml(getLabel(n) || '')}</span>`;
-    }
-
-    function chapterTitleHTML() {
-      const key = state.currentChapterKey;
-      if (!key) return '';
-      const sec = rootTextSubsections().find(s => s.key === key);
-      if (!sec) return '';
-      return `<span class="node-en">${escHtml(getRTLabel(sec))}</span>`;
+             `<span class="node-en">${escHtml(enLabel)}</span>`;
     }
 
     function renderActiveNodeBar() {
@@ -6385,27 +6379,25 @@
       const inner = bar.querySelector('.anb-inner-node');
 
       let chain = [];
-      if (state.pinnedNodeId && nodeIndex[state.pinnedNodeId]) {
-        const pid = nodeIndex[state.pinnedNodeId].parentId;
-        chain = (pid && NODE_SHOLOKAS[pid]) ? [pid, state.pinnedNodeId] : [state.pinnedNodeId];
-      } else if (state.currentVerse) {
+      if (state.currentVerse) {
         chain = chainForVerse(state.currentVerse.chapter, state.currentVerse.sholoka);
       }
 
       if (chain.length === 0) {
-        const titleHTML = chapterTitleHTML();
-        if (!titleHTML) { bar.hidden = true; bar.dataset.targetNodeId = ''; return; }
+        const key = state.currentChapterKey;
+        const sec = key ? rootTextSubsections().find(s => s.key === key) : null;
+        if (!sec) { bar.hidden = true; bar.dataset.targetNodeId = ''; return; }
         bar.hidden = false;
         outer.innerHTML = '';
         sep.hidden = true;
-        inner.innerHTML = titleHTML;
-        bar.dataset.targetNodeId = '';
+        inner.innerHTML = `<span class="node-en">${escHtml(getRTLabel(sec))}</span>`;
+        bar.dataset.targetNodeId = sec.treeNodeId || '';
         return;
       }
 
       bar.hidden = false;
       sep.hidden = chain.length < 2;
-      outer.innerHTML = chain.length === 2 ? renderNodeInline(chain[0]) : '';
+      outer.innerHTML = chain.length === 2 ? renderNodeInline(chain[0], true) : '';
       inner.innerHTML = renderNodeInline(chain[chain.length - 1]);
       bar.dataset.targetNodeId = chain[chain.length - 1];
     }
@@ -6442,14 +6434,6 @@
           }
         }
         state.currentVerse = currentVerse;
-
-        if (state.pinnedNodeId && currentVerse) {
-          const r = NODE_SHOLOKAS[state.pinnedNodeId];
-          if (r && r.chapter === currentVerse.chapter && currentVerse.sholoka >= r.from) {
-            state.pinnedNodeId = null;
-          }
-        }
-
         renderActiveNodeBar();
       });
     }
@@ -6460,9 +6444,6 @@
         ensureTreeSectionOpen();
         let cur = nodeIndex[id];
         while (cur && cur.parentId) { state.expanded.add(cur.parentId); cur = nodeIndex[cur.parentId]; }
-        state.pinnedNodeId = state.selected;
-      } else {
-        state.pinnedNodeId = null;
       }
 
       if (isMillerMode && state.selected) {
@@ -19561,14 +19542,14 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
       state.rootTextChaptersOpen.add(key);
       renderRootText();
 
-      requestAnimationFrame(() => {
+      setTimeout(() => {
         const el = document.getElementById(anchorId);
         if (!el) return;
         el.scrollIntoView({ behavior: 'smooth', block: 'start' });
         el.classList.remove('rt-flash');
         void el.offsetWidth; // force reflow
         el.classList.add('rt-flash');
-      });
+      }, 60);
     }
 
     // Open the chapter, scroll to the first sholoka in [from..to], and flash every
@@ -19580,7 +19561,7 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
       state.rootTextChaptersOpen.add(key);
       renderRootText();
 
-      requestAnimationFrame(() => {
+      setTimeout(() => {
         const firstEl = document.getElementById(`rt-${key}-sholoka-${from}`);
         if (!firstEl) return;
         firstEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -19591,7 +19572,7 @@ The Treasury of Precious Qualities called "The Rain of Joy" was composed at the 
           void el.offsetWidth; // force reflow
           el.classList.add('rt-flash');
         }
-      });
+      }, 60);
     }
 
     document.getElementById('rootTextToggle').addEventListener('click', () => {
