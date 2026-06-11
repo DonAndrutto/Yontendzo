@@ -23,6 +23,8 @@
       --header-text: #f5e6c8;
       --controls-bg: #f0e9dd;
       --muted-warm: #8a6f4a;
+      --accent-gold: #d4a55a;
+      --ease-veil: cubic-bezier(0.25, 0.1, 0.25, 1);
       --focus-ring: 0 0 0 2px var(--selected-border);
       --font-size-tib: 15px;
       --font-size-en: 13px;
@@ -137,9 +139,17 @@
 
     .anb-inner {
       display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .anb-text {
+      display: flex;
       gap: 6px;
       align-items: baseline;
       flex-wrap: wrap;
+      flex: 1;
+      min-width: 0;
     }
 
     .anb-outer,
@@ -160,6 +170,7 @@
       display: none;
     }
 
+    /* The bar is a button: link-colored gloss + chip make that visible. */
     .active-node-bar .node-tib {
       font-size: 13px;
       line-height: 1.4;
@@ -167,9 +178,40 @@
 
     .active-node-bar .node-en {
       font-size: 12px;
-      color: var(--text-muted);
+      color: #8b4c1a;
       font-style: italic;
       line-height: 1.4;
+    }
+
+    .active-node-bar:hover .anb-inner-node .node-en,
+    .active-node-bar:hover .anb-inner-node .node-tib {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      text-decoration-color: rgba(139, 44, 44, 0.45);
+    }
+
+    .anb-hint {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border: 1px solid rgba(139, 44, 44, 0.30);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.55);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+
+    .active-node-bar:hover .anb-hint,
+    .active-node-bar:focus-visible .anb-hint {
+      background: var(--accent);
+      color: #fdf3e3;
+      border-color: var(--accent);
     }
 
     @media (max-width: 600px) {
@@ -180,6 +222,14 @@
 
       .sticky-header.scrolled .active-node-bar {
         padding: 4px 14px 5px;
+      }
+
+      .anb-hint {
+        padding: 3px 7px;
+      }
+
+      #anbHintLabel {
+        display: none;
       }
     }
 
@@ -199,6 +249,7 @@
       line-height: 1.3;
       color: var(--header-text);
       display: block;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
     }
 
     .header-en {
@@ -207,6 +258,7 @@
       font-style: italic;
       display: block;
       margin-top: 2px;
+      letter-spacing: 0.02em;
     }
 
     .controls {
@@ -238,12 +290,13 @@
 
     .search-box {
       width: 100%;
-      padding: 6px 10px 6px 30px;
+      padding: 7px 10px 7px 30px;
       border: 1px solid var(--border);
-      border-radius: 6px;
+      border-radius: 7px;
       font-family: inherit;
       font-size: 13px;
       background: white;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
       outline: none;
       transition: border-color 0.15s, box-shadow 0.15s;
     }
@@ -323,7 +376,7 @@
 
     .breadcrumb-bar {
       padding: 6px 22px;
-      background: #fffdf8;
+      background: linear-gradient(to bottom, #fffdf8, #fdf8ef);
       border-bottom: 1px solid var(--border);
       font-size: 12px;
       min-height: 32px;
@@ -689,7 +742,7 @@
     }
 
     .cross-ref-modal-header {
-      background: #1a3a4a;
+      background: linear-gradient(170deg, #20465a 0%, #1a3a4a 70%);
       color: #e6f3f8;
       padding: 14px 18px;
       display: flex;
@@ -974,12 +1027,14 @@
     }
 
     .intro-header {
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 700;
-      color: var(--text);
-      margin: 20px 0 8px;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-      padding-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--accent);
+      margin: 22px 0 8px;
+      border-bottom: 1px solid rgba(139, 44, 44, 0.12);
+      padding-bottom: 5px;
     }
 
     .intro-list {
@@ -1008,6 +1063,28 @@
       font-family: monospace;
       font-size: 12px;
       color: var(--accent);
+    }
+
+    .intro-body kbd {
+      display: inline-block;
+      padding: 1px 6px;
+      border: 1px solid #d8cbb0;
+      border-bottom-width: 2px;
+      border-radius: 5px;
+      background: #fbf7ee;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    /* Sample tags shown inside the How-To section are illustrations, not controls */
+    .intro-body .chapter-tag,
+    .intro-body .sholoka-tag,
+    .intro-body .cross-ref-tag,
+    .intro-body .child-count {
+      cursor: default;
     }
 
     .chapter-tag {
@@ -1152,9 +1229,10 @@
       background: #fffdf8;
       color: var(--text);
       border: 1px solid var(--border);
-      border-radius: 6px;
+      border-radius: 8px;
+      overflow: hidden;
       min-width: 170px;
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 6px 22px rgba(0, 0, 0, 0.25);
       list-style: none;
       padding: 4px 0;
       z-index: 200;
@@ -1214,6 +1292,11 @@
     .back-to-chapter-btn:hover {
       opacity: 1;
       background: #6e2323;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+    }
+
+    .back-to-chapter-btn.visible:hover {
+      transform: translateY(0) scale(1.06);
     }
 
     .back-to-chapter-btn:focus-visible {
@@ -1256,7 +1339,12 @@
       padding: 12px 22px;
       cursor: pointer;
       background: #f7ecd6;
-      transition: background 0.12s;
+      border-left: 3px solid transparent;
+      transition: background 0.12s, border-color 0.18s;
+    }
+
+    .rt-subsection.open>.rt-subsection-header {
+      border-left-color: var(--accent-gold);
     }
 
     .rt-subsection-header:hover {
@@ -1304,28 +1392,50 @@
       display: block;
     }
 
+    /* Verse cards: quiet by default, hover affordance when clickable,
+       persistent gold veil for the sholoka range jumped to from the outline. */
     .rt-stanza-pair {
       display: flex;
       gap: 10px;
       align-items: flex-start;
-      margin-bottom: 24px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      margin: 0 -14px 14px;
+      padding: 12px 14px 12px 16px;
+      border-left: 2px solid transparent;
+      border-radius: 0 10px 10px 0;
+      transition: background 220ms var(--ease-veil), border-color 220ms var(--ease-veil);
     }
 
     .rt-stanza-pair:last-child {
-      border-bottom: none;
       margin-bottom: 0;
-      padding-bottom: 0;
+    }
+
+    .rt-stanza-pair.is-clickable {
+      cursor: pointer;
+    }
+
+    .rt-stanza-pair.is-clickable:hover {
+      background: rgba(212, 165, 90, 0.06);
+      border-left-color: rgba(212, 165, 90, 0.45);
+    }
+
+    .rt-stanza-pair.is-clickable:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    .rt-stanza-pair.is-highlighted {
+      background: linear-gradient(90deg, rgba(212, 165, 90, 0.13) 0%, rgba(212, 165, 90, 0.04) 60%, transparent 100%);
+      border-left-color: var(--accent-gold);
+    }
+
+    .rt-stanza-pair.is-highlighted .rt-verse-num {
+      background: var(--accent-gold);
+      color: #17120a;
     }
 
     .rt-stanza-body {
       flex: 1;
       min-width: 0;
-    }
-
-    .rt-stanza-nav {
-      display: none;
     }
 
     .rt-stanza-tib {
@@ -1347,10 +1457,19 @@
     }
 
     .rt-verse-num {
+      display: inline-block;
+      min-width: 22px;
+      text-align: center;
       font-weight: 700;
+      font-size: 0.78em;
+      line-height: 1.7;
       color: var(--accent);
+      background: rgba(139, 44, 44, 0.07);
+      border-radius: 9px;
+      padding: 0 6px;
       font-variant-numeric: tabular-nums;
-      margin-right: 2px;
+      margin-right: 4px;
+      transition: background 220ms var(--ease-veil), color 220ms var(--ease-veil);
     }
 
     /* Unnumbered leading stanza = the chapter's Tibetan title line */
@@ -1435,7 +1554,8 @@
 
     .ts-label {
       font-size: 15px;
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: 0.01em;
     }
 
     .ts-middot {
@@ -1896,9 +2016,19 @@
     <div id="activeNodeBar" class="active-node-bar" role="button" tabindex="0" aria-label="Jump to current outline node"
       hidden>
       <div class="anb-inner">
-        <span class="anb-outer"></span>
-        <span class="anb-sep" hidden>:</span>
-        <span class="anb-inner-node"></span>
+        <span class="anb-text">
+          <span class="anb-outer"></span>
+          <span class="anb-sep" hidden>:</span>
+          <span class="anb-inner-node"></span>
+        </span>
+        <span class="anb-hint" aria-hidden="true">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 14 4 9 9 4" />
+            <path d="M20 20v-7a4 4 0 0 0-4-4H4" />
+          </svg>
+          <span id="anbHintLabel">Outline</span>
+        </span>
       </div>
     </div>
   </div>
@@ -1955,6 +2085,12 @@
       <p>Developed by <strong>Andrzej R. Rybszleger</strong>, 2026. Contact: <a
           href="mailto:rybszlegerr@gmail.com">rybszlegerr@gmail.com</a></p>
     </div>
+  </div>
+  <div class="intro-section">
+    <button class="intro-toggle" id="howtoToggle" aria-expanded="false">
+      <span class="intro-arrow" id="howtoArrow">&#x25B6;</span> <span id="howtoLabel">How to use</span>
+    </button>
+    <div class="intro-body" id="howtoBody"></div>
   </div>
   <div class="breadcrumb-bar empty" id="breadcrumb">Click any node to mark your place</div>
   <div class="tree-section-outer" id="treeSectionOuter">
@@ -5739,10 +5875,306 @@
     `
     };
 
+    // How-To-Use guide, injected into #howtoBody by updateUILanguage().
+    // Same shape as ABOUT_CONTENT; missing languages fall back to English.
+    const HOWTO_CONTENT = {
+      en: `
+      <p>The explorer has two linked layers: the <strong>Structural Outline</strong> (Patrul Rinpoche's sa bche) and the <strong>Root Text</strong> (Jigme Lingpa's verses). Every control is described below, top of the page to bottom.</p>
+
+      <h4 class="intro-header">Top bar</h4>
+      <ul class="intro-list">
+        <li><strong>Language selector</strong> (flag button, top right) — choose the translation language for the outline, chapter headings, and root text. Languages still marked as pending fall back to English until their translation is ready.</li>
+        <li><strong>Donate</strong> — supports the ongoing translation work (opens PayPal in a new tab).</li>
+        <li>The header shrinks automatically while you scroll, leaving more room for reading.</li>
+      </ul>
+
+      <h4 class="intro-header">Toolbar</h4>
+      <ul class="intro-list">
+        <li><strong>Search</strong> — filters the outline as you type. It matches Tibetan, English, the chosen language, and section numbers (e.g. <code>2.3.1</code>). Diacritics are optional — "sutra" finds "sūtra". A counter shows how many topics match; press <kbd>Esc</kbd> or the ✕ to clear. <kbd>Ctrl</kbd>+<kbd>F</kbd> (<kbd>⌘</kbd>+<kbd>F</kbd> on Mac) jumps straight to the search box.</li>
+        <li><strong>བོད་ཡིག / ENG</strong> — show or hide the Tibetan line or the translation line everywhere at once (outline, breadcrumb, root text). Hide one to read the other on its own.</li>
+        <li><strong>− / +</strong> — decrease or increase the text size for comfortable reading on any device.</li>
+        <li><strong>Print</strong> — opens the print dialog with a clean, print-ready view of the outline <em>exactly as currently expanded</em>, headed by the title and your selected path. Save as PDF to make a study handout.</li>
+      </ul>
+
+      <h4 class="intro-header">Breadcrumb trail</h4>
+      <ul class="intro-list">
+        <li>After you select a topic, the strip beneath the toolbar shows its full path from the root of the text down to it. Every crumb is clickable — tap one to move your selection up the chain. The <strong>Copy</strong> button at the end copies the whole path as plain text.</li>
+      </ul>
+
+      <h4 class="intro-header">Reading-position bar</h4>
+      <ul class="intro-list">
+        <li>While you scroll through the Root Text, a slim bar stays at the top naming the outline topic that the verse at the top of your screen belongs to — so you always know <em>where you are</em> in the sa bche.</li>
+        <li><strong>The bar is a button.</strong> Tap or click anywhere on it (or its round "Outline" chip) to jump back to exactly that topic in the Structural Outline.</li>
+      </ul>
+
+      <h4 class="intro-header">Structural Outline</h4>
+      <ul class="intro-list">
+        <li><strong>Rows</strong> — each row is one division of the text: its number (a unique address), the Tibetan heading, and the translation. Click a row to select it and mark your place; click again (or press <kbd>Esc</kbd>) to deselect.</li>
+        <li><strong>▶ arrows</strong> expand or collapse a division. The small badge <span class="child-count">7</span> shows how many subdivisions it contains.</li>
+        <li><strong>Colored left rails</strong> shift hue as you go deeper — a quick visual cue for nesting depth.</li>
+        <li><strong>Copy icon</strong> — appears when you hover over a row; copies that topic's full path.</li>
+        <li><strong>Chapter tags</strong> such as <span class="chapter-tag">(Chapter 4)</span> jump down to that chapter's verses in the Root Text.</li>
+        <li><strong>Verse tags</strong> such as <span class="sholoka-tag">vs. 10–17</span> open the Root Text at the exact verses the topic comments on, and veil the whole range in gold so you can see its full extent.</li>
+        <li><strong>Cross-reference tags</strong> such as <span class="cross-ref-tag">LtaF 89–97</span> open the cited verses of Nāgārjuna's <em>Letter to a Friend</em> in a popup, in Tibetan and English.</li>
+        <li><strong>Expand All / Collapse All</strong> — open or close the entire tree at once.</li>
+        <li><strong>Columns</strong> — switches to a column-by-column (Miller) view: each column is one level of the outline; clicking an item opens its subdivisions in the next column. Convenient for the very deep tantric chapters.</li>
+      </ul>
+
+      <h4 class="intro-header">Root Text</h4>
+      <ul class="intro-list">
+        <li>One section per chapter, plus the Prologue and the Colophon. Click a section header to open or close it. The <strong>← Outline</strong> button at the right of each header jumps to the matching topic in the Structural Outline.</li>
+        <li><strong>Verse cards</strong> — every verse is a card with a numbered badge. Cards glow softly under the pointer: click or tap one to jump to the precise outline topic that comments on that verse.</li>
+        <li><strong>Gold-veiled cards</strong> mark the verse range you last jumped to from the outline; the veil stays until your next jump.</li>
+        <li>The round <strong>↑ button</strong> at the top right returns you to the beginning of the chapter you are currently reading.</li>
+      </ul>
+
+      <h4 class="intro-header">Keyboard</h4>
+      <ul class="intro-list">
+        <li><kbd>Ctrl</kbd>+<kbd>F</kbd> / <kbd>⌘</kbd>+<kbd>F</kbd> — focus the search box · <kbd>Esc</kbd> — clear the search, deselect, or close the popup · <kbd>Enter</kbd> / <kbd>Space</kbd> — activate the focused element · <kbd>Tab</kbd> — move between controls.</li>
+      </ul>
+
+      <h4 class="intro-header">Recipe: a study handout</h4>
+      <p>Select the topic you want, expand it to the depth you need (or use Expand All), then press Print — the PDF will contain the title, your path, and the outline exactly as displayed.</p>
+    `,
+      pl: `
+      <p>Eksplorator ma dwie połączone warstwy: <strong>Zarys strukturalny</strong> (sa bcze Patrula Rinpocze) oraz <strong>Tekst rdzenny</strong> (wersy Dżigme Lingpy). Poniżej opisano każdy element, od góry strony do dołu.</p>
+
+      <h4 class="intro-header">Górny pasek</h4>
+      <ul class="intro-list">
+        <li><strong>Wybór języka</strong> (przycisk z flagą, u góry po prawej) — wybierz język tłumaczenia zarysu, nagłówków rozdziałów i tekstu rdzennego. Języki oznaczone jako przygotowywane korzystają tymczasowo z angielskiego.</li>
+        <li><strong>Wpłać</strong> — wspiera trwające prace tłumaczeniowe (otwiera PayPal w nowej karcie).</li>
+        <li>Nagłówek automatycznie zmniejsza się podczas przewijania, zostawiając więcej miejsca na czytanie.</li>
+      </ul>
+
+      <h4 class="intro-header">Pasek narzędzi</h4>
+      <ul class="intro-list">
+        <li><strong>Wyszukiwanie</strong> — filtruje zarys w trakcie pisania. Przeszukuje tybetański, angielski, wybrany język oraz numery sekcji (np. <code>2.3.1</code>). Znaki diakrytyczne są opcjonalne — „sutra" znajdzie „sūtra". Licznik pokazuje liczbę dopasowań; <kbd>Esc</kbd> lub ✕ czyści wyszukiwanie. <kbd>Ctrl</kbd>+<kbd>F</kbd> (<kbd>⌘</kbd>+<kbd>F</kbd> na Macu) przenosi kursor do pola wyszukiwania.</li>
+        <li><strong>བོད་ཡིག / POL</strong> — pokazuje lub ukrywa linię tybetańską albo linię tłumaczenia wszędzie naraz (zarys, ścieżka, tekst rdzenny). Ukryj jedną, aby czytać samą drugą.</li>
+        <li><strong>− / +</strong> — zmniejsza lub zwiększa rozmiar tekstu dla wygodnego czytania na dowolnym urządzeniu.</li>
+        <li><strong>Drukuj</strong> — otwiera okno wydruku z czystym widokiem zarysu <em>dokładnie tak, jak jest obecnie rozwinięty</em>, z tytułem i wybraną ścieżką w nagłówku. Zapisz jako PDF, aby przygotować materiał do nauki.</li>
+      </ul>
+
+      <h4 class="intro-header">Ścieżka nawigacyjna</h4>
+      <ul class="intro-list">
+        <li>Po wybraniu tematu pasek pod paskiem narzędzi pokazuje pełną ścieżkę od korzenia tekstu aż do niego. Każdy element ścieżki można kliknąć — dotknij, aby przenieść zaznaczenie wyżej. Przycisk <strong>Copy</strong> na końcu kopiuje całą ścieżkę jako tekst.</li>
+      </ul>
+
+      <h4 class="intro-header">Pasek bieżącej pozycji</h4>
+      <ul class="intro-list">
+        <li>Podczas przewijania Tekstu rdzennego u góry ekranu pozostaje wąski pasek z nazwą tematu zarysu, do którego należy wers widoczny u góry — zawsze wiesz, <em>gdzie jesteś</em> w sa bcze.</li>
+        <li><strong>Ten pasek jest przyciskiem.</strong> Dotknij lub kliknij w dowolnym miejscu (albo w okrągłą plakietkę „Zarys"), aby przeskoczyć dokładnie do tego tematu w Zarysie strukturalnym.</li>
+      </ul>
+
+      <h4 class="intro-header">Zarys strukturalny</h4>
+      <ul class="intro-list">
+        <li><strong>Wiersze</strong> — każdy wiersz to jeden podział tekstu: numer (unikalny adres), nagłówek tybetański i tłumaczenie. Kliknij wiersz, aby go zaznaczyć i odnotować swoje miejsce; kliknij ponownie (lub naciśnij <kbd>Esc</kbd>), aby odznaczyć.</li>
+        <li><strong>Strzałki ▶</strong> rozwijają lub zwijają podział. Plakietka <span class="child-count">7</span> pokazuje liczbę poddziałów.</li>
+        <li><strong>Kolorowe linie po lewej</strong> zmieniają odcień wraz z głębokością — szybka wizualna wskazówka zagnieżdżenia.</li>
+        <li><strong>Ikona kopiowania</strong> — pojawia się po najechaniu na wiersz; kopiuje pełną ścieżkę tematu.</li>
+        <li><strong>Znaczniki rozdziałów</strong>, np. <span class="chapter-tag">(Rozdział 4)</span>, przenoszą do wersów danego rozdziału w Tekście rdzennym.</li>
+        <li><strong>Znaczniki wersów</strong>, np. <span class="sholoka-tag">ślo. 10–17</span>, otwierają Tekst rdzenny na dokładnie tych wersach, które temat komentuje, i zaznaczają cały zakres na złoto.</li>
+        <li><strong>Znaczniki odsyłaczy</strong>, np. <span class="cross-ref-tag">LtaF 89–97</span>, otwierają cytowane wersy <em>Listu do przyjaciela</em> Nagardżuny w okienku, po tybetańsku i angielsku.</li>
+        <li><strong>Rozwiń wszystko / Zwiń wszystko</strong> — otwiera lub zamyka całe drzewo naraz.</li>
+        <li><strong>Kolumny</strong> — przełącza na widok kolumnowy (Millera): każda kolumna to jeden poziom zarysu; kliknięcie elementu otwiera jego poddziały w następnej kolumnie. Wygodne w bardzo głębokich rozdziałach tantrycznych.</li>
+      </ul>
+
+      <h4 class="intro-header">Tekst rdzenny</h4>
+      <ul class="intro-list">
+        <li>Jedna sekcja na rozdział, plus Prolog i Kolofon. Kliknij nagłówek sekcji, aby ją otworzyć lub zamknąć. Przycisk <strong>← Zarys</strong> po prawej stronie nagłówka przenosi do odpowiadającego tematu w Zarysie strukturalnym.</li>
+        <li><strong>Karty wersów</strong> — każdy wers to karta z numerowaną plakietką. Karty delikatnie rozjaśniają się pod kursorem: kliknij lub dotknij, aby przejść do dokładnie tego tematu zarysu, który komentuje dany wers.</li>
+        <li><strong>Karty zaznaczone na złoto</strong> wskazują zakres wersów, do którego ostatnio przeskoczono z zarysu; zaznaczenie pozostaje do następnego skoku.</li>
+        <li>Okrągły przycisk <strong>↑</strong> u góry po prawej wraca na początek aktualnie czytanego rozdziału.</li>
+      </ul>
+
+      <h4 class="intro-header">Klawiatura</h4>
+      <ul class="intro-list">
+        <li><kbd>Ctrl</kbd>+<kbd>F</kbd> / <kbd>⌘</kbd>+<kbd>F</kbd> — przejście do wyszukiwania · <kbd>Esc</kbd> — czyszczenie wyszukiwania, odznaczenie lub zamknięcie okienka · <kbd>Enter</kbd> / <kbd>Spacja</kbd> — aktywacja wskazanego elementu · <kbd>Tab</kbd> — przechodzenie między elementami.</li>
+      </ul>
+
+      <h4 class="intro-header">Przepis: materiał do nauki</h4>
+      <p>Wybierz temat, rozwiń go do potrzebnej głębokości (lub użyj „Rozwiń wszystko"), a następnie naciśnij Drukuj — PDF będzie zawierał tytuł, Twoją ścieżkę i zarys dokładnie tak, jak jest wyświetlany.</p>
+    `,
+      ru: `
+      <p>Обозреватель состоит из двух связанных слоёв: <strong>Структурный план</strong> (са че Патрула Ринпоче) и <strong>Коренной текст</strong> (строфы Джигме Лингпы). Ниже описан каждый элемент, сверху страницы вниз.</p>
+
+      <h4 class="intro-header">Верхняя панель</h4>
+      <ul class="intro-list">
+        <li><strong>Выбор языка</strong> (кнопка с флагом, справа вверху) — выберите язык перевода плана, заголовков глав и коренного текста. Языки, отмеченные как готовящиеся, временно отображаются по-английски.</li>
+        <li><strong>Помочь</strong> — поддерживает текущую переводческую работу (открывает PayPal в новой вкладке).</li>
+        <li>Шапка автоматически сжимается при прокрутке, оставляя больше места для чтения.</li>
+      </ul>
+
+      <h4 class="intro-header">Панель инструментов</h4>
+      <ul class="intro-list">
+        <li><strong>Поиск</strong> — фильтрует план по мере ввода. Ищет по тибетскому, английскому, выбранному языку и номерам разделов (например, <code>2.3.1</code>). Диакритика необязательна — «sutra» найдёт «sūtra». Счётчик показывает число совпадений; <kbd>Esc</kbd> или ✕ очищает поиск. <kbd>Ctrl</kbd>+<kbd>F</kbd> (<kbd>⌘</kbd>+<kbd>F</kbd> на Mac) переводит курсор в поле поиска.</li>
+        <li><strong>བོད་ཡིག / RUS</strong> — показывает или скрывает тибетскую строку либо строку перевода везде сразу (план, цепочка навигации, коренной текст). Скройте одну, чтобы читать только другую.</li>
+        <li><strong>− / +</strong> — уменьшает или увеличивает размер текста для комфортного чтения на любом устройстве.</li>
+        <li><strong>Печать</strong> — открывает диалог печати с чистым видом плана <em>ровно в текущем развёрнутом состоянии</em>, с заголовком и выбранным путём наверху. Сохраните как PDF для учебного пособия.</li>
+      </ul>
+
+      <h4 class="intro-header">Цепочка навигации</h4>
+      <ul class="intro-list">
+        <li>После выбора темы полоса под панелью инструментов показывает её полный путь от корня текста. Каждое звено кликабельно — нажмите, чтобы переместить выбор выше. Кнопка <strong>Copy</strong> в конце копирует весь путь как текст.</li>
+      </ul>
+
+      <h4 class="intro-header">Полоса текущей позиции</h4>
+      <ul class="intro-list">
+        <li>Пока вы прокручиваете Коренной текст, вверху остаётся узкая полоса с названием темы плана, к которой относится строфа в верхней части экрана, — вы всегда знаете, <em>где находитесь</em> в са че.</li>
+        <li><strong>Эта полоса — кнопка.</strong> Нажмите в любом её месте (или на круглую метку «К плану»), чтобы перейти точно к этой теме в Структурном плане.</li>
+      </ul>
+
+      <h4 class="intro-header">Структурный план</h4>
+      <ul class="intro-list">
+        <li><strong>Строки</strong> — каждая строка — это одно деление текста: номер (уникальный адрес), тибетский заголовок и перевод. Нажмите на строку, чтобы выбрать её и отметить своё место; нажмите ещё раз (или <kbd>Esc</kbd>), чтобы снять выбор.</li>
+        <li><strong>Стрелки ▶</strong> разворачивают и сворачивают деление. Метка <span class="child-count">7</span> показывает число подразделов.</li>
+        <li><strong>Цветные линии слева</strong> меняют оттенок с глубиной — быстрый визуальный признак уровня вложенности.</li>
+        <li><strong>Значок копирования</strong> — появляется при наведении на строку; копирует полный путь темы.</li>
+        <li><strong>Метки глав</strong>, например <span class="chapter-tag">(Chapter 4)</span>, переходят к строфам этой главы в Коренном тексте.</li>
+        <li><strong>Метки строф</strong>, например <span class="sholoka-tag">vs. 10–17</span>, открывают Коренной текст ровно на тех строфах, которые комментирует тема, и выделяют весь диапазон золотым.</li>
+        <li><strong>Метки перекрёстных ссылок</strong>, например <span class="cross-ref-tag">LtaF 89–97</span>, открывают цитируемые строфы «Письма к другу» Нагарджуны во всплывающем окне, по-тибетски и по-английски.</li>
+        <li><strong>Развернуть все / Свернуть все</strong> — открывает или закрывает всё дерево сразу.</li>
+        <li><strong>Колонки</strong> — переключает на постолбцовый вид (колонки Миллера): каждая колонка — один уровень плана; щелчок по элементу открывает его подразделы в следующей колонке. Удобно для очень глубоких тантрических глав.</li>
+      </ul>
+
+      <h4 class="intro-header">Коренной текст</h4>
+      <ul class="intro-list">
+        <li>Один раздел на главу, плюс Пролог и Колофон. Нажмите на заголовок раздела, чтобы открыть или закрыть его. Кнопка <strong>← К плану</strong> справа от заголовка переходит к соответствующей теме Структурного плана.</li>
+        <li><strong>Карточки строф</strong> — каждая строфа — карточка с нумерованной меткой. Карточки мягко подсвечиваются под курсором: нажмите, чтобы перейти точно к той теме плана, которая комментирует эту строфу.</li>
+        <li><strong>Карточки с золотой подсветкой</strong> отмечают диапазон строф, к которому вы в последний раз переходили из плана; подсветка сохраняется до следующего перехода.</li>
+        <li>Круглая кнопка <strong>↑</strong> справа вверху возвращает к началу читаемой главы.</li>
+      </ul>
+
+      <h4 class="intro-header">Клавиатура</h4>
+      <ul class="intro-list">
+        <li><kbd>Ctrl</kbd>+<kbd>F</kbd> / <kbd>⌘</kbd>+<kbd>F</kbd> — фокус на поиске · <kbd>Esc</kbd> — очистка поиска, снятие выбора или закрытие окна · <kbd>Enter</kbd> / <kbd>Пробел</kbd> — активация выделенного элемента · <kbd>Tab</kbd> — перемещение между элементами.</li>
+      </ul>
+
+      <h4 class="intro-header">Рецепт: учебное пособие</h4>
+      <p>Выберите нужную тему, разверните её до нужной глубины (или «Развернуть все»), затем нажмите «Печать» — PDF будет содержать заголовок, ваш путь и план ровно в отображаемом виде.</p>
+    `,
+      de: `
+      <p>Der Explorer besteht aus zwei verbundenen Ebenen: der <strong>Strukturellen Gliederung</strong> (Patrul Rinpoches Sa Bche) und dem <strong>Wurzeltext</strong> (Jigme Lingpas Verse). Unten ist jedes Element beschrieben, vom Seitenanfang bis zum Ende.</p>
+
+      <h4 class="intro-header">Kopfleiste</h4>
+      <ul class="intro-list">
+        <li><strong>Sprachauswahl</strong> (Flaggen-Schaltfläche, oben rechts) — wählen Sie die Übersetzungssprache für Gliederung, Kapitelüberschriften und Wurzeltext. Noch in Vorbereitung befindliche Sprachen greifen vorerst auf Englisch zurück.</li>
+        <li><strong>Spenden</strong> — unterstützt die laufende Übersetzungsarbeit (öffnet PayPal in einem neuen Tab).</li>
+        <li>Die Kopfzeile verkleinert sich beim Scrollen automatisch und lässt mehr Raum zum Lesen.</li>
+      </ul>
+
+      <h4 class="intro-header">Werkzeugleiste</h4>
+      <ul class="intro-list">
+        <li><strong>Suche</strong> — filtert die Gliederung während der Eingabe. Durchsucht Tibetisch, Englisch, die gewählte Sprache und Abschnittsnummern (z. B. <code>2.3.1</code>). Diakritika sind optional — „sutra" findet „sūtra". Ein Zähler zeigt die Trefferzahl; <kbd>Esc</kbd> oder ✕ löscht die Suche. <kbd>Strg</kbd>+<kbd>F</kbd> (<kbd>⌘</kbd>+<kbd>F</kbd> am Mac) springt direkt ins Suchfeld.</li>
+        <li><strong>བོད་ཡིག / GER</strong> — blendet die tibetische Zeile oder die Übersetzungszeile überall gleichzeitig ein oder aus (Gliederung, Pfadleiste, Wurzeltext).</li>
+        <li><strong>− / +</strong> — verkleinert oder vergrößert die Schrift für bequemes Lesen auf jedem Gerät.</li>
+        <li><strong>Drucken</strong> — öffnet den Druckdialog mit einer sauberen Ansicht der Gliederung <em>genau im aktuell ausgeklappten Zustand</em>, mit Titel und gewähltem Pfad im Kopf. Als PDF speichern, um ein Studienblatt zu erstellen.</li>
+      </ul>
+
+      <h4 class="intro-header">Pfadleiste (Breadcrumb)</h4>
+      <ul class="intro-list">
+        <li>Nach Auswahl eines Themas zeigt die Leiste unter der Werkzeugleiste dessen vollständigen Pfad von der Wurzel des Textes. Jedes Glied ist klickbar — tippen Sie darauf, um die Auswahl nach oben zu verschieben. <strong>Copy</strong> am Ende kopiert den gesamten Pfad als Text.</li>
+      </ul>
+
+      <h4 class="intro-header">Leseposition-Leiste</h4>
+      <ul class="intro-list">
+        <li>Beim Scrollen durch den Wurzeltext bleibt oben eine schmale Leiste, die das Gliederungsthema des obersten sichtbaren Verses nennt — Sie wissen stets, <em>wo Sie sich</em> im Sa Bche befinden.</li>
+        <li><strong>Die Leiste ist eine Schaltfläche.</strong> Tippen oder klicken Sie irgendwo darauf (oder auf den runden „Gliederung"-Chip), um genau zu diesem Thema in der Strukturellen Gliederung zu springen.</li>
+      </ul>
+
+      <h4 class="intro-header">Strukturelle Gliederung</h4>
+      <ul class="intro-list">
+        <li><strong>Zeilen</strong> — jede Zeile ist eine Einteilung des Textes: Nummer (eindeutige Adresse), tibetische Überschrift und Übersetzung. Klicken Sie eine Zeile an, um sie auszuwählen und Ihre Stelle zu markieren; erneut klicken (oder <kbd>Esc</kbd>) hebt die Auswahl auf.</li>
+        <li><strong>▶-Pfeile</strong> klappen eine Einteilung aus oder ein. Die kleine Plakette <span class="child-count">7</span> zeigt die Zahl der Unterteilungen.</li>
+        <li><strong>Farbige Linien links</strong> ändern ihren Ton mit der Tiefe — ein schneller visueller Hinweis auf die Verschachtelung.</li>
+        <li><strong>Kopier-Symbol</strong> — erscheint beim Überfahren einer Zeile; kopiert den vollständigen Pfad des Themas.</li>
+        <li><strong>Kapitel-Tags</strong> wie <span class="chapter-tag">(Chapter 4)</span> springen zu den Versen dieses Kapitels im Wurzeltext.</li>
+        <li><strong>Vers-Tags</strong> wie <span class="sholoka-tag">vs. 10–17</span> öffnen den Wurzeltext genau bei den Versen, die das Thema kommentiert, und hinterlegen den gesamten Bereich golden.</li>
+        <li><strong>Querverweis-Tags</strong> wie <span class="cross-ref-tag">LtaF 89–97</span> öffnen die zitierten Verse aus Nāgārjunas <em>Brief an einen Freund</em> in einem Fenster, auf Tibetisch und Englisch.</li>
+        <li><strong>Alle ausklappen / Alle einklappen</strong> — öffnet oder schließt den gesamten Baum auf einmal.</li>
+        <li><strong>Spalten</strong> — wechselt zur Spaltenansicht (Miller-Spalten): Jede Spalte ist eine Ebene der Gliederung; ein Klick öffnet die Unterteilungen in der nächsten Spalte. Praktisch für die sehr tiefen tantrischen Kapitel.</li>
+      </ul>
+
+      <h4 class="intro-header">Wurzeltext</h4>
+      <ul class="intro-list">
+        <li>Ein Abschnitt pro Kapitel, dazu Prolog und Kolophon. Klicken Sie auf eine Abschnittsüberschrift, um sie zu öffnen oder zu schließen. <strong>← Gliederung</strong> rechts in der Überschrift springt zum passenden Thema der Strukturellen Gliederung.</li>
+        <li><strong>Vers-Karten</strong> — jeder Vers ist eine Karte mit nummerierter Plakette. Karten leuchten unter dem Zeiger sanft auf: Klicken oder tippen Sie, um zum exakten Gliederungsthema dieses Verses zu springen.</li>
+        <li><strong>Golden hinterlegte Karten</strong> markieren den Versbereich, zu dem Sie zuletzt aus der Gliederung gesprungen sind; die Markierung bleibt bis zum nächsten Sprung.</li>
+        <li>Die runde <strong>↑-Schaltfläche</strong> oben rechts bringt Sie zum Anfang des gerade gelesenen Kapitels zurück.</li>
+      </ul>
+
+      <h4 class="intro-header">Tastatur</h4>
+      <ul class="intro-list">
+        <li><kbd>Strg</kbd>+<kbd>F</kbd> / <kbd>⌘</kbd>+<kbd>F</kbd> — Suchfeld fokussieren · <kbd>Esc</kbd> — Suche löschen, Auswahl aufheben oder Fenster schließen · <kbd>Enter</kbd> / <kbd>Leertaste</kbd> — fokussiertes Element aktivieren · <kbd>Tab</kbd> — zwischen Bedienelementen wechseln.</li>
+      </ul>
+
+      <h4 class="intro-header">Rezept: ein Studienblatt</h4>
+      <p>Wählen Sie das gewünschte Thema, klappen Sie es bis zur benötigten Tiefe aus (oder „Alle ausklappen"), und drücken Sie dann „Drucken" — das PDF enthält Titel, Ihren Pfad und die Gliederung genau wie angezeigt.</p>
+    `,
+      fr: `
+      <p>L'explorateur comporte deux couches liées : le <strong>Plan structurel</strong> (le sa bche de Patrul Rinpoché) et le <strong>Texte racine</strong> (les vers de Jigme Lingpa). Chaque élément est décrit ci-dessous, du haut de la page vers le bas.</p>
+
+      <h4 class="intro-header">Barre supérieure</h4>
+      <ul class="intro-list">
+        <li><strong>Sélecteur de langue</strong> (bouton drapeau, en haut à droite) — choisissez la langue de traduction du plan, des titres de chapitres et du texte racine. Les langues encore en préparation reviennent provisoirement à l'anglais.</li>
+        <li><strong>Donner</strong> — soutient le travail de traduction en cours (ouvre PayPal dans un nouvel onglet).</li>
+        <li>L'en-tête se réduit automatiquement pendant le défilement, laissant plus de place à la lecture.</li>
+      </ul>
+
+      <h4 class="intro-header">Barre d'outils</h4>
+      <ul class="intro-list">
+        <li><strong>Recherche</strong> — filtre le plan au fil de la saisie. Elle parcourt le tibétain, l'anglais, la langue choisie et les numéros de sections (p. ex. <code>2.3.1</code>). Les diacritiques sont facultatifs — « sutra » trouve « sūtra ». Un compteur affiche le nombre de résultats ; <kbd>Échap</kbd> ou ✕ efface la recherche. <kbd>Ctrl</kbd>+<kbd>F</kbd> (<kbd>⌘</kbd>+<kbd>F</kbd> sur Mac) place le curseur dans le champ de recherche.</li>
+        <li><strong>བོད་ཡིག / FRE</strong> — affiche ou masque partout à la fois la ligne tibétaine ou la ligne de traduction (plan, fil d'Ariane, texte racine).</li>
+        <li><strong>− / +</strong> — réduit ou agrandit la taille du texte pour une lecture confortable sur tout appareil.</li>
+        <li><strong>Imprimer</strong> — ouvre la boîte d'impression avec une vue propre du plan <em>exactement tel qu'il est actuellement développé</em>, coiffée du titre et de votre chemin sélectionné. Enregistrez en PDF pour créer un support d'étude.</li>
+      </ul>
+
+      <h4 class="intro-header">Fil d'Ariane</h4>
+      <ul class="intro-list">
+        <li>Après la sélection d'un sujet, la bande sous la barre d'outils affiche son chemin complet depuis la racine du texte. Chaque maillon est cliquable — touchez-en un pour remonter la sélection. Le bouton <strong>Copy</strong> à la fin copie tout le chemin sous forme de texte.</li>
+      </ul>
+
+      <h4 class="intro-header">Barre de position de lecture</h4>
+      <ul class="intro-list">
+        <li>Pendant le défilement du Texte racine, une fine barre reste en haut et nomme le sujet du plan auquel appartient le vers visible en haut de l'écran — vous savez toujours <em>où vous êtes</em> dans le sa bche.</li>
+        <li><strong>Cette barre est un bouton.</strong> Touchez ou cliquez n'importe où (ou sur la pastille ronde « Plan ») pour rejoindre exactement ce sujet dans le Plan structurel.</li>
+      </ul>
+
+      <h4 class="intro-header">Plan structurel</h4>
+      <ul class="intro-list">
+        <li><strong>Lignes</strong> — chaque ligne est une division du texte : son numéro (adresse unique), le titre tibétain et la traduction. Cliquez sur une ligne pour la sélectionner et marquer votre place ; cliquez à nouveau (ou <kbd>Échap</kbd>) pour désélectionner.</li>
+        <li><strong>Flèches ▶</strong> — développent ou réduisent une division. La pastille <span class="child-count">7</span> indique le nombre de subdivisions.</li>
+        <li><strong>Liserés colorés à gauche</strong> — leur teinte évolue avec la profondeur : un repère visuel rapide du niveau d'imbrication.</li>
+        <li><strong>Icône de copie</strong> — apparaît au survol d'une ligne ; copie le chemin complet du sujet.</li>
+        <li><strong>Étiquettes de chapitre</strong> comme <span class="chapter-tag">(Chapter 4)</span> — mènent aux vers de ce chapitre dans le Texte racine.</li>
+        <li><strong>Étiquettes de vers</strong> comme <span class="sholoka-tag">vs. 10–17</span> — ouvrent le Texte racine exactement aux vers commentés par le sujet et voilent d'or toute la plage.</li>
+        <li><strong>Étiquettes de renvoi</strong> comme <span class="cross-ref-tag">LtaF 89–97</span> — ouvrent les vers cités de la <em>Lettre à un ami</em> de Nāgārjuna dans une fenêtre, en tibétain et en anglais.</li>
+        <li><strong>Tout développer / Tout réduire</strong> — ouvre ou ferme l'arborescence entière d'un coup.</li>
+        <li><strong>Colonnes</strong> — bascule en vue par colonnes (colonnes de Miller) : chaque colonne est un niveau du plan ; cliquer sur un élément ouvre ses subdivisions dans la colonne suivante. Pratique pour les chapitres tantriques très profonds.</li>
+      </ul>
+
+      <h4 class="intro-header">Texte racine</h4>
+      <ul class="intro-list">
+        <li>Une section par chapitre, plus le Prologue et le Colophon. Cliquez sur l'en-tête d'une section pour l'ouvrir ou la fermer. Le bouton <strong>← Plan</strong> à droite de l'en-tête rejoint le sujet correspondant du Plan structurel.</li>
+        <li><strong>Cartes de vers</strong> — chaque vers est une carte avec une pastille numérotée. Les cartes s'éclairent doucement sous le pointeur : cliquez ou touchez pour rejoindre le sujet précis du plan qui commente ce vers.</li>
+        <li><strong>Les cartes voilées d'or</strong> marquent la plage de vers atteinte lors de votre dernier saut depuis le plan ; le voile demeure jusqu'au saut suivant.</li>
+        <li>Le bouton rond <strong>↑</strong> en haut à droite vous ramène au début du chapitre en cours de lecture.</li>
+      </ul>
+
+      <h4 class="intro-header">Clavier</h4>
+      <ul class="intro-list">
+        <li><kbd>Ctrl</kbd>+<kbd>F</kbd> / <kbd>⌘</kbd>+<kbd>F</kbd> — focaliser la recherche · <kbd>Échap</kbd> — effacer la recherche, désélectionner ou fermer la fenêtre · <kbd>Entrée</kbd> / <kbd>Espace</kbd> — activer l'élément focalisé · <kbd>Tab</kbd> — naviguer entre les commandes.</li>
+      </ul>
+
+      <h4 class="intro-header">Recette : un support d'étude</h4>
+      <p>Sélectionnez le sujet voulu, développez-le à la profondeur nécessaire (ou « Tout développer »), puis appuyez sur Imprimer — le PDF contiendra le titre, votre chemin et le plan exactement tel qu'affiché.</p>
+    `
+    };
+
     const UI_STRINGS = {
       en: {
         searchPlaceholder: "Search Outline (diacritics optional)...",
         aboutToggle: "About this text",
+        howtoToggle: "How to use",
         expandAll: "Expand All",
         collapseAll: "Collapse All",
         millerToggle: "Columns",
@@ -5782,6 +6214,7 @@
       pl: {
         searchPlaceholder: "Szukaj (znaki diakrytyczne opcjonalne)...",
         aboutToggle: "O tym tekście",
+        howtoToggle: "Jak korzystać",
         expandAll: "Rozwiń wszystko",
         collapseAll: "Zwiń wszystko",
         millerToggle: "Kolumny",
@@ -5821,6 +6254,7 @@
       ru: {
         searchPlaceholder: "Поиск (диакритика необязательна)...",
         aboutToggle: "Об этом тексте",
+        howtoToggle: "Как пользоваться",
         expandAll: "Развернуть все",
         collapseAll: "Свернуть все",
         millerToggle: "Колонки",
@@ -5845,6 +6279,7 @@
       de: {
         searchPlaceholder: "Suche (Diakritika optional)...",
         aboutToggle: "Über diesen Text",
+        howtoToggle: "Bedienung",
         expandAll: "Alle ausklappen",
         collapseAll: "Alle einklappen",
         millerToggle: "Spalten",
@@ -5869,6 +6304,7 @@
       fr: {
         searchPlaceholder: "Rechercher (diacritiques facultatifs)...",
         aboutToggle: "À propos de ce texte",
+        howtoToggle: "Mode d'emploi",
         expandAll: "Tout développer",
         collapseAll: "Tout réduire",
         millerToggle: "Colonnes",
@@ -6576,6 +7012,7 @@
       targetLang: 'en',              // currently selected target language
       rootTextOpen: false,           // root text section collapsed by default
       rootTextChaptersOpen: new Set(),
+      rtHighlight: null,             // {key, from, to} — verse range to veil in the root text
       textSize: 0,
       currentVerse: null,            // {chapter, sholoka} of topmost visible stanza
       currentChapterKey: null        // 'chapter-10' | 'prologue' | 'colophon' | null
@@ -7175,9 +7612,15 @@
       if ((e.key === 'f' || e.key === 'F') && (e.ctrlKey || e.metaKey)) { e.preventDefault(); document.getElementById('searchBox').focus(); }
     });
 
-    document.getElementById('introToggle').addEventListener('click', () => {
-      const body = document.getElementById('introBody'), arrow = document.getElementById('introArrow');
-      const isOpen = body.classList.toggle('visible'); arrow.classList.toggle('open', isOpen);
+    [['introToggle', 'introBody', 'introArrow'], ['howtoToggle', 'howtoBody', 'howtoArrow']].forEach(([btnId, bodyId, arrowId]) => {
+      const btn = document.getElementById(btnId);
+      if (!btn) return;
+      btn.addEventListener('click', () => {
+        const body = document.getElementById(bodyId), arrow = document.getElementById(arrowId);
+        const isOpen = body.classList.toggle('visible');
+        arrow.classList.toggle('open', isOpen);
+        btn.setAttribute('aria-expanded', String(isOpen));
+      });
     });
 
     function preparePrintHeader() {
@@ -21045,16 +21488,22 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
         const content = zipped.length > 0
           ? zipped.map(p => {
             const verseNodeId = chapterNum ? VERSE_TO_NODE[`${chapterNum}-${p.num}`] : null;
-            const navBtn = verseNodeId
-              ? `<button class="rt-stanza-nav" data-node-id="${escHtml(verseNodeId)}" title="Jump to outline node ${escHtml(verseNodeId)}">&#x2190;</button>`
+            const hl = state.rtHighlight;
+            const isHl = p.num && hl && hl.key === sec.key && +p.num >= hl.from && +p.num <= hl.to;
+            const cls = 'rt-stanza-pair'
+              + (p.num ? '' : ' rt-heading')
+              + (verseNodeId ? ' is-clickable' : '')
+              + (isHl ? ' is-highlighted' : '');
+            const clickAttrs = verseNodeId
+              ? ` data-node-id="${escHtml(verseNodeId)}" title="Jump to outline node ${escHtml(verseNodeId)}" role="link" tabindex="0"`
               : '';
             const numBadge = p.num ? `<span class="rt-verse-num">${escHtml(p.num)}</span> ` : '';
             return `
-            <div class="rt-stanza-pair${p.num ? '' : ' rt-heading'}" id="rt-${escHtml(sec.key)}-sholoka-${escHtml(p.num)}" data-sholoka="${escHtml(p.num)}">
+            <div class="${cls}" id="rt-${escHtml(sec.key)}-sholoka-${escHtml(p.num)}" data-sholoka="${escHtml(p.num)}"${clickAttrs}>
               <div class="rt-stanza-body">
                 <div class="rt-stanza-tib">${numBadge}${p.tib ? escHtml(p.tib) : ''}</div>
                 <div class="rt-stanza-en">${p.en ? escHtml(p.en) : ''}</div>
-              </div>${navBtn}
+              </div>
             </div>`;
           }).join('')
           : `<div class="rt-slot-empty">${escHtml(uiStrings().textPending)}</div>`;
@@ -21100,19 +21549,26 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
           }
         });
       });
-      body.querySelectorAll('.rt-stanza-nav').forEach(btn => {
-        btn.addEventListener('click', e => {
-          e.stopPropagation();
-          const id = btn.dataset.nodeId;
-          if (id && nodeIndex[id]) {
-            selectNode(id);
-            if (!isMillerMode) {
-              requestAnimationFrame(() => {
-                const el = document.querySelector(`[data-id="${CSS.escape(id)}"]`);
-                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              });
-            }
-          }
+      const goToOutlineNode = id => {
+        if (!id || !nodeIndex[id]) return;
+        selectNode(id);
+        if (!isMillerMode) {
+          requestAnimationFrame(() => {
+            const el = document.querySelector(`[data-id="${CSS.escape(id)}"]`);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          });
+        }
+      };
+      body.querySelectorAll('.rt-stanza-pair.is-clickable').forEach(card => {
+        card.addEventListener('click', e => {
+          if (e.target.closest('a, button')) return;
+          // Don't hijack clicks that are part of a text selection
+          const sel = window.getSelection && window.getSelection();
+          if (sel && sel.toString()) return;
+          goToOutlineNode(card.dataset.nodeId);
+        });
+        card.addEventListener('keydown', e => {
+          if (e.key === 'Enter') { e.preventDefault(); goToOutlineNode(card.dataset.nodeId); }
         });
       });
 
@@ -21147,26 +21603,20 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
       }, 60);
     }
 
-    // Open the chapter, scroll to the first sholoka in [from..to], and flash every
-    // sholoka in the range so the reader sees the full extent the outline node spans.
+    // Open the chapter, scroll to the first sholoka in [from..to], and veil the whole
+    // range (is-highlighted) so the reader sees the full extent the outline node spans.
+    // The highlight lives in state so re-renders (language switch etc.) preserve it.
     function jumpToSholoka(chapter, from, to) {
       openRootTextSection();
       const isNum = !isNaN(chapter);
       const key = isNum ? `chapter-${chapter}` : chapter;
       state.rootTextChaptersOpen.add(key);
+      state.rtHighlight = { key, from, to };
       renderRootText();
 
       setTimeout(() => {
         const firstEl = document.getElementById(`rt-${key}-sholoka-${from}`);
-        if (!firstEl) return;
-        firstEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        for (let n = from; n <= to; n++) {
-          const el = document.getElementById(`rt-${key}-sholoka-${n}`);
-          if (!el) continue;
-          el.classList.remove('rt-flash');
-          void el.offsetWidth; // force reflow
-          el.classList.add('rt-flash');
-        }
+        if (firstEl) firstEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }, 60);
     }
 
@@ -21356,6 +21806,18 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
       if (introBody) {
         introBody.innerHTML = ABOUT_CONTENT[lang] || ABOUT_CONTENT['en'];
       }
+
+      const howtoLabel = document.getElementById('howtoLabel');
+      if (howtoLabel) howtoLabel.textContent = ui.howtoToggle;
+
+      const howtoBody = document.getElementById('howtoBody');
+      if (howtoBody) {
+        howtoBody.innerHTML = HOWTO_CONTENT[lang] || HOWTO_CONTENT['en'];
+      }
+
+      // Reading-position bar chip reuses the "back to outline" wording.
+      const anbHintLabel = document.getElementById('anbHintLabel');
+      if (anbHintLabel) anbHintLabel.textContent = ui.backToOutline;
     }
 
     function setTargetLang(code) {
