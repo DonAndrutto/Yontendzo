@@ -23,6 +23,8 @@
       --header-text: #f5e6c8;
       --controls-bg: #f0e9dd;
       --muted-warm: #8a6f4a;
+      --accent-gold: #d4a55a;
+      --ease-veil: cubic-bezier(0.25, 0.1, 0.25, 1);
       --focus-ring: 0 0 0 2px var(--selected-border);
       --font-size-tib: 15px;
       --font-size-en: 13px;
@@ -1304,28 +1306,50 @@
       display: block;
     }
 
+    /* Verse cards: quiet by default, hover affordance when clickable,
+       persistent gold veil for the sholoka range jumped to from the outline. */
     .rt-stanza-pair {
       display: flex;
       gap: 10px;
       align-items: flex-start;
-      margin-bottom: 24px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      margin: 0 -14px 14px;
+      padding: 12px 14px 12px 16px;
+      border-left: 2px solid transparent;
+      border-radius: 0 10px 10px 0;
+      transition: background 220ms var(--ease-veil), border-color 220ms var(--ease-veil);
     }
 
     .rt-stanza-pair:last-child {
-      border-bottom: none;
       margin-bottom: 0;
-      padding-bottom: 0;
+    }
+
+    .rt-stanza-pair.is-clickable {
+      cursor: pointer;
+    }
+
+    .rt-stanza-pair.is-clickable:hover {
+      background: rgba(212, 165, 90, 0.06);
+      border-left-color: rgba(212, 165, 90, 0.45);
+    }
+
+    .rt-stanza-pair.is-clickable:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    .rt-stanza-pair.is-highlighted {
+      background: linear-gradient(90deg, rgba(212, 165, 90, 0.13) 0%, rgba(212, 165, 90, 0.04) 60%, transparent 100%);
+      border-left-color: var(--accent-gold);
+    }
+
+    .rt-stanza-pair.is-highlighted .rt-verse-num {
+      background: var(--accent-gold);
+      color: #17120a;
     }
 
     .rt-stanza-body {
       flex: 1;
       min-width: 0;
-    }
-
-    .rt-stanza-nav {
-      display: none;
     }
 
     .rt-stanza-tib {
@@ -1347,10 +1371,19 @@
     }
 
     .rt-verse-num {
+      display: inline-block;
+      min-width: 22px;
+      text-align: center;
       font-weight: 700;
+      font-size: 0.78em;
+      line-height: 1.7;
       color: var(--accent);
+      background: rgba(139, 44, 44, 0.07);
+      border-radius: 9px;
+      padding: 0 6px;
       font-variant-numeric: tabular-nums;
-      margin-right: 2px;
+      margin-right: 4px;
+      transition: background 220ms var(--ease-veil), color 220ms var(--ease-veil);
     }
 
     /* Unnumbered leading stanza = the chapter's Tibetan title line */
@@ -6576,6 +6609,7 @@
       targetLang: 'en',              // currently selected target language
       rootTextOpen: false,           // root text section collapsed by default
       rootTextChaptersOpen: new Set(),
+      rtHighlight: null,             // {key, from, to} — verse range to veil in the root text
       textSize: 0,
       currentVerse: null,            // {chapter, sholoka} of topmost visible stanza
       currentChapterKey: null        // 'chapter-10' | 'prologue' | 'colophon' | null
@@ -21045,16 +21079,22 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
         const content = zipped.length > 0
           ? zipped.map(p => {
             const verseNodeId = chapterNum ? VERSE_TO_NODE[`${chapterNum}-${p.num}`] : null;
-            const navBtn = verseNodeId
-              ? `<button class="rt-stanza-nav" data-node-id="${escHtml(verseNodeId)}" title="Jump to outline node ${escHtml(verseNodeId)}">&#x2190;</button>`
+            const hl = state.rtHighlight;
+            const isHl = p.num && hl && hl.key === sec.key && +p.num >= hl.from && +p.num <= hl.to;
+            const cls = 'rt-stanza-pair'
+              + (p.num ? '' : ' rt-heading')
+              + (verseNodeId ? ' is-clickable' : '')
+              + (isHl ? ' is-highlighted' : '');
+            const clickAttrs = verseNodeId
+              ? ` data-node-id="${escHtml(verseNodeId)}" title="Jump to outline node ${escHtml(verseNodeId)}" role="link" tabindex="0"`
               : '';
             const numBadge = p.num ? `<span class="rt-verse-num">${escHtml(p.num)}</span> ` : '';
             return `
-            <div class="rt-stanza-pair${p.num ? '' : ' rt-heading'}" id="rt-${escHtml(sec.key)}-sholoka-${escHtml(p.num)}" data-sholoka="${escHtml(p.num)}">
+            <div class="${cls}" id="rt-${escHtml(sec.key)}-sholoka-${escHtml(p.num)}" data-sholoka="${escHtml(p.num)}"${clickAttrs}>
               <div class="rt-stanza-body">
                 <div class="rt-stanza-tib">${numBadge}${p.tib ? escHtml(p.tib) : ''}</div>
                 <div class="rt-stanza-en">${p.en ? escHtml(p.en) : ''}</div>
-              </div>${navBtn}
+              </div>
             </div>`;
           }).join('')
           : `<div class="rt-slot-empty">${escHtml(uiStrings().textPending)}</div>`;
@@ -21100,19 +21140,26 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
           }
         });
       });
-      body.querySelectorAll('.rt-stanza-nav').forEach(btn => {
-        btn.addEventListener('click', e => {
-          e.stopPropagation();
-          const id = btn.dataset.nodeId;
-          if (id && nodeIndex[id]) {
-            selectNode(id);
-            if (!isMillerMode) {
-              requestAnimationFrame(() => {
-                const el = document.querySelector(`[data-id="${CSS.escape(id)}"]`);
-                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              });
-            }
-          }
+      const goToOutlineNode = id => {
+        if (!id || !nodeIndex[id]) return;
+        selectNode(id);
+        if (!isMillerMode) {
+          requestAnimationFrame(() => {
+            const el = document.querySelector(`[data-id="${CSS.escape(id)}"]`);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          });
+        }
+      };
+      body.querySelectorAll('.rt-stanza-pair.is-clickable').forEach(card => {
+        card.addEventListener('click', e => {
+          if (e.target.closest('a, button')) return;
+          // Don't hijack clicks that are part of a text selection
+          const sel = window.getSelection && window.getSelection();
+          if (sel && sel.toString()) return;
+          goToOutlineNode(card.dataset.nodeId);
+        });
+        card.addEventListener('keydown', e => {
+          if (e.key === 'Enter') { e.preventDefault(); goToOutlineNode(card.dataset.nodeId); }
         });
       });
 
@@ -21147,26 +21194,20 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
       }, 60);
     }
 
-    // Open the chapter, scroll to the first sholoka in [from..to], and flash every
-    // sholoka in the range so the reader sees the full extent the outline node spans.
+    // Open the chapter, scroll to the first sholoka in [from..to], and veil the whole
+    // range (is-highlighted) so the reader sees the full extent the outline node spans.
+    // The highlight lives in state so re-renders (language switch etc.) preserve it.
     function jumpToSholoka(chapter, from, to) {
       openRootTextSection();
       const isNum = !isNaN(chapter);
       const key = isNum ? `chapter-${chapter}` : chapter;
       state.rootTextChaptersOpen.add(key);
+      state.rtHighlight = { key, from, to };
       renderRootText();
 
       setTimeout(() => {
         const firstEl = document.getElementById(`rt-${key}-sholoka-${from}`);
-        if (!firstEl) return;
-        firstEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        for (let n = from; n <= to; n++) {
-          const el = document.getElementById(`rt-${key}-sholoka-${n}`);
-          if (!el) continue;
-          el.classList.remove('rt-flash');
-          void el.offsetWidth; // force reflow
-          el.classList.add('rt-flash');
-        }
+        if (firstEl) firstEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }, 60);
     }
 
