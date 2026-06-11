@@ -49,6 +49,14 @@
       min-height: 100vh;
       font-size: 14px;
       line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    ::selection {
+      background: #f3ddb4;
+      color: var(--text);
     }
 
     .sticky-header {
@@ -60,9 +68,10 @@
     }
 
     .app-header {
-      background: var(--header-bg);
+      background: linear-gradient(170deg, #2e1a0b 0%, var(--header-bg) 55%, #1c0d05 100%);
       color: var(--header-text);
       padding: 14px 22px 12px;
+      border-bottom: 1px solid rgba(245, 230, 200, 0.16);
       transition: padding 0.18s ease;
     }
 
@@ -241,7 +250,7 @@
 
     .search-box:focus {
       border-color: var(--selected-border);
-      box-shadow: 0 0 0 2px rgba(196, 106, 26, 0.18);
+      box-shadow: 0 0 0 2px rgba(139, 44, 44, 0.16);
     }
 
     .search-clear {
@@ -279,6 +288,7 @@
     .btn:hover {
       background: var(--controls-bg);
       border-color: #c0a880;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     }
 
     .btn:active {
@@ -394,7 +404,7 @@
     }
 
     .node-row:hover {
-      background: radial-gradient(circle at 30% 50%, rgba(0, 0, 0, 0.06) 0%, transparent 80%);
+      background: rgba(139, 76, 26, 0.07);
     }
 
     .node-row.selected {
@@ -477,6 +487,7 @@
       font-style: italic;
       display: block;
       word-break: break-word;
+      line-height: 1.55;
     }
 
     .node-extra-tags {
@@ -589,6 +600,7 @@
       transition: opacity 0.18s, transform 0.18s;
       z-index: 9999;
       white-space: nowrap;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
     }
 
     .copy-toast.show {
@@ -772,6 +784,7 @@
       color: var(--text-muted);
       font-size: var(--font-size-rt-en);
       line-height: 1.65;
+      max-width: 72ch;
     }
 
     .lang-toggles {
@@ -889,13 +902,15 @@
 
     .child-count {
       font-size: 11px;
-      color: var(--muted-warm);
+      color: #7a6448;
       background: #f0e8d8;
+      border: 1px solid #e6dac0;
       border-radius: 8px;
-      padding: 0 5px;
+      padding: 0 6px;
       margin-left: 4px;
       vertical-align: middle;
       font-style: normal;
+      font-variant-numeric: tabular-nums;
     }
 
     .intro-section {
@@ -942,6 +957,11 @@
 
     .intro-body.visible {
       display: block;
+    }
+
+    .intro-body p,
+    .intro-list li {
+      max-width: 76ch;
     }
 
     .intro-body p {
@@ -1236,6 +1256,7 @@
       padding: 12px 22px;
       cursor: pointer;
       background: #f7ecd6;
+      transition: background 0.12s;
     }
 
     .rt-subsection-header:hover {
@@ -1322,6 +1343,20 @@
       color: var(--text-muted);
       font-style: italic;
       white-space: pre-line;
+      max-width: 72ch;
+    }
+
+    .rt-verse-num {
+      font-weight: 700;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+      margin-right: 2px;
+    }
+
+    /* Unnumbered leading stanza = the chapter's Tibetan title line */
+    .rt-stanza-pair.rt-heading .rt-stanza-tib {
+      font-size: calc(var(--font-size-rt-tib, 16px) + 2px);
+      color: var(--accent);
     }
 
     .tree-section-outer {
@@ -1762,6 +1797,40 @@
       color: var(--muted-warm);
       font-weight: bold;
       margin-right: 4px;
+    }
+
+    /* Thin, warm scrollbars for inner scroll areas */
+    .miller-col,
+    .miller-container,
+    .cross-ref-modal-body {
+      scrollbar-width: thin;
+      scrollbar-color: #cdbb95 transparent;
+    }
+
+    .miller-col::-webkit-scrollbar,
+    .miller-container::-webkit-scrollbar,
+    .cross-ref-modal-body::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    .miller-col::-webkit-scrollbar-thumb,
+    .miller-container::-webkit-scrollbar-thumb,
+    .cross-ref-modal-body::-webkit-scrollbar-thumb {
+      background: #d8c9a8;
+      border-radius: 4px;
+    }
+
+    .miller-col::-webkit-scrollbar-thumb:hover,
+    .miller-container::-webkit-scrollbar-thumb:hover,
+    .cross-ref-modal-body::-webkit-scrollbar-thumb:hover {
+      background: #c4b08a;
+    }
+
+    .lang-menu li:focus-visible {
+      outline: none;
+      box-shadow: inset var(--focus-ring);
+      background: #f7ecd6;
     }
   </style>
 </head>
@@ -5688,6 +5757,12 @@
         prologue: "Prologue",
         chapterPrefix: "Chapter",
         colophon: "Colophon",
+        searchNoMatches: "No matches",
+        searchMatchOne: "1 match",
+        searchMatches: "{n} matches",
+        pathCopied: "Path copied",
+        copyPathTitle: "Copy path",
+        textPending: "Text will appear here",
         chapterTitles: [
           "Meditating on the Difficulty of Obtaining a Free and Privileged Existence, the Cause for Turning the Mind Towards the Dharma",
           "Meditating on the Impermanence of Life, the Spur to Diligence",
@@ -5721,6 +5796,12 @@
         prologue: "Prolog",
         chapterPrefix: "ROZDZIAŁ",
         colophon: "Kolofon",
+        searchNoMatches: "Brak wyników",
+        searchMatchOne: "1 wynik",
+        searchMatches: "Wyniki: {n}",
+        pathCopied: "Skopiowano ścieżkę",
+        copyPathTitle: "Kopiuj ścieżkę",
+        textPending: "Tekst pojawi się tutaj",
         chapterTitles: [
           "Medytacja nad trudnością uzyskania wolnej i uprzywilejowanej egzystencji, jako przyczyna skierowania umysłu ku Dharmie",
           "Medytacja nad nietrwałością życia, jako bodziec do pilności",
@@ -5753,7 +5834,13 @@
         appSubtitle: "Структурный план Сокровищницы Драгоценных Качеств",
         prologue: "Пролог",
         chapterPrefix: "ГЛАВА",
-        colophon: "Колофон"
+        colophon: "Колофон",
+        searchNoMatches: "Нет совпадений",
+        searchMatchOne: "1 совпадение",
+        searchMatches: "Совпадений: {n}",
+        pathCopied: "Путь скопирован",
+        copyPathTitle: "Копировать путь",
+        textPending: "Текст появится здесь"
       },
       de: {
         searchPlaceholder: "Suche (Diakritika optional)...",
@@ -5771,7 +5858,13 @@
         appSubtitle: "Strukturelle Gliederung der Schatzkammer der Kostbaren Eigenschaften",
         prologue: "Prolog",
         chapterPrefix: "KAPITEL",
-        colophon: "Kolophon"
+        colophon: "Kolophon",
+        searchNoMatches: "Keine Treffer",
+        searchMatchOne: "1 Treffer",
+        searchMatches: "{n} Treffer",
+        pathCopied: "Pfad kopiert",
+        copyPathTitle: "Pfad kopieren",
+        textPending: "Text erscheint hier"
       },
       fr: {
         searchPlaceholder: "Rechercher (diacritiques facultatifs)...",
@@ -5789,7 +5882,13 @@
         appSubtitle: "Plan structurel du Trésor des Précieuses Qualités",
         prologue: "Prologue",
         chapterPrefix: "CHAPITRE",
-        colophon: "Colophon"
+        colophon: "Colophon",
+        searchNoMatches: "Aucun résultat",
+        searchMatchOne: "1 résultat",
+        searchMatches: "{n} résultats",
+        pathCopied: "Chemin copié",
+        copyPathTitle: "Copier le chemin",
+        textPending: "Le texte apparaîtra ici"
       }
     };
 
@@ -5807,6 +5906,11 @@
       if (lang === 'en') return node.en;
       const t = TRANSLATIONS[node.id] && TRANSLATIONS[node.id][lang];
       return t || node.en; // graceful fallback to English
+    }
+
+    // Current UI strings merged over English, so missing keys fall back gracefully.
+    function uiStrings() {
+      return Object.assign({}, UI_STRINGS.en, UI_STRINGS[state.targetLang] || {});
     }
 
     const nodeIndex = {};
@@ -6028,8 +6132,9 @@
       '2.3.3.2.2.2': { chapter: 6, from: 1, to: 11 },
       '2.3.3.2.2.3': { chapter: 6, from: 12, to: 15 },
       '2.3.3.2.2.5': { chapter: 6, from: 19, to: 20 },
-      '2.3.3.2.2.6': { chapter: 6, from: 21, to: 23 },
-      '2.3.3.2.2.7': { chapter: 6, from: 24, to: 24 },
+      // Verse 24 (how refuge is abandoned) folded into Training; the outline has no
+      // node 2.3.3.2.2.7 — the former separate entry pointed at a nonexistent node.
+      '2.3.3.2.2.6': { chapter: 6, from: 21, to: 24 },
 
       // Chapter 7: ཚད་མེད་བཞི་བསྒོམ་པའི་ལེའུ — The Four Boundless Attitudes
       '2.3.3.3.1.1.1': { chapter: 7, from: 1, to: 3 },
@@ -6571,13 +6676,18 @@
         const isPl = state.targetLang === 'pl';
         const prefix = isPl ? 'ślo.' : 'vs.';
         const label = s.from === s.to ? `${prefix} ${s.from}` : `${prefix} ${s.from}–${s.to}`;
-        const anchor = `rt-chapter-${s.chapter}-sholoka-${s.from}`;
+        // Numeric chapters live under rt-chapter-N; the colophon under rt-colophon.
+        const isNumChapter = !isNaN(parseInt(s.chapter, 10));
+        const sectionKey = isNumChapter ? `chapter-${s.chapter}` : s.chapter;
+        const anchor = `rt-${sectionKey}-sholoka-${s.from}`;
+        const whereEn = isNumChapter ? `Chapter ${s.chapter}` : 'Colophon';
+        const wherePl = isNumChapter ? `Rozdział ${s.chapter}` : 'Kolofon';
         const titleEn = s.from === s.to
-          ? `Jump to root text — verse ${s.from} (Chapter ${s.chapter})`
-          : `Jump to root text — verses ${s.from}–${s.to} (Chapter ${s.chapter})`;
+          ? `Jump to root text — verse ${s.from} (${whereEn})`
+          : `Jump to root text — verses ${s.from}–${s.to} (${whereEn})`;
         const titlePl = s.from === s.to
-          ? `Skocz do tekstu źródłowego — śloka ${s.from} (Rozdział ${s.chapter})`
-          : `Skocz do tekstu źródłowego — śloki ${s.from}–${s.to} (Rozdział ${s.chapter})`;
+          ? `Skocz do tekstu źródłowego — śloka ${s.from} (${wherePl})`
+          : `Skocz do tekstu źródłowego — śloki ${s.from}–${s.to} (${wherePl})`;
         const title = isPl ? titlePl : titleEn;
         tags += `<a class="sholoka-tag" href="#${anchor}" data-chapter="${s.chapter}" data-sholoka-from="${s.from}" data-sholoka-to="${s.to}" role="button" tabindex="0" title="${title}">${label}</a>`;
       }
@@ -6598,7 +6708,10 @@
       container.innerHTML = '';
       for (const node of DATA.nodes) { const el = renderNode(node, 0, sr); if (el) container.appendChild(el); }
       const countEl = document.getElementById('searchCount');
-      if (sr) { const n = sr.matches.size; countEl.textContent = n === 0 ? 'No matches' : `${n} match${n !== 1 ? 'es' : ''}`; } else { countEl.textContent = ''; }
+      if (sr) {
+        const n = sr.matches.size, ui = uiStrings();
+        countEl.textContent = n === 0 ? ui.searchNoMatches : (n === 1 ? ui.searchMatchOne : ui.searchMatches.replace('{n}', n));
+      } else { countEl.textContent = ''; }
     }
 
     function renderNode(node, depth, sr) {
@@ -6649,7 +6762,7 @@
       row.appendChild(content);
       const nodeCopyBtn = document.createElement('button');
       nodeCopyBtn.className = 'node-copy-btn';
-      nodeCopyBtn.title = 'Copy path';
+      nodeCopyBtn.title = uiStrings().copyPathTitle;
       nodeCopyBtn.innerHTML = '<svg width="11" height="11" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" stroke="currentColor" stroke-width="1.5"/></svg>';
       nodeCopyBtn.addEventListener('click', e => { e.stopPropagation(); copyPath(node.id, nodeCopyBtn); });
       row.appendChild(nodeCopyBtn);
@@ -6755,8 +6868,8 @@
         while (cur && cur.parentId) { state.expanded.add(cur.parentId); cur = nodeIndex[cur.parentId]; }
       }
 
-      if (isMillerMode && state.selected) {
-        millerPath = getBreadcrumb(state.selected).map(n => n.id);
+      if (isMillerMode) {
+        if (state.selected) millerPath = getBreadcrumb(state.selected).map(n => n.id);
         renderMillerColumns();
       } else {
         renderTree();
@@ -6778,18 +6891,35 @@
       return path.map(n => { if (state.showTib && state.showTarget) return `${n.tib} (${getLabel(n)})`; if (state.showTib) return n.tib; return getLabel(n); }).join(' / ');
     }
 
+    // navigator.clipboard is unavailable outside secure contexts (e.g. plain http);
+    // fall back to a hidden textarea + execCommand there.
+    function writeClipboard(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(text);
+      return new Promise((resolve, reject) => {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy') ? resolve() : reject(new Error('copy failed')); }
+        catch (err) { reject(err); }
+        finally { document.body.removeChild(ta); }
+      });
+    }
+
     let _copyToastTimer = null;
     function copyPath(id, triggerEl) {
-      navigator.clipboard.writeText(buildPathText(id)).then(() => {
+      writeClipboard(buildPathText(id)).then(() => {
         if (triggerEl) { triggerEl.classList.add('copied'); setTimeout(() => triggerEl.classList.remove('copied'), 1500); }
-        const toast = document.getElementById('copyToast'); toast.textContent = 'Path copied'; toast.classList.add('show');
+        const toast = document.getElementById('copyToast'); toast.textContent = uiStrings().pathCopied; toast.classList.add('show');
         clearTimeout(_copyToastTimer); _copyToastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
-      });
+      }).catch(() => { /* clipboard unavailable; fail quietly */ });
     }
 
     function updateBreadcrumb() {
       const bc = document.getElementById('breadcrumb');
-      if (!state.selected) { bc.className = 'breadcrumb-bar empty'; bc.innerHTML = 'Click any node to mark your place'; return; }
+      if (!state.selected) { bc.className = 'breadcrumb-bar empty'; bc.textContent = uiStrings().emptyBreadcrumb; return; }
       const path = getBreadcrumb(state.selected);
       bc.className = 'breadcrumb-bar';
       bc.innerHTML = path.map((node, i) => {
@@ -6803,7 +6933,7 @@
         });
       });
       const copyBtn = document.createElement('button');
-      copyBtn.className = 'copy-path-btn'; copyBtn.title = 'Copy path';
+      copyBtn.className = 'copy-path-btn'; copyBtn.title = uiStrings().copyPathTitle;
       copyBtn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" stroke="currentColor" stroke-width="1.5"/></svg>Copy';
       copyBtn.addEventListener('click', e => { e.stopPropagation(); copyPath(state.selected, copyBtn); });
       bc.appendChild(copyBtn);
@@ -6821,12 +6951,13 @@
 
     function applyTextSize() {
       const root = document.documentElement;
+      // Base values must match the :root CSS defaults so size 0 is a no-op.
       root.style.setProperty('--font-size-tib', (15 + state.textSize * 2) + 'px');
-      root.style.setProperty('--font-size-en', (12 + state.textSize * 2) + 'px');
+      root.style.setProperty('--font-size-en', (13 + state.textSize * 2) + 'px');
       root.style.setProperty('--font-size-rt-tib', (16 + state.textSize * 2) + 'px');
       root.style.setProperty('--font-size-rt-en', (14 + state.textSize * 2) + 'px');
       root.style.setProperty('--font-size-rt-title', (13 + state.textSize) + 'px');
-      root.style.setProperty('--font-size-rt-label', (9 + state.textSize) + 'px');
+      root.style.setProperty('--font-size-rt-label', (10 + state.textSize) + 'px');
       document.getElementById('btnSizeDown').disabled = state.textSize <= -2;
       document.getElementById('btnSizeUp').disabled = state.textSize >= 4;
     }
@@ -6859,6 +6990,20 @@
         btn.classList.remove('active');
         btn.style.background = '';
         btn.style.borderColor = '';
+
+        // Reflect any selection made in column view back into the tree
+        if (state.selected) {
+          let cur = nodeIndex[state.selected];
+          while (cur && cur.parentId) { state.expanded.add(cur.parentId); cur = nodeIndex[cur.parentId]; }
+        }
+        renderTree();
+        updateBreadcrumb();
+        if (state.selected) {
+          requestAnimationFrame(() => {
+            const el = document.querySelector(`[data-id="${CSS.escape(state.selected)}"]`);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          });
+        }
       }
     });
 
@@ -20832,14 +20977,16 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
 
     function getRTLabel(sec) {
       const lang = state.targetLang || 'en';
-      const ui = UI_STRINGS[lang] || UI_STRINGS.en;
+      const ui = uiStrings();
       if (sec.key === 'prologue') return ui.prologue;
       if (sec.key === 'colophon') return ui.colophon;
       if (sec.key.startsWith('chapter-')) {
         const n = parseInt(sec.key.replace('chapter-', ''));
-        const title = ui.chapterTitles[n - 1] || '';
+        // ui is merged with English, so chapterTitles falls back for languages
+        // (ru/de/fr) that have no localized titles yet.
+        const title = (ui.chapterTitles || [])[n - 1] || '';
         if (lang === 'en') return `Chapter ${n}: ${title}`;
-        return `${ui.chapterPrefix} ${n} ${title}`;
+        return `${ui.chapterPrefix} ${n}: ${title}`;
       }
       return sec.label;
     }
@@ -20888,7 +21035,9 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
 
       body.innerHTML = rootTextSubsections().map(sec => {
         const isOpen = state.rootTextChaptersOpen.has(sec.key);
-        const zipped = zipStanzas(sec.tib, sec[lang]);
+        // Fall back to English while a translation is pending, mirroring getLabel().
+        const target = (sec[lang] && sec[lang].trim()) ? sec[lang] : sec.en;
+        const zipped = zipStanzas(sec.tib, target);
 
         const chapterNum = sec.key.startsWith('chapter-') ? sec.key.replace('chapter-', '')
           : sec.key === 'colophon' ? 'colophon' : null;
@@ -20899,15 +21048,16 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
             const navBtn = verseNodeId
               ? `<button class="rt-stanza-nav" data-node-id="${escHtml(verseNodeId)}" title="Jump to outline node ${escHtml(verseNodeId)}">&#x2190;</button>`
               : '';
+            const numBadge = p.num ? `<span class="rt-verse-num">${escHtml(p.num)}</span> ` : '';
             return `
-            <div class="rt-stanza-pair" id="rt-${escHtml(sec.key)}-sholoka-${escHtml(p.num)}" data-sholoka="${escHtml(p.num)}">
+            <div class="rt-stanza-pair${p.num ? '' : ' rt-heading'}" id="rt-${escHtml(sec.key)}-sholoka-${escHtml(p.num)}" data-sholoka="${escHtml(p.num)}">
               <div class="rt-stanza-body">
-                <div class="rt-stanza-tib"><strong>${escHtml(p.num)}</strong> ${p.tib ? escHtml(p.tib) : ''}</div>
+                <div class="rt-stanza-tib">${numBadge}${p.tib ? escHtml(p.tib) : ''}</div>
                 <div class="rt-stanza-en">${p.en ? escHtml(p.en) : ''}</div>
               </div>${navBtn}
             </div>`;
           }).join('')
-          : `<div class="rt-slot-empty">Text will appear here</div>`;
+          : `<div class="rt-slot-empty">${escHtml(uiStrings().textPending)}</div>`;
 
         const backBtn = sec.treeNodeId
           ? `<button class="rt-subsection-back" data-tree-id="${escHtml(sec.treeNodeId)}" title="Jump to outline node">&#x2190; ${escHtml(UI_STRINGS[lang]?.backToOutline || UI_STRINGS.en.backToOutline)}</button>`
@@ -21122,13 +21272,16 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
       const menu = document.getElementById('langMenu');
       menu.innerHTML = LANGS.map(l => {
         const hasAny = l.code === 'en' || Object.values(TRANSLATIONS).some(t => t && t[l.code]);
-        return `<li role="menuitem" data-lang="${l.code}" class="${l.code === state.targetLang ? 'active' : ''}">
+        return `<li role="menuitem" tabindex="0" data-lang="${l.code}" class="${l.code === state.targetLang ? 'active' : ''}">
       <span class="menu-flag">${l.flag}</span><span>${escHtml(l.name)}</span>
       ${hasAny ? '' : `<span class="menu-pending">${escHtml(l.pending)}</span>`}
     </li>`;
       }).join('');
       menu.querySelectorAll('li').forEach(li => {
         li.addEventListener('click', () => { setTargetLang(li.dataset.lang); closeLangMenu(); });
+        li.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setTargetLang(li.dataset.lang); closeLangMenu(); }
+        });
       });
     }
     function openLangMenu() {
