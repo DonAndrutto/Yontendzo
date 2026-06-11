@@ -40,6 +40,13 @@
       padding: 0;
     }
 
+    html {
+      /* The sticky header changes height when it compacts on scroll; browser
+         scroll anchoring compensates by moving scrollY back across the toggle
+         threshold, producing an infinite flicker loop. */
+      overflow-anchor: none;
+    }
+
     [hidden] {
       display: none !important;
     }
@@ -100,6 +107,14 @@
 
     .sticky-header.scrolled .lang-select-btn {
       width: auto;
+    }
+
+    /* Compact buttons so they fit inside the shrunken header instead of
+       overhanging the controls row below. */
+    .sticky-header.scrolled .lang-select-btn,
+    .sticky-header.scrolled .donate-btn {
+      height: 24px;
+      padding: 0 8px;
     }
 
     .sticky-header.scrolled #donateLabel {
@@ -1901,13 +1916,14 @@
 
     .miller-item .crumb-tib {
       font-family: 'Noto Sans Tibetan', serif;
-      font-size: 14px;
+      /* Track the size controls; -1px keeps the historic 14px default. */
+      font-size: calc(var(--font-size-tib) - 1px);
       color: var(--text);
       line-height: 1.8;
     }
 
     .miller-item .crumb-en {
-      font-size: 11px;
+      font-size: calc(var(--font-size-en) - 2px);
       color: var(--text-muted);
       font-style: italic;
     }
@@ -7203,8 +7219,13 @@
       nodeCopyBtn.innerHTML = '<svg width="11" height="11" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" stroke="currentColor" stroke-width="1.5"/></svg>';
       nodeCopyBtn.addEventListener('click', e => { e.stopPropagation(); copyPath(node.id, nodeCopyBtn); });
       row.appendChild(nodeCopyBtn);
-      row.addEventListener('click', () => selectNode(node.id));
+      row.addEventListener('click', e => {
+        // Embedded tags navigate elsewhere; they must not also toggle selection.
+        if (e.target.closest('.chapter-tag, .sholoka-tag, .cross-ref-tag')) return;
+        selectNode(node.id);
+      });
       row.addEventListener('keydown', e => {
+        if (e.target !== row) return; // Enter on an embedded tag/button activates it, not the row
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectNode(node.id); }
       });
       wrapper.appendChild(row);
@@ -7267,7 +7288,20 @@
       if (_activeBarRaf) return;
       _activeBarRaf = requestAnimationFrame(() => {
         _activeBarRaf = 0;
-        const threshold = 200;
+        // When the root text is collapsed its sections are display:none and
+        // every rect reads 0x0 at (0,0), which would mark the last section
+        // (the colophon) as current. Bail out instead.
+        if (!state.rootTextOpen) {
+          state.currentChapterKey = null;
+          state.currentVerse = null;
+          renderActiveNodeBar();
+          return;
+        }
+        // Showing the bar makes the sticky header taller and shifts all
+        // content down; widen the threshold by the bar's height so its own
+        // appearance cannot push the current section back across the line.
+        const barEl = document.getElementById('activeNodeBar');
+        const threshold = 200 + (barEl && !barEl.hidden ? barEl.offsetHeight : 0);
 
         let currentChapterKey = null;
         let currentChapterEl = null;
@@ -7556,8 +7590,9 @@
       }, 50);
     }
 
-    document.getElementById('btnTib').addEventListener('click', () => { state.showTib = !state.showTib; applyLangFilter(); });
-    document.getElementById('btnEng').addEventListener('click', () => { state.showTarget = !state.showTarget; applyLangFilter(); });
+    // Keep at least one language visible — hiding both would blank the page.
+    document.getElementById('btnTib').addEventListener('click', () => { if (state.showTib && !state.showTarget) return; state.showTib = !state.showTib; applyLangFilter(); });
+    document.getElementById('btnEng').addEventListener('click', () => { if (state.showTarget && !state.showTib) return; state.showTarget = !state.showTarget; applyLangFilter(); });
     document.getElementById('btnSizeDown').addEventListener('click', () => { if (state.textSize > -2) { state.textSize--; applyTextSize(); } });
     document.getElementById('btnSizeUp').addEventListener('click', () => { if (state.textSize < 4) { state.textSize++; applyTextSize(); } });
 
@@ -7567,6 +7602,9 @@
       searchTimer = setTimeout(() => {
         state.query = e.target.value.trim();
         document.getElementById('searchClear').classList.toggle('visible', state.query.length > 0);
+        // Search results only render in tree view; leave Columns mode so the
+        // query doesn't appear to do nothing.
+        if (state.query && isMillerMode) document.getElementById('btnMillerToggle').click();
         renderTree(); updateBreadcrumb();
       }, 180);
     });
@@ -7606,6 +7644,11 @@
 
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
+        // Overlays take priority: the cross-ref modal has its own Escape
+        // handler, and an open language menu should close before anything else.
+        if (!document.getElementById('crossRefModal').hidden) return;
+        const langMenu = document.getElementById('langMenu');
+        if (!langMenu.hidden) { closeLangMenu(); return; }
         if (state.query) { document.getElementById('searchBox').value = ''; state.query = ''; document.getElementById('searchClear').classList.remove('visible'); renderTree(); }
         else if (state.selected) { state.selected = null; renderTree(); updateBreadcrumb(); }
       }
@@ -21834,6 +21877,12 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
       updateUILanguage();
       buildLangMenu();
       renderTree();
+      if (isMillerMode) {
+        // Columns are reused by renderMillerColumns when their node ids still
+        // match, so a language change must wipe them to refresh the labels.
+        document.getElementById('millerContainer').innerHTML = '';
+        renderMillerColumns();
+      }
       updateBreadcrumb();
       renderRootText();
     }
@@ -21858,7 +21907,13 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
 
     const stickyEl = document.querySelector('.sticky-header');
     if (stickyEl) {
-      const updateSticky = () => stickyEl.classList.toggle('scrolled', window.scrollY > 80);
+      // Hysteresis wider than the header's height change (~63px), so the
+      // layout shift caused by toggling cannot re-cross its own threshold.
+      const updateSticky = () => {
+        const y = window.scrollY;
+        if (y > 120) stickyEl.classList.add('scrolled');
+        else if (y < 40) stickyEl.classList.remove('scrolled');
+      };
       window.addEventListener('scroll', updateSticky, { passive: true });
       updateSticky();
     }
@@ -21893,9 +21948,13 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
       if (!btn || !section) return;
 
       const findCurrentChapter = () => {
-        // Sticky header bottom edge. rt-subsection has scroll-margin-top: 160px,
-        // so matching the threshold keeps "current" in sync with the visible top.
-        const threshold = 160;
+        // rt-subsection has scroll-margin-top: 200px, so matching the threshold
+        // keeps "current" in sync with the visible top — a chapter we just
+        // scrolled to (top exactly 200) must still count as current, otherwise
+        // a second click would jump to the previous chapter. Compensated by the
+        // active-node bar's height for the same reason as updateActiveBar.
+        const bar = document.getElementById('activeNodeBar');
+        const threshold = 200 + (bar && !bar.hidden ? bar.offsetHeight : 0);
         let current = null;
         document.querySelectorAll('#rootTextBody .rt-subsection[id]').forEach(s => {
           if (s.getBoundingClientRect().top <= threshold) current = s;
@@ -21908,6 +21967,9 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
         const rect = section.getBoundingClientRect();
         const show = state.rootTextOpen && rect.top < stickyBottom && rect.bottom > stickyBottom;
         btn.classList.toggle('visible', !!show);
+        // Keep the button just below the sticky header, whose height varies
+        // with the compact state and the active-node bar.
+        if (show) btn.style.top = Math.round(stickyBottom + 10) + 'px';
       };
 
       btn.addEventListener('click', () => {
