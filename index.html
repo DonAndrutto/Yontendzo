@@ -100,17 +100,20 @@
          title lines can never run underneath the buttons (widest localized
          column, German, measures ~155px from the right edge). */
       padding: 14px 168px 12px 22px;
+      /* Tall enough for the two-row action column even when the title is a
+         single line (e.g. Tibetan-only mode). */
+      min-height: 88px;
       border-bottom: 1px solid rgba(245, 230, 200, 0.16);
       transition: padding 0.18s ease;
     }
 
     .sticky-header.scrolled .app-header {
       padding: 6px 22px;
+      min-height: 0;
     }
 
-    .sticky-header.scrolled .header-tib {
-      font-size: 14px;
-      line-height: 1.2;
+    .sticky-header.scrolled .header-tib,
+    html.hide-tib .sticky-header.scrolled .header-en {
       /* Clears the compact row of three action buttons; ellipsize rather than
          wrap so the compact header keeps a fixed height at any width. */
       padding-right: 172px;
@@ -119,8 +122,31 @@
       text-overflow: ellipsis;
     }
 
-    .sticky-header.scrolled .header-en,
-    .sticky-header.scrolled .header-label {
+    .sticky-header.scrolled .header-tib {
+      font-size: 14px;
+      /* Generous line box: Tibetan vowel signs extend well above the baseline
+         top and overflow:hidden would clip them at a tight line-height. */
+      line-height: 1.9;
+    }
+
+    .sticky-header.scrolled .header-en {
+      display: none;
+    }
+
+    /* When Tibetan is toggled off, the compact header shows the translated
+       title instead of nothing. */
+    html.hide-tib .sticky-header.scrolled .header-en {
+      display: block;
+      margin-top: 0;
+      line-height: 1.9;
+    }
+
+    /* The header shows only the language(s) selected in the toolbar. */
+    html.hide-tib .header-tib {
+      display: none;
+    }
+
+    html.hide-en .header-en {
       display: none;
     }
 
@@ -273,19 +299,11 @@
       }
     }
 
-    .header-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: #9a7a5a;
-      margin-bottom: 3px;
-      line-height: 1.45;
-    }
-
     .header-tib {
       font-family: 'Noto Serif Tibetan', 'Noto Sans Tibetan', serif;
       font-size: 20px;
-      line-height: 1.3;
+      /* Roomy line box so the upper vowel signs are never clipped. */
+      line-height: 1.7;
       color: var(--header-text);
       display: block;
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
@@ -338,6 +356,11 @@
       box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
       outline: none;
       transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    /* Centered hint, Safari-style; typed text stays left-aligned. */
+    .search-box::placeholder {
+      text-align: center;
     }
 
     .search-box:focus {
@@ -1669,8 +1692,28 @@
         display: none;
       }
 
+      /* Toolbar on small screens: the search bar takes its own row and the
+         language toggles, size controls, day/night switch and Print share a
+         single row beneath it. */
       .controls {
         padding: 8px 14px;
+        gap: 6px;
+        justify-content: space-between;
+      }
+
+      .controls .search-wrap {
+        flex: 1 1 100%;
+      }
+
+      .controls .search-count {
+        order: 10;
+        flex: 1 1 100%;
+        min-width: 0;
+        text-align: center;
+      }
+
+      .controls .search-count:empty {
+        display: none;
       }
 
       .breadcrumb-bar {
@@ -2530,8 +2573,6 @@
   </div>
   <div class="sticky-header">
     <div class="app-header">
-      <div class="header-label" id="appHeaderLabel">Sa bche Explorer · Yonten Dzo ·<br>Complete Outline by Patrul
-        Rinpoche</div>
       <span class="header-tib">ཡོན་ཏན་རིན་པོ་ཆེའི་མཛོད་ཀྱི་སྤྱི་དོན་ས་བཅད།</span>
       <span class="header-en" id="appSubtitle">Structural Outline of the Treasury of Precious Qualities</span>
       <div class="header-actions">
@@ -2580,8 +2621,8 @@
             <circle cx="7" cy="7" r="4.5" />
             <path d="m10.5 10.5 3 3" />
           </svg></span>
-        <input class="search-box" id="searchBox" type="text" placeholder="Search Outline (diacritics optional)..."
-          autocomplete="off" spellcheck="false">
+        <input class="search-box" id="searchBox" type="text" placeholder="Search" autocomplete="off"
+          spellcheck="false">
         <button class="search-clear" id="searchClear" title="Clear search">&#x2715;</button>
       </div>
       <span class="search-count" id="searchCount" role="status" aria-live="polite"></span>
@@ -6788,7 +6829,7 @@
 
     const UI_STRINGS = {
       en: {
-        searchPlaceholder: "Search Outline (diacritics optional)...",
+        searchPlaceholder: "Search",
         aboutToggle: "About this text",
         howtoToggle: "How to use",
         expandAll: "Expand All",
@@ -6800,7 +6841,6 @@
         emptyBreadcrumb: "Click any node to mark your place",
         structuralOutline: "Structural Outline",
         rootText: "Root Text",
-        appHeaderLabel: "Sa bche Explorer · Yonten Dzo · Complete Outline by Patrul Rinpoche",
         appSubtitle: "Structural Outline of the Treasury of Precious Qualities",
         prologue: "Prologue",
         chapterPrefix: "Chapter",
@@ -6844,7 +6884,7 @@
         ]
       },
       pl: {
-        searchPlaceholder: "Szukaj (znaki diakrytyczne opcjonalne)...",
+        searchPlaceholder: "Szukaj",
         aboutToggle: "O tym tekście",
         howtoToggle: "Jak korzystać",
         expandAll: "Rozwiń wszystko",
@@ -6856,7 +6896,6 @@
         emptyBreadcrumb: "Kliknij dowolny węzeł, aby zaznaczyć swoje miejsce",
         structuralOutline: "Zarys strukturalny",
         rootText: "Tekst rdzenny",
-        appHeaderLabel: "EKSPLORATOR SA BCZE · JONTEN DZO · PEŁNY ZARYS AUTORSTWA PATRULA RINPOCZE",
         appSubtitle: "Zarys Strukturalny Skarbnicy Cennych Właściwości",
         prologue: "Prolog",
         chapterPrefix: "ROZDZIAŁ",
@@ -6900,7 +6939,7 @@
         ]
       },
       ru: {
-        searchPlaceholder: "Поиск (диакритика необязательна)...",
+        searchPlaceholder: "Поиск",
         aboutToggle: "Об этом тексте",
         howtoToggle: "Как пользоваться",
         expandAll: "Развернуть все",
@@ -6912,7 +6951,6 @@
         emptyBreadcrumb: "Нажмите на любой узел, чтобы отметить место",
         structuralOutline: "Структурный план",
         rootText: "Коренной текст",
-        appHeaderLabel: "ОБОЗРЕВАТЕЛЬ СА ЧЕ · ЙОНТЕН ДЗО · ПОЛНАЯ СТРУКТУРА ПАТРУЛА РИНПОЧЕ",
         appSubtitle: "Структурный план Сокровищницы Драгоценных Качеств",
         prologue: "Пролог",
         chapterPrefix: "ГЛАВА",
@@ -6941,7 +6979,7 @@
         onboardingBegin: "Начать изучение"
       },
       de: {
-        searchPlaceholder: "Suche (Diakritika optional)...",
+        searchPlaceholder: "Suchen",
         aboutToggle: "Über diesen Text",
         howtoToggle: "Bedienung",
         expandAll: "Alle ausklappen",
@@ -6953,7 +6991,6 @@
         emptyBreadcrumb: "Klicken Sie auf einen Knoten, um Ihren Platz zu markieren",
         structuralOutline: "Strukturelle Gliederung",
         rootText: "Wurzeltext",
-        appHeaderLabel: "SA BCHE EXPLORER · YÖNTEN DZÖ · VOLLSTÄNDIGE GLIEDERUNG VON PATRUL RINPOCHE",
         appSubtitle: "Strukturelle Gliederung der Schatzkammer der Kostbaren Eigenschaften",
         prologue: "Prolog",
         chapterPrefix: "KAPITEL",
@@ -6982,7 +7019,7 @@
         onboardingBegin: "Erkunden beginnen"
       },
       fr: {
-        searchPlaceholder: "Rechercher (diacritiques facultatifs)...",
+        searchPlaceholder: "Rechercher",
         aboutToggle: "À propos de ce texte",
         howtoToggle: "Mode d'emploi",
         expandAll: "Tout développer",
@@ -6994,7 +7031,6 @@
         emptyBreadcrumb: "Cliquez sur un nœud pour marquer votre place",
         structuralOutline: "Plan structurel",
         rootText: "Texte racine",
-        appHeaderLabel: "EXPLORATEUR SA BCHE · YÖNTEN DZÖ · PLAN COMPLET PAR PATRUL RINPOCHÉ",
         appSubtitle: "Plan structurel du Trésor des Précieuses Qualités",
         prologue: "Prologue",
         chapterPrefix: "CHAPITRE",
@@ -22703,18 +22739,6 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
 
       const rootTextLabel = document.getElementById('rootTextLabel');
       if (rootTextLabel) rootTextLabel.textContent = ui.rootText;
-
-      const appHeaderLabel = document.getElementById('appHeaderLabel');
-      if (appHeaderLabel) {
-        const parts = (ui.appHeaderLabel || '').split(' · ');
-        if (parts.length >= 3) {
-          appHeaderLabel.innerHTML =
-            escHtml(parts[0]) + ' · ' + escHtml(parts[1]) + ' ·<br>' +
-            escHtml(parts.slice(2).join(' · '));
-        } else {
-          appHeaderLabel.textContent = ui.appHeaderLabel;
-        }
-      }
 
       const appSubtitle = document.getElementById('appSubtitle');
       if (appSubtitle) appSubtitle.textContent = ui.appSubtitle;
