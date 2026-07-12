@@ -7,16 +7,26 @@
   <meta name="description"
     content="Interactive explorer of Patrul Rinpoche's complete structural outline (sa bche) of the Treasury of Precious Qualities (Yönten Dzö) by Jigme Lingpa, linked to the root text in Tibetan and English.">
   <meta name="theme-color" content="#231208">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Sa bche Explorer — Yonten Dzo">
+  <meta property="og:description"
+    content="Interactive explorer of Patrul Rinpoche's complete structural outline (sa bche) of the Treasury of Precious Qualities (Yönten Dzö) by Jigme Lingpa, linked to the root text in Tibetan and English.">
+  <meta property="og:image" content="https://donandrutto.github.io/Yontendzo/IMG_8733.jpeg">
+  <meta name="twitter:card" content="summary">
   <title>Sa bche Explorer — Yonten Dzo (Complete)</title>
   <link rel="icon"
     href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%23231208'/%3E%3Ccircle cx='50' cy='50' r='30' fill='none' stroke='%23d4a55a' stroke-width='6'/%3E%3Ccircle cx='50' cy='50' r='8' fill='%23d4a55a'/%3E%3Cpath d='M50 4v26M50 70v26M4 50h26M70 50h26' stroke='%23d4a55a' stroke-width='6'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- "Noto Sans Tibetan" is not served by Google Fonts (the css2 endpoint
+       silently drops the unknown family); "Noto Serif Tibetan" is the family
+       that actually exists and loads. -->
   <link
-    href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tibetan:wght@400;700&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Noto+Serif+Tibetan:wght@400;700&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap"
     rel="stylesheet">
   <style>
     :root {
+      color-scheme: light;
       --bg: #faf8f4;
       --surface: #ffffff;
       --border: #e2d9c8;
@@ -273,7 +283,7 @@
     }
 
     .header-tib {
-      font-family: 'Noto Sans Tibetan', serif;
+      font-family: 'Noto Serif Tibetan', 'Noto Sans Tibetan', serif;
       font-size: 20px;
       line-height: 1.3;
       color: var(--header-text);
@@ -437,7 +447,7 @@
     }
 
     .crumb-tib {
-      font-family: 'Noto Sans Tibetan', serif;
+      font-family: 'Noto Serif Tibetan', 'Noto Sans Tibetan', serif;
       font-size: 13px;
       line-height: 1.8;
     }
@@ -556,7 +566,7 @@
     }
 
     .node-tib {
-      font-family: 'Noto Sans Tibetan', serif;
+      font-family: 'Noto Serif Tibetan', 'Noto Sans Tibetan', serif;
       font-size: var(--font-size-tib);
       line-height: 1.75;
       color: var(--text);
@@ -794,7 +804,7 @@
     }
 
     .cross-ref-modal-source-tib {
-      font-family: 'Noto Sans Tibetan', serif;
+      font-family: 'Noto Serif Tibetan', 'Noto Sans Tibetan', serif;
       font-size: 13px;
       opacity: 0.75;
     }
@@ -849,7 +859,7 @@
     }
 
     .cross-ref-verse-tib {
-      font-family: 'Noto Sans Tibetan', serif;
+      font-family: 'Noto Serif Tibetan', 'Noto Sans Tibetan', serif;
       font-size: var(--font-size-rt-tib);
       line-height: 1.85;
       margin-bottom: 8px;
@@ -890,7 +900,7 @@
     }
 
     .lang-btn.tib-btn {
-      font-family: 'Noto Sans Tibetan', serif;
+      font-family: 'Noto Serif Tibetan', 'Noto Sans Tibetan', serif;
       font-size: 12px;
       line-height: 1.6;
       padding: 3px 9px;
@@ -1070,6 +1080,10 @@
       margin: 0 0 16px 20px;
       padding: 0;
       list-style-type: disc;
+    }
+
+    ol.intro-list {
+      list-style-type: decimal;
     }
 
     .intro-list li {
@@ -1480,7 +1494,7 @@
     }
 
     .rt-stanza-tib {
-      font-family: 'Noto Sans Tibetan', serif;
+      font-family: 'Noto Serif Tibetan', 'Noto Sans Tibetan', serif;
       font-size: var(--font-size-rt-tib, 16px);
       line-height: 1.85;
       color: var(--text);
@@ -1605,7 +1619,7 @@
     }
 
     .ts-tib {
-      font-family: 'Noto Sans Tibetan', serif;
+      font-family: 'Noto Serif Tibetan', 'Noto Sans Tibetan', serif;
       font-size: 17px;
       line-height: 1.4;
       color: var(--accent);
@@ -1795,7 +1809,7 @@
       }
 
       .print-title-tib {
-        font-family: 'Noto Sans Tibetan', serif;
+        font-family: 'Noto Serif Tibetan', 'Noto Sans Tibetan', serif;
         font-size: 15pt;
         line-height: 2.0;
         display: block;
@@ -1851,7 +1865,7 @@
       }
 
       .node-tib {
-        font-family: 'Noto Sans Tibetan', serif;
+        font-family: 'Noto Serif Tibetan', 'Noto Sans Tibetan', serif;
         font-size: 11pt !important;
         line-height: 2.0 !important;
         color: #000 !important;
@@ -1963,7 +1977,7 @@
     }
 
     .miller-item .crumb-tib {
-      font-family: 'Noto Sans Tibetan', serif;
+      font-family: 'Noto Serif Tibetan', 'Noto Sans Tibetan', serif;
       /* Track the size controls; -1px keeps the historic 14px default. */
       font-size: calc(var(--font-size-tib) - 1px);
       color: var(--text);
@@ -2027,7 +2041,486 @@
         transition-duration: 0.01ms !important;
       }
     }
+
+    /* ========================================================
+       ONBOARDING (WELCOME) MODAL
+       Shown once on first visit; reopenable from the How-to section.
+       Built on the theme variables so it needs no dark overrides.
+       ======================================================== */
+    .onboarding-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      animation: crFadeIn 0.13s ease-out;
+    }
+
+    .onboarding-backdrop[hidden] {
+      display: none;
+    }
+
+    .onboarding-modal {
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 12px;
+      box-shadow: 0 8px 48px rgba(0, 0, 0, 0.38);
+      max-width: 560px;
+      width: 100%;
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: crSlideIn 0.15s ease-out;
+    }
+
+    /* Same gradient as the app header, identical in both themes. */
+    .onboarding-header {
+      background: linear-gradient(170deg, #2e1a0b 0%, var(--header-bg) 55%, #1c0d05 100%);
+      color: var(--header-text);
+      padding: 20px 24px 16px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .onboarding-tib {
+      display: block;
+      font-family: 'Noto Serif Tibetan', 'Noto Sans Tibetan', serif;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--accent-gold);
+      margin-top: 6px;
+    }
+
+    .onboarding-title {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      margin-top: 2px;
+    }
+
+    .onboarding-body {
+      overflow-y: auto;
+      padding: 18px 24px 6px;
+      font-size: 13.5px;
+      line-height: 1.65;
+      color: var(--text-muted);
+      scrollbar-width: thin;
+    }
+
+    .onboarding-body p {
+      margin-bottom: 12px;
+    }
+
+    .onboarding-body strong {
+      color: var(--text);
+    }
+
+    .onboarding-note {
+      border: 1px solid rgba(212, 165, 90, 0.45);
+      border-left: 3px solid var(--accent-gold);
+      background: rgba(212, 165, 90, 0.10);
+      border-radius: 8px;
+      padding: 12px 14px 2px;
+      margin: 14px 0 12px;
+    }
+
+    .onboarding-note h4 {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .onboarding-footer {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      padding: 12px 24px 18px;
+      flex-shrink: 0;
+    }
+
+    .onboarding-footer .btn {
+      padding: 8px 16px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+      .onboarding-footer {
+        flex-direction: column-reverse;
+      }
+
+      .onboarding-footer .btn {
+        width: 100%;
+      }
+    }
+
+    /* ========================================================
+       NIGHT MODE
+       All dark styling lives in this one block: variable overrides
+       first, then the components whose light values are hard-coded.
+       The app header and cross-ref modal header are already dark and
+       stay identical in both themes.
+       ======================================================== */
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #16110b;
+      --surface: #201812;
+      --border: #3d3226;
+      --text: #ede3d0;
+      --text-muted: #b3a48b;
+      --accent: #cf7258;
+      --selected-bg: #3a2b1b;
+      --selected-border: #cf7258;
+      --match-bg: #3b3312;
+      --controls-bg: #251d15;
+      --muted-warm: #a8916b;
+      --accent-gold: #d9ad64;
+    }
+
+    html[data-theme="dark"] ::selection {
+      background: #54401f;
+      color: var(--text);
+    }
+
+    html[data-theme="dark"] .active-node-bar {
+      background: linear-gradient(to bottom, rgba(32, 24, 18, 0.92), rgba(32, 24, 18, 0.72));
+      border-top: 1px solid rgba(217, 173, 100, 0.10);
+      border-bottom: 1px solid rgba(217, 173, 100, 0.18);
+    }
+
+    html[data-theme="dark"] .active-node-bar:hover {
+      background: linear-gradient(to bottom, rgba(40, 30, 22, 1), rgba(40, 30, 22, 0.9));
+    }
+
+    html[data-theme="dark"] .active-node-bar .node-en {
+      color: #cf9a62;
+    }
+
+    html[data-theme="dark"] .active-node-bar:hover .anb-inner-node .node-en,
+    html[data-theme="dark"] .active-node-bar:hover .anb-inner-node .node-tib {
+      text-decoration-color: rgba(207, 114, 88, 0.55);
+    }
+
+    html[data-theme="dark"] .anb-hint {
+      background: rgba(22, 17, 11, 0.55);
+      border-color: rgba(207, 114, 88, 0.40);
+    }
+
+    html[data-theme="dark"] .active-node-bar:hover .anb-hint,
+    html[data-theme="dark"] .active-node-bar:focus-visible .anb-hint {
+      color: #fdf3e3;
+    }
+
+    html[data-theme="dark"] .search-box {
+      background: #1b140e;
+      color: var(--text);
+    }
+
+    html[data-theme="dark"] .search-box:focus {
+      box-shadow: 0 0 0 2px rgba(207, 114, 88, 0.28);
+    }
+
+    html[data-theme="dark"] .btn {
+      background: #2a2117;
+    }
+
+    html[data-theme="dark"] .btn:hover {
+      background: #332818;
+      border-color: #5a4a2f;
+    }
+
+    html[data-theme="dark"] .btn--primary {
+      background: var(--accent);
+      color: #fff6e8;
+      border-color: var(--accent);
+    }
+
+    html[data-theme="dark"] .btn--primary:hover {
+      background: #b55c44;
+      border-color: #b55c44;
+      color: #fff6e8;
+    }
+
+    html[data-theme="dark"] .breadcrumb-bar {
+      background: linear-gradient(to bottom, #1d1610, #191309);
+    }
+
+    html[data-theme="dark"] .crumb {
+      color: #d9a06a;
+    }
+
+    html[data-theme="dark"] .crumb:hover {
+      background: #34281a;
+    }
+
+    html[data-theme="dark"] .node-row:hover {
+      background: rgba(217, 173, 100, 0.08);
+    }
+
+    html[data-theme="dark"] .toggle-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    html[data-theme="dark"] .copy-path-btn:hover {
+      background: #34281a;
+      border-color: #5a4a2f;
+    }
+
+    html[data-theme="dark"] .copy-path-btn.copied,
+    html[data-theme="dark"] .node-copy-btn.copied {
+      color: #8fbc6a;
+    }
+
+    html[data-theme="dark"] .copy-path-btn.copied {
+      border-color: #57703f;
+      background: #232c18;
+    }
+
+    html[data-theme="dark"] .node-copy-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    html[data-theme="dark"] .copy-toast {
+      background: #f0e4cc;
+      color: #241a10;
+    }
+
+    html[data-theme="dark"] .cross-ref-tag {
+      color: #9fd0e2;
+      background: #1c333d;
+    }
+
+    html[data-theme="dark"] .cross-ref-tag:hover {
+      background: #274651;
+      color: #cfe9f2;
+    }
+
+    html[data-theme="dark"] .cross-ref-verse-num {
+      color: #7db3c6;
+    }
+
+    html[data-theme="dark"] .lang-btn {
+      background: #2a2117;
+    }
+
+    html[data-theme="dark"] .lang-btn.active {
+      border-color: #5a4a2f;
+    }
+
+    html[data-theme="dark"] .children-wrap {
+      border-left-color: #45392a;
+    }
+
+    html[data-theme="dark"] mark {
+      background: #7a5c14;
+    }
+
+    html[data-theme="dark"] .child-count {
+      color: #bfa87e;
+      background: #302718;
+      border-color: #453a2a;
+    }
+
+    html[data-theme="dark"] .intro-section {
+      background: #1b140e;
+    }
+
+    html[data-theme="dark"] .intro-header {
+      border-bottom-color: rgba(207, 114, 88, 0.28);
+    }
+
+    html[data-theme="dark"] .intro-body code {
+      background: #2a2117;
+    }
+
+    html[data-theme="dark"] .intro-body kbd {
+      background: #241c12;
+      border-color: #4a3d28;
+    }
+
+    html[data-theme="dark"] .chapter-tag {
+      color: #e8cf9d;
+      background: #3a2d18;
+    }
+
+    html[data-theme="dark"] .chapter-tag:hover {
+      background: #4a3a1e;
+      color: #f5e3b5;
+    }
+
+    html[data-theme="dark"] .sholoka-tag {
+      color: #b5d093;
+      background: #26331a;
+    }
+
+    html[data-theme="dark"] .sholoka-tag:hover {
+      background: #324722;
+      color: #d0e5b3;
+    }
+
+    html[data-theme="dark"] .lang-menu {
+      background: #241c13;
+    }
+
+    html[data-theme="dark"] .lang-menu li:hover {
+      background: #322718;
+    }
+
+    html[data-theme="dark"] .lang-menu li.active {
+      background: #3a2d1b;
+    }
+
+    html[data-theme="dark"] .lang-menu li:focus-visible {
+      background: #322718;
+    }
+
+    html[data-theme="dark"] .back-to-chapter-btn {
+      border-color: rgba(255, 255, 255, 0.14);
+    }
+
+    html[data-theme="dark"] .back-to-chapter-btn:hover {
+      background: #b55c44;
+    }
+
+    html[data-theme="dark"] .root-text-section {
+      background: var(--bg);
+    }
+
+    html[data-theme="dark"] .rt-subsection {
+      background: var(--surface);
+    }
+
+    html[data-theme="dark"] .rt-subsection-header {
+      background: #2b2115;
+    }
+
+    html[data-theme="dark"] .rt-subsection-header:hover {
+      background: #372a18;
+    }
+
+    html[data-theme="dark"] .rt-subsection-back {
+      color: #d9a06a;
+    }
+
+    html[data-theme="dark"] .rt-subsection-back:hover {
+      background: #34281a;
+      border-color: #5a4a2f;
+    }
+
+    html[data-theme="dark"] .rt-verse-num {
+      background: rgba(207, 114, 88, 0.16);
+    }
+
+    html[data-theme="dark"] .rt-stanza-pair.is-highlighted .rt-verse-num {
+      color: #1c1207;
+    }
+
+    html[data-theme="dark"] .rt-slot-empty {
+      color: #9c8c6d;
+    }
+
+    html[data-theme="dark"] .rt-flash {
+      animation-name: rtFlashDark;
+    }
+
+    @keyframes rtFlashDark {
+      0% {
+        background: #574a1e;
+        box-shadow: 0 0 0 3px #6b5a24;
+      }
+
+      100% {
+        background: #201812;
+        box-shadow: 0 0 0 3px transparent;
+      }
+    }
+
+    html[data-theme="dark"] .miller-col {
+      background: var(--surface);
+    }
+
+    html[data-theme="dark"] .miller-item:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    html[data-theme="dark"] .miller-col,
+    html[data-theme="dark"] .miller-container,
+    html[data-theme="dark"] .cross-ref-modal-body {
+      scrollbar-color: #58482e transparent;
+    }
+
+    html[data-theme="dark"] .miller-col::-webkit-scrollbar-thumb,
+    html[data-theme="dark"] .miller-container::-webkit-scrollbar-thumb,
+    html[data-theme="dark"] .cross-ref-modal-body::-webkit-scrollbar-thumb {
+      background: #58482e;
+    }
+
+    html[data-theme="dark"] .miller-col::-webkit-scrollbar-thumb:hover,
+    html[data-theme="dark"] .miller-container::-webkit-scrollbar-thumb:hover,
+    html[data-theme="dark"] .cross-ref-modal-body::-webkit-scrollbar-thumb:hover {
+      background: #6b5838;
+    }
+
+    /* Printing always uses the light palette regardless of theme. */
+    @media print {
+      html[data-theme="dark"] {
+        --bg: #faf8f4;
+        --surface: #ffffff;
+        --border: #e2d9c8;
+        --text: #1c1a17;
+        --text-muted: #6b5f50;
+        --accent: #8b2c2c;
+        --selected-bg: #f7e9d1;
+        --selected-border: #8b2c2c;
+        --match-bg: #fffde7;
+        --controls-bg: #f0e9dd;
+        --muted-warm: #8a6f4a;
+        --accent-gold: #d4a55a;
+      }
+    }
+
+    /* Theme toggle: sun in night mode, moon in day mode. */
+    .theme-btn {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 5px;
+    }
+
+    .theme-btn .icon-sun {
+      display: none;
+    }
+
+    html[data-theme="dark"] .theme-btn .icon-sun {
+      display: block;
+    }
+
+    html[data-theme="dark"] .theme-btn .icon-moon {
+      display: none;
+    }
   </style>
+  <script>
+    // Apply the saved (or system-preferred) theme before first paint to avoid
+    // a light flash when night mode is active. The toggle itself is wired up
+    // in the main script at the end of <body>.
+    (function () {
+      let theme = null;
+      try { theme = localStorage.getItem('ydz.theme'); } catch (_) { }
+      if (theme !== 'dark' && theme !== 'light') {
+        theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.dataset.theme = theme;
+    })();
+  </script>
 </head>
 
 <body>
@@ -2103,6 +2596,18 @@
         <button class="btn size-btn" id="btnSizeDown" title="Decrease text size">&#x2212;</button>
         <button class="btn size-btn" id="btnSizeUp" title="Increase text size">+</button>
       </div>
+      <div class="divider"></div>
+      <button class="btn theme-btn" id="btnTheme" title="Switch to night mode" aria-pressed="false">
+        <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+        <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+        </svg>
+      </button>
       <div class="divider"></div>
       <button class="btn btn--primary" id="btnPrint" title="Print / Save as PDF">Print</button>
     </div>
@@ -2222,6 +2727,27 @@
         <button class="cross-ref-modal-close" id="crossRefModalClose" aria-label="Close">&#x2715;</button>
       </div>
       <div class="cross-ref-modal-body" id="crossRefModalBody" tabindex="0"></div>
+    </div>
+  </div>
+
+  <div class="onboarding-backdrop" id="onboardingModal" hidden role="dialog" aria-modal="true"
+    aria-labelledby="onboardingTitle">
+    <div class="onboarding-modal">
+      <div class="onboarding-header">
+        <svg width="36" height="36" viewBox="0 0 100 100" aria-hidden="true">
+          <circle cx="50" cy="50" r="45" fill="none" stroke="#d4a55a" stroke-width="5" />
+          <circle cx="50" cy="50" r="27" fill="none" stroke="#d4a55a" stroke-width="5" />
+          <circle cx="50" cy="50" r="8" fill="#d4a55a" />
+          <path d="M50 5v90M5 50h90M18.2 18.2l63.6 63.6M81.8 18.2L18.2 81.8" stroke="#d4a55a" stroke-width="5" />
+        </svg>
+        <span class="onboarding-tib">ཡོན་ཏན་རིན་པོ་ཆེའི་མཛོད།</span>
+        <h2 class="onboarding-title" id="onboardingTitle">Welcome</h2>
+      </div>
+      <div class="onboarding-body" id="onboardingBody" tabindex="0"></div>
+      <div class="onboarding-footer">
+        <button class="btn" id="onboardingHowtoBtn">How to use</button>
+        <button class="btn btn--primary" id="onboardingBeginBtn">Begin exploring</button>
+      </div>
     </div>
   </div>
 
@@ -5921,6 +6447,13 @@
       en: `
       <p>The explorer has two linked layers: the <strong>Structural Outline</strong> (Patrul Rinpoche's sa bche) and the <strong>Root Text</strong> (Jigme Lingpa's verses). Every control is described below, top of the page to bottom.</p>
 
+      <h4 class="intro-header">Quick start</h4>
+      <ol class="intro-list">
+        <li>Pick your <strong>language</strong> with the flag button at the top right.</li>
+        <li>Click the <strong>▶ arrows</strong> in the Structural Outline to open a chapter's divisions, and click a row to mark your place.</li>
+        <li>Follow a <span class="sholoka-tag">vs. 10–17</span> tag to read the verses that a topic comments on — then click any verse card to jump back to its exact place in the outline.</li>
+      </ol>
+
       <h4 class="intro-header">Top bar</h4>
       <ul class="intro-list">
         <li><strong>Language selector</strong> (flag button, top right) — choose the translation language for the outline, chapter headings, and root text. Languages still marked as pending fall back to English until their translation is ready.</li>
@@ -5933,6 +6466,7 @@
         <li><strong>Search</strong> — filters the outline as you type. It matches Tibetan, English, the chosen language, and section numbers (e.g. <code>2.3.1</code>). Diacritics are optional — "sutra" finds "sūtra". A counter shows how many topics match; press <kbd>Esc</kbd> or the ✕ to clear. <kbd>Ctrl</kbd>+<kbd>F</kbd> (<kbd>⌘</kbd>+<kbd>F</kbd> on Mac) jumps straight to the search box.</li>
         <li><strong>བོད་ཡིག / ENG</strong> — show or hide the Tibetan line or the translation line everywhere at once (outline, breadcrumb, root text). Hide one to read the other on its own.</li>
         <li><strong>− / +</strong> — decrease or increase the text size for comfortable reading on any device.</li>
+        <li><strong>☾ / ☀</strong> — switch between the day and night reading themes. The app follows your system preference until you choose; your choice is remembered on this device.</li>
         <li><strong>Print</strong> — opens the print dialog with a clean, print-ready view of the outline <em>exactly as currently expanded</em>, headed by the title and your selected path. Save as PDF to make a study handout.</li>
       </ul>
 
@@ -5975,9 +6509,18 @@
 
       <h4 class="intro-header">Recipe: a study handout</h4>
       <p>Select the topic you want, expand it to the depth you need (or use Expand All), then press Print — the PDF will contain the title, your path, and the outline exactly as displayed.</p>
+
+      <p>→ <a href="#" data-action="show-onboarding">Show the welcome screen again</a></p>
     `,
       pl: `
       <p>Eksplorator ma dwie połączone warstwy: <strong>Zarys strukturalny</strong> (sa bcze Patrula Rinpocze) oraz <strong>Tekst rdzenny</strong> (wersy Dżigme Lingpy). Poniżej opisano każdy element, od góry strony do dołu.</p>
+
+      <h4 class="intro-header">Szybki start</h4>
+      <ol class="intro-list">
+        <li>Wybierz <strong>język</strong> przyciskiem z flagą u góry po prawej.</li>
+        <li>Klikaj <strong>strzałki ▶</strong> w Zarysie strukturalnym, aby otwierać podziały rozdziału, a kliknięciem wiersza zaznacz swoje miejsce.</li>
+        <li>Przejdź za znacznikiem <span class="sholoka-tag">ślo. 10–17</span>, aby przeczytać wersy, które komentuje dany temat — a potem kliknij dowolną kartę wersu, aby wrócić dokładnie do jego miejsca w zarysie.</li>
+      </ol>
 
       <h4 class="intro-header">Górny pasek</h4>
       <ul class="intro-list">
@@ -5991,12 +6534,13 @@
         <li><strong>Wyszukiwanie</strong> — filtruje zarys w trakcie pisania. Przeszukuje tybetański, angielski, wybrany język oraz numery sekcji (np. <code>2.3.1</code>). Znaki diakrytyczne są opcjonalne — „sutra" znajdzie „sūtra". Licznik pokazuje liczbę dopasowań; <kbd>Esc</kbd> lub ✕ czyści wyszukiwanie. <kbd>Ctrl</kbd>+<kbd>F</kbd> (<kbd>⌘</kbd>+<kbd>F</kbd> na Macu) przenosi kursor do pola wyszukiwania.</li>
         <li><strong>བོད་ཡིག / POL</strong> — pokazuje lub ukrywa linię tybetańską albo linię tłumaczenia wszędzie naraz (zarys, ścieżka, tekst rdzenny). Ukryj jedną, aby czytać samą drugą.</li>
         <li><strong>− / +</strong> — zmniejsza lub zwiększa rozmiar tekstu dla wygodnego czytania na dowolnym urządzeniu.</li>
+        <li><strong>☾ / ☀</strong> — przełącza między dziennym i nocnym motywem czytania. Do czasu dokonania wyboru aplikacja podąża za ustawieniem systemowym; wybór jest zapamiętywany na tym urządzeniu.</li>
         <li><strong>Drukuj</strong> — otwiera okno wydruku z czystym widokiem zarysu <em>dokładnie tak, jak jest obecnie rozwinięty</em>, z tytułem i wybraną ścieżką w nagłówku. Zapisz jako PDF, aby przygotować materiał do nauki.</li>
       </ul>
 
       <h4 class="intro-header">Ścieżka nawigacyjna</h4>
       <ul class="intro-list">
-        <li>Po wybraniu tematu pasek pod paskiem narzędzi pokazuje pełną ścieżkę od korzenia tekstu aż do niego. Każdy element ścieżki można kliknąć — dotknij, aby przenieść zaznaczenie wyżej. Przycisk <strong>Copy</strong> na końcu kopiuje całą ścieżkę jako tekst.</li>
+        <li>Po wybraniu tematu pasek pod paskiem narzędzi pokazuje pełną ścieżkę od korzenia tekstu aż do niego. Każdy element ścieżki można kliknąć — dotknij, aby przenieść zaznaczenie wyżej. Przycisk <strong>Kopiuj</strong> na końcu kopiuje całą ścieżkę jako tekst.</li>
       </ul>
 
       <h4 class="intro-header">Pasek bieżącej pozycji</h4>
@@ -6033,9 +6577,18 @@
 
       <h4 class="intro-header">Przepis: materiał do nauki</h4>
       <p>Wybierz temat, rozwiń go do potrzebnej głębokości (lub użyj „Rozwiń wszystko"), a następnie naciśnij Drukuj — PDF będzie zawierał tytuł, Twoją ścieżkę i zarys dokładnie tak, jak jest wyświetlany.</p>
+
+      <p>→ <a href="#" data-action="show-onboarding">Pokaż ponownie ekran powitalny</a></p>
     `,
       ru: `
       <p>Обозреватель состоит из двух связанных слоёв: <strong>Структурный план</strong> (са че Патрула Ринпоче) и <strong>Коренной текст</strong> (строфы Джигме Лингпы). Ниже описан каждый элемент, сверху страницы вниз.</p>
+
+      <h4 class="intro-header">Быстрый старт</h4>
+      <ol class="intro-list">
+        <li>Выберите <strong>язык</strong> кнопкой с флагом справа вверху.</li>
+        <li>Нажимайте <strong>стрелки ▶</strong> в Структурном плане, чтобы открывать деления главы, и щёлкните строку, чтобы отметить своё место.</li>
+        <li>Перейдите по метке <span class="sholoka-tag">vs. 10–17</span>, чтобы прочитать строфы, которые комментирует тема, — затем нажмите на любую карточку строфы, чтобы вернуться точно к её месту в плане.</li>
+      </ol>
 
       <h4 class="intro-header">Верхняя панель</h4>
       <ul class="intro-list">
@@ -6049,12 +6602,13 @@
         <li><strong>Поиск</strong> — фильтрует план по мере ввода. Ищет по тибетскому, английскому, выбранному языку и номерам разделов (например, <code>2.3.1</code>). Диакритика необязательна — «sutra» найдёт «sūtra». Счётчик показывает число совпадений; <kbd>Esc</kbd> или ✕ очищает поиск. <kbd>Ctrl</kbd>+<kbd>F</kbd> (<kbd>⌘</kbd>+<kbd>F</kbd> на Mac) переводит курсор в поле поиска.</li>
         <li><strong>བོད་ཡིག / RUS</strong> — показывает или скрывает тибетскую строку либо строку перевода везде сразу (план, цепочка навигации, коренной текст). Скройте одну, чтобы читать только другую.</li>
         <li><strong>− / +</strong> — уменьшает или увеличивает размер текста для комфортного чтения на любом устройстве.</li>
+        <li><strong>☾ / ☀</strong> — переключает дневную и ночную тему чтения. Пока вы не сделали выбор, приложение следует системной настройке; выбор запоминается на этом устройстве.</li>
         <li><strong>Печать</strong> — открывает диалог печати с чистым видом плана <em>ровно в текущем развёрнутом состоянии</em>, с заголовком и выбранным путём наверху. Сохраните как PDF для учебного пособия.</li>
       </ul>
 
       <h4 class="intro-header">Цепочка навигации</h4>
       <ul class="intro-list">
-        <li>После выбора темы полоса под панелью инструментов показывает её полный путь от корня текста. Каждое звено кликабельно — нажмите, чтобы переместить выбор выше. Кнопка <strong>Copy</strong> в конце копирует весь путь как текст.</li>
+        <li>После выбора темы полоса под панелью инструментов показывает её полный путь от корня текста. Каждое звено кликабельно — нажмите, чтобы переместить выбор выше. Кнопка <strong>Копировать</strong> в конце копирует весь путь как текст.</li>
       </ul>
 
       <h4 class="intro-header">Полоса текущей позиции</h4>
@@ -6091,9 +6645,18 @@
 
       <h4 class="intro-header">Рецепт: учебное пособие</h4>
       <p>Выберите нужную тему, разверните её до нужной глубины (или «Развернуть все»), затем нажмите «Печать» — PDF будет содержать заголовок, ваш путь и план ровно в отображаемом виде.</p>
+
+      <p>→ <a href="#" data-action="show-onboarding">Показать приветственный экран ещё раз</a></p>
     `,
       de: `
       <p>Der Explorer besteht aus zwei verbundenen Ebenen: der <strong>Strukturellen Gliederung</strong> (Patrul Rinpoches Sa Bche) und dem <strong>Wurzeltext</strong> (Jigme Lingpas Verse). Unten ist jedes Element beschrieben, vom Seitenanfang bis zum Ende.</p>
+
+      <h4 class="intro-header">Schnellstart</h4>
+      <ol class="intro-list">
+        <li>Wählen Sie Ihre <strong>Sprache</strong> über die Flaggen-Schaltfläche oben rechts.</li>
+        <li>Öffnen Sie mit den <strong>▶-Pfeilen</strong> in der Strukturellen Gliederung die Einteilungen eines Kapitels und markieren Sie Ihre Stelle per Klick auf eine Zeile.</li>
+        <li>Folgen Sie einem <span class="sholoka-tag">vs. 10–17</span>-Tag, um die Verse zu lesen, die ein Thema kommentiert — und klicken Sie dann auf eine Vers-Karte, um genau zu ihrer Stelle in der Gliederung zurückzuspringen.</li>
+      </ol>
 
       <h4 class="intro-header">Kopfleiste</h4>
       <ul class="intro-list">
@@ -6107,12 +6670,13 @@
         <li><strong>Suche</strong> — filtert die Gliederung während der Eingabe. Durchsucht Tibetisch, Englisch, die gewählte Sprache und Abschnittsnummern (z. B. <code>2.3.1</code>). Diakritika sind optional — „sutra" findet „sūtra". Ein Zähler zeigt die Trefferzahl; <kbd>Esc</kbd> oder ✕ löscht die Suche. <kbd>Strg</kbd>+<kbd>F</kbd> (<kbd>⌘</kbd>+<kbd>F</kbd> am Mac) springt direkt ins Suchfeld.</li>
         <li><strong>བོད་ཡིག / GER</strong> — blendet die tibetische Zeile oder die Übersetzungszeile überall gleichzeitig ein oder aus (Gliederung, Pfadleiste, Wurzeltext).</li>
         <li><strong>− / +</strong> — verkleinert oder vergrößert die Schrift für bequemes Lesen auf jedem Gerät.</li>
+        <li><strong>☾ / ☀</strong> — wechselt zwischen Tag- und Nachtthema. Bis zu Ihrer Wahl folgt die App der Systemeinstellung; die Wahl wird auf diesem Gerät gespeichert.</li>
         <li><strong>Drucken</strong> — öffnet den Druckdialog mit einer sauberen Ansicht der Gliederung <em>genau im aktuell ausgeklappten Zustand</em>, mit Titel und gewähltem Pfad im Kopf. Als PDF speichern, um ein Studienblatt zu erstellen.</li>
       </ul>
 
       <h4 class="intro-header">Pfadleiste (Breadcrumb)</h4>
       <ul class="intro-list">
-        <li>Nach Auswahl eines Themas zeigt die Leiste unter der Werkzeugleiste dessen vollständigen Pfad von der Wurzel des Textes. Jedes Glied ist klickbar — tippen Sie darauf, um die Auswahl nach oben zu verschieben. <strong>Copy</strong> am Ende kopiert den gesamten Pfad als Text.</li>
+        <li>Nach Auswahl eines Themas zeigt die Leiste unter der Werkzeugleiste dessen vollständigen Pfad von der Wurzel des Textes. Jedes Glied ist klickbar — tippen Sie darauf, um die Auswahl nach oben zu verschieben. <strong>Kopieren</strong> am Ende kopiert den gesamten Pfad als Text.</li>
       </ul>
 
       <h4 class="intro-header">Leseposition-Leiste</h4>
@@ -6149,9 +6713,18 @@
 
       <h4 class="intro-header">Rezept: ein Studienblatt</h4>
       <p>Wählen Sie das gewünschte Thema, klappen Sie es bis zur benötigten Tiefe aus (oder „Alle ausklappen"), und drücken Sie dann „Drucken" — das PDF enthält Titel, Ihren Pfad und die Gliederung genau wie angezeigt.</p>
+
+      <p>→ <a href="#" data-action="show-onboarding">Begrüßungsbildschirm erneut anzeigen</a></p>
     `,
       fr: `
       <p>L'explorateur comporte deux couches liées : le <strong>Plan structurel</strong> (le sa bche de Patrul Rinpoché) et le <strong>Texte racine</strong> (les vers de Jigme Lingpa). Chaque élément est décrit ci-dessous, du haut de la page vers le bas.</p>
+
+      <h4 class="intro-header">Démarrage rapide</h4>
+      <ol class="intro-list">
+        <li>Choisissez votre <strong>langue</strong> avec le bouton drapeau en haut à droite.</li>
+        <li>Cliquez sur les <strong>flèches ▶</strong> du Plan structurel pour ouvrir les divisions d'un chapitre, puis cliquez sur une ligne pour marquer votre place.</li>
+        <li>Suivez une étiquette <span class="sholoka-tag">vs. 10–17</span> pour lire les vers commentés par un sujet — puis cliquez sur une carte de vers pour revenir exactement à sa place dans le plan.</li>
+      </ol>
 
       <h4 class="intro-header">Barre supérieure</h4>
       <ul class="intro-list">
@@ -6165,12 +6738,13 @@
         <li><strong>Recherche</strong> — filtre le plan au fil de la saisie. Elle parcourt le tibétain, l'anglais, la langue choisie et les numéros de sections (p. ex. <code>2.3.1</code>). Les diacritiques sont facultatifs — « sutra » trouve « sūtra ». Un compteur affiche le nombre de résultats ; <kbd>Échap</kbd> ou ✕ efface la recherche. <kbd>Ctrl</kbd>+<kbd>F</kbd> (<kbd>⌘</kbd>+<kbd>F</kbd> sur Mac) place le curseur dans le champ de recherche.</li>
         <li><strong>བོད་ཡིག / FRE</strong> — affiche ou masque partout à la fois la ligne tibétaine ou la ligne de traduction (plan, fil d'Ariane, texte racine).</li>
         <li><strong>− / +</strong> — réduit ou agrandit la taille du texte pour une lecture confortable sur tout appareil.</li>
+        <li><strong>☾ / ☀</strong> — bascule entre les thèmes de lecture jour et nuit. Tant que vous n'avez pas choisi, l'application suit le réglage du système ; le choix est mémorisé sur cet appareil.</li>
         <li><strong>Imprimer</strong> — ouvre la boîte d'impression avec une vue propre du plan <em>exactement tel qu'il est actuellement développé</em>, coiffée du titre et de votre chemin sélectionné. Enregistrez en PDF pour créer un support d'étude.</li>
       </ul>
 
       <h4 class="intro-header">Fil d'Ariane</h4>
       <ul class="intro-list">
-        <li>Après la sélection d'un sujet, la bande sous la barre d'outils affiche son chemin complet depuis la racine du texte. Chaque maillon est cliquable — touchez-en un pour remonter la sélection. Le bouton <strong>Copy</strong> à la fin copie tout le chemin sous forme de texte.</li>
+        <li>Après la sélection d'un sujet, la bande sous la barre d'outils affiche son chemin complet depuis la racine du texte. Chaque maillon est cliquable — touchez-en un pour remonter la sélection. Le bouton <strong>Copier</strong> à la fin copie tout le chemin sous forme de texte.</li>
       </ul>
 
       <h4 class="intro-header">Barre de position de lecture</h4>
@@ -6207,6 +6781,8 @@
 
       <h4 class="intro-header">Recette : un support d'étude</h4>
       <p>Sélectionnez le sujet voulu, développez-le à la profondeur nécessaire (ou « Tout développer »), puis appuyez sur Imprimer — le PDF contiendra le titre, votre chemin et le plan exactement tel qu'affiché.</p>
+
+      <p>→ <a href="#" data-action="show-onboarding">Réafficher l'écran de bienvenue</a></p>
     `
     };
 
@@ -6236,6 +6812,21 @@
         copyPathTitle: "Copy path",
         copyLabel: "Copy",
         textPending: "Text will appear here",
+        clearSearch: "Clear search",
+        toggleTib: "Show or hide the Tibetan text",
+        toggleTarget: "Show or hide the translation",
+        sizeDown: "Decrease text size",
+        sizeUp: "Increase text size",
+        printTitle: "Print / Save as PDF",
+        changeLanguage: "Change language",
+        mandalaTitle: "Open the experimental Mandala Explorer",
+        activeBarAria: "Jump to the current outline topic",
+        backToChapterTitle: "Return to the beginning of the chapter",
+        jumpToOutlineTitle: "Jump to outline topic",
+        crossRefClose: "Close",
+        themeToDark: "Switch to night mode",
+        themeToLight: "Switch to day mode",
+        onboardingBegin: "Begin exploring",
         chapterTitles: [
           "Meditating on the Difficulty of Obtaining a Free and Privileged Existence, the Cause for Turning the Mind Towards the Dharma",
           "Meditating on the Impermanence of Life, the Spur to Diligence",
@@ -6277,6 +6868,21 @@
         copyPathTitle: "Kopiuj ścieżkę",
         copyLabel: "Kopiuj",
         textPending: "Tekst pojawi się tutaj",
+        clearSearch: "Wyczyść wyszukiwanie",
+        toggleTib: "Pokaż lub ukryj tekst tybetański",
+        toggleTarget: "Pokaż lub ukryj tłumaczenie",
+        sizeDown: "Zmniejsz rozmiar tekstu",
+        sizeUp: "Zwiększ rozmiar tekstu",
+        printTitle: "Drukuj / Zapisz jako PDF",
+        changeLanguage: "Zmień język",
+        mandalaTitle: "Otwórz eksperymentalny Mandala Explorer",
+        activeBarAria: "Przejdź do bieżącego tematu zarysu",
+        backToChapterTitle: "Wróć na początek rozdziału",
+        jumpToOutlineTitle: "Przejdź do tematu zarysu",
+        crossRefClose: "Zamknij",
+        themeToDark: "Włącz tryb nocny",
+        themeToLight: "Włącz tryb dzienny",
+        onboardingBegin: "Rozpocznij eksplorację",
         chapterTitles: [
           "Medytacja nad trudnością uzyskania wolnej i uprzywilejowanej egzystencji, jako przyczyna skierowania umysłu ku Dharmie",
           "Medytacja nad nietrwałością życia, jako bodziec do pilności",
@@ -6317,7 +6923,22 @@
         pathCopied: "Путь скопирован",
         copyPathTitle: "Копировать путь",
         copyLabel: "Копировать",
-        textPending: "Текст появится здесь"
+        textPending: "Текст появится здесь",
+        clearSearch: "Очистить поиск",
+        toggleTib: "Показать или скрыть тибетский текст",
+        toggleTarget: "Показать или скрыть перевод",
+        sizeDown: "Уменьшить размер текста",
+        sizeUp: "Увеличить размер текста",
+        printTitle: "Печать / Сохранить в PDF",
+        changeLanguage: "Сменить язык",
+        mandalaTitle: "Открыть экспериментальный Mandala Explorer",
+        activeBarAria: "Перейти к текущей теме плана",
+        backToChapterTitle: "Вернуться к началу главы",
+        jumpToOutlineTitle: "Перейти к теме плана",
+        crossRefClose: "Закрыть",
+        themeToDark: "Включить ночной режим",
+        themeToLight: "Включить дневной режим",
+        onboardingBegin: "Начать изучение"
       },
       de: {
         searchPlaceholder: "Suche (Diakritika optional)...",
@@ -6343,7 +6964,22 @@
         pathCopied: "Pfad kopiert",
         copyPathTitle: "Pfad kopieren",
         copyLabel: "Kopieren",
-        textPending: "Text erscheint hier"
+        textPending: "Text erscheint hier",
+        clearSearch: "Suche löschen",
+        toggleTib: "Tibetischen Text ein- oder ausblenden",
+        toggleTarget: "Übersetzung ein- oder ausblenden",
+        sizeDown: "Schrift verkleinern",
+        sizeUp: "Schrift vergrößern",
+        printTitle: "Drucken / Als PDF speichern",
+        changeLanguage: "Sprache ändern",
+        mandalaTitle: "Den experimentellen Mandala Explorer öffnen",
+        activeBarAria: "Zum aktuellen Gliederungsthema springen",
+        backToChapterTitle: "Zum Kapitelanfang zurückkehren",
+        jumpToOutlineTitle: "Zum Gliederungsthema springen",
+        crossRefClose: "Schließen",
+        themeToDark: "Nachtmodus einschalten",
+        themeToLight: "Tagmodus einschalten",
+        onboardingBegin: "Erkunden beginnen"
       },
       fr: {
         searchPlaceholder: "Rechercher (diacritiques facultatifs)...",
@@ -6369,7 +7005,22 @@
         pathCopied: "Chemin copié",
         copyPathTitle: "Copier le chemin",
         copyLabel: "Copier",
-        textPending: "Le texte apparaîtra ici"
+        textPending: "Le texte apparaîtra ici",
+        clearSearch: "Effacer la recherche",
+        toggleTib: "Afficher ou masquer le texte tibétain",
+        toggleTarget: "Afficher ou masquer la traduction",
+        sizeDown: "Réduire la taille du texte",
+        sizeUp: "Augmenter la taille du texte",
+        printTitle: "Imprimer / Enregistrer en PDF",
+        changeLanguage: "Changer de langue",
+        mandalaTitle: "Ouvrir le Mandala Explorer expérimental",
+        activeBarAria: "Aller au sujet actuel du plan",
+        backToChapterTitle: "Revenir au début du chapitre",
+        jumpToOutlineTitle: "Aller au sujet du plan",
+        crossRefClose: "Fermer",
+        themeToDark: "Activer le mode nuit",
+        themeToLight: "Activer le mode jour",
+        onboardingBegin: "Commencer l'exploration"
       }
     };
 
@@ -7075,7 +7726,11 @@
     Object.values(nodeIndex).forEach(({ node, depth }) => { if (depth === 0) state.expanded.add(node.id); });
 
     const DEPTH_BANDS = ['#7c2d2d', '#a04020', '#c46a1a', '#8a6f4a'];
-    function depthColor(d) { return DEPTH_BANDS[Math.min(Math.floor(d / 3), DEPTH_BANDS.length - 1)]; }
+    const DEPTH_BANDS_DARK = ['#d07a6a', '#d98a4a', '#e0a83e', '#b3986a'];
+    function depthColor(d) {
+      const bands = document.documentElement.dataset.theme === 'dark' ? DEPTH_BANDS_DARK : DEPTH_BANDS;
+      return bands[Math.min(Math.floor(d / 3), bands.length - 1)];
+    }
 
     function stripDiacritics(s) { return s.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
 
@@ -7650,6 +8305,41 @@
     document.getElementById('btnSizeDown').addEventListener('click', () => changeTextSize(-1));
     document.getElementById('btnSizeUp').addEventListener('click', () => changeTextSize(1));
 
+    // --- Day / night theme ---
+    // The <head> bootstrap script already applied the initial theme before
+    // first paint; here we only wire the toggle and keep the button in sync.
+    function syncThemeButton() {
+      const btn = document.getElementById('btnTheme');
+      if (!btn) return;
+      const dark = document.documentElement.dataset.theme === 'dark';
+      const ui = uiStrings();
+      btn.title = dark ? ui.themeToLight : ui.themeToDark;
+      btn.setAttribute('aria-label', btn.title);
+      btn.setAttribute('aria-pressed', String(dark));
+    }
+    function applyTheme(theme) {
+      document.documentElement.dataset.theme = theme;
+      syncThemeButton();
+      // Depth-rail colors are inlined by renderTree; refresh them for the new palette.
+      renderTree();
+    }
+    document.getElementById('btnTheme').addEventListener('click', () => {
+      const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      try { localStorage.setItem('ydz.theme', next); } catch (_) { }
+      applyTheme(next);
+    });
+    // Follow live changes of the system preference, but only while the user
+    // has not made an explicit choice.
+    if (window.matchMedia) {
+      const themeMq = window.matchMedia('(prefers-color-scheme: dark)');
+      const followSystemTheme = e => {
+        let stored = null;
+        try { stored = localStorage.getItem('ydz.theme'); } catch (_) { }
+        if (stored !== 'dark' && stored !== 'light') applyTheme(e.matches ? 'dark' : 'light');
+      };
+      if (themeMq.addEventListener) themeMq.addEventListener('change', followSystemTheme);
+    }
+
     let searchTimer = null;
     document.getElementById('searchBox').addEventListener('input', e => {
       clearTimeout(searchTimer);
@@ -7698,9 +8388,11 @@
 
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
-        // Overlays take priority: the cross-ref modal has its own Escape
-        // handler, and an open language menu should close before anything else.
+        // Overlays take priority: the cross-ref and onboarding modals have
+        // their own Escape handlers, and an open language menu should close
+        // before anything else.
         if (!document.getElementById('crossRefModal').hidden) return;
+        if (!document.getElementById('onboardingModal').hidden) return;
         const langMenu = document.getElementById('langMenu');
         if (!langMenu.hidden) { closeLangMenu(); document.getElementById('langSelectBtn').focus(); return; }
         if (state.query) { document.getElementById('searchBox').value = ''; state.query = ''; document.getElementById('searchClear').classList.remove('visible'); renderTree(); }
@@ -7723,7 +8415,9 @@
     function preparePrintHeader() {
       const titleEl = document.getElementById('printDocTitle'); titleEl.innerHTML = '';
       if (state.showTib) { const t = document.createElement('span'); t.className = 'print-title-tib'; t.textContent = DATA.title_tib; titleEl.appendChild(t); }
-      if (state.showTarget) { const e = document.createElement('span'); e.className = 'print-title-en'; e.textContent = DATA.title_en; titleEl.appendChild(e); }
+      // English keeps the full by-line title; other languages use their localized subtitle.
+      const printTitleTarget = state.targetLang === 'en' ? DATA.title_en : uiStrings().appSubtitle;
+      if (state.showTarget) { const e = document.createElement('span'); e.className = 'print-title-en'; e.textContent = printTitleTarget; titleEl.appendChild(e); }
       const bcEl = document.getElementById('printBreadcrumb');
       if (!state.selected) { bcEl.textContent = ''; return; }
       const path = getBreadcrumb(state.selected);
@@ -21586,6 +22280,7 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
       const body = document.getElementById('rootTextBody');
       if (!body) return;
       const lang = state.targetLang || 'en';
+      const ui = uiStrings();
 
       body.innerHTML = rootTextSubsections().map(sec => {
         const isOpen = state.rootTextChaptersOpen.has(sec.key);
@@ -21606,7 +22301,7 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
               + (verseNodeId ? ' is-clickable' : '')
               + (isHl ? ' is-highlighted' : '');
             const clickAttrs = verseNodeId
-              ? ` data-node-id="${escHtml(verseNodeId)}" title="Jump to outline node ${escHtml(verseNodeId)}" role="link" tabindex="0"`
+              ? ` data-node-id="${escHtml(verseNodeId)}" title="${escHtml(ui.jumpToOutlineTitle)} ${escHtml(verseNodeId)}" role="link" tabindex="0"`
               : '';
             const numBadge = p.num ? `<span class="rt-verse-num">${escHtml(p.num)}</span> ` : '';
             return `
@@ -21620,7 +22315,7 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
           : `<div class="rt-slot-empty">${escHtml(uiStrings().textPending)}</div>`;
 
         const backBtn = sec.treeNodeId
-          ? `<button class="rt-subsection-back" data-tree-id="${escHtml(sec.treeNodeId)}" title="Jump to outline node">&#x2190; ${escHtml(UI_STRINGS[lang]?.backToOutline || UI_STRINGS.en.backToOutline)}</button>`
+          ? `<button class="rt-subsection-back" data-tree-id="${escHtml(sec.treeNodeId)}" title="${escHtml(ui.jumpToOutlineTitle)}">&#x2190; ${escHtml(ui.backToOutline)}</button>`
           : '';
 
         return `
@@ -21781,6 +22476,117 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
           e.preventDefault();
           focusables[next].focus();
         }
+      });
+    })();
+
+    // --- Onboarding (welcome) modal ---
+    // Shown once on first visit (localStorage 'ydz.onboardingSeen'); reopenable
+    // via the link at the end of the How-to section. Briefly explains the app
+    // and reminds students that the Vajrayāna chapters are traditionally
+    // entered through empowerment and reading transmission (lung).
+    const ONBOARDING_CONTENT = {
+      en: {
+        title: "Welcome to the Sa bche Explorer",
+        html: `
+        <p>This explorer presents <strong>Patrul Rinpoche's complete structural outline</strong> (sa bche) of the <em>Treasury of Precious Qualities</em> (Yönten Dzö) by Jigme Lingpa — together with the root text in Tibetan and translation. The outline and the verses are linked in both directions: choose a topic to find its verses, or tap a verse to see exactly where it sits within the architecture of the text.</p>
+        <div class="onboarding-note">
+          <h4>A note on the Vajrayāna chapters</h4>
+          <p>Chapters 10–13 concern the Secret Mantra Vajrayāna and Dzogchen. In keeping with the tradition, students are reminded of the importance of authentic lineage transmission: please receive the <strong>empowerment</strong> (Tib. wang) and the <strong>reading transmission</strong> (ལུང་, lung), along with instruction from a qualified holder of an authentic lineage, prior to studying and engaging with the Vajrayāna material presented here.</p>
+        </div>`
+      },
+      pl: {
+        title: "Witamy w Eksploratorze Sa bcze",
+        html: `
+        <p>Ten eksplorator przedstawia <strong>pełny zarys strukturalny</strong> (sa bcze) opracowany przez Patrula Rinpocze do <em>Skarbnicy Cennych Właściwości</em> (Yönten Dzö) Dżigme Lingpy — wraz z tekstem rdzennym po tybetańsku i w tłumaczeniu. Zarys i wersy są połączone w obie strony: wybierz temat, aby odnaleźć jego wersy, albo dotknij wersu, aby zobaczyć dokładnie, gdzie mieści się on w architekturze tekstu.</p>
+        <div class="onboarding-note">
+          <h4>Uwaga o rozdziałach wadżrajany</h4>
+          <p>Rozdziały 10–13 dotyczą Tajemnej Mantry Wadżrajany oraz Dzogczen. Zgodnie z tradycją przypominamy uczniom o znaczeniu autentycznego przekazu linii: przed studiowaniem i pracą z prezentowanym tu materiałem wadżrajany prosimy o otrzymanie <strong>inicjacji</strong> (tyb. wang) oraz <strong>przekazu czytanego</strong> (ལུང་, lung), wraz z pouczeniami od wykwalifikowanego dzierżyciela autentycznej linii przekazu.</p>
+        </div>`
+      },
+      ru: {
+        title: "Добро пожаловать в обозреватель са че",
+        html: `
+        <p>Этот обозреватель представляет <strong>полную структурную схему</strong> (са че), составленную Патрулом Ринпоче к <em>Сокровищнице Драгоценных Качеств</em> (Йонтен Дзо) Джигме Лингпы, — вместе с коренным текстом по-тибетски и в переводе. Схема и строфы связаны в обе стороны: выберите тему, чтобы найти её строфы, или нажмите на строфу, чтобы увидеть её точное место в архитектуре текста.</p>
+        <div class="onboarding-note">
+          <h4>О главах Ваджраяны</h4>
+          <p>Главы 10–13 посвящены Тайной Мантре Ваджраяны и Дзогчену. В соответствии с традицией напоминаем учащимся о важности подлинной передачи линии: прежде чем изучать представленный здесь материал Ваджраяны и работать с ним, пожалуйста, получите <strong>посвящение</strong> (тиб. ванг) и <strong>передачу чтением</strong> (ལུང་, лунг), а также наставления от квалифицированного держателя подлинной линии передачи.</p>
+        </div>`
+      },
+      de: {
+        title: "Willkommen im Sa-bche-Explorer",
+        html: `
+        <p>Dieser Explorer präsentiert <strong>Patrul Rinpoches vollständige strukturelle Gliederung</strong> (Sa Bche) der <em>Schatzkammer der Kostbaren Eigenschaften</em> (Yönten Dzö) von Jigme Lingpa — zusammen mit dem Wurzeltext auf Tibetisch und in Übersetzung. Gliederung und Verse sind in beide Richtungen verknüpft: Wählen Sie ein Thema, um seine Verse zu finden, oder tippen Sie auf einen Vers, um seinen genauen Ort in der Architektur des Textes zu sehen.</p>
+        <div class="onboarding-note">
+          <h4>Ein Hinweis zu den Vajrayāna-Kapiteln</h4>
+          <p>Die Kapitel 10–13 behandeln das Geheime Mantra-Vajrayāna und Dzogchen. Der Tradition entsprechend werden Studierende an die Bedeutung einer authentischen Übertragungslinie erinnert: Bitte empfangen Sie die <strong>Ermächtigung</strong> (tib. Wang) und die <strong>Leseübertragung</strong> (ལུང་, Lung) sowie Unterweisung von einem qualifizierten Halter einer authentischen Linie, bevor Sie das hier dargebotene Vajrayāna-Material studieren und damit arbeiten.</p>
+        </div>`
+      },
+      fr: {
+        title: "Bienvenue dans l'explorateur de sa bche",
+        html: `
+        <p>Cet explorateur présente le <strong>plan structurel complet</strong> (sa bche) élaboré par Patrul Rinpoché pour le <em>Trésor des Précieuses Qualités</em> (Yönten Dzö) de Jigme Lingpa — avec le texte racine en tibétain et en traduction. Le plan et les vers sont liés dans les deux sens : choisissez un sujet pour trouver ses vers, ou touchez un vers pour voir sa place exacte dans l'architecture du texte.</p>
+        <div class="onboarding-note">
+          <h4>Une note sur les chapitres du Vajrayāna</h4>
+          <p>Les chapitres 10–13 traitent du Mantra Secret du Vajrayāna et du Dzogchen. Conformément à la tradition, il est rappelé aux étudiants l'importance d'une transmission de lignée authentique : veuillez recevoir l'<strong>initiation</strong> (tib. wang) et la <strong>transmission de lecture</strong> (ལུང་, loung), ainsi que les instructions d'un détenteur qualifié d'une lignée authentique, avant d'étudier et d'aborder le matériel du Vajrayāna présenté ici.</p>
+        </div>`
+      }
+    };
+
+    let _onboardingPrevFocus = null;
+
+    function openOnboarding() {
+      const c = ONBOARDING_CONTENT[state.targetLang] || ONBOARDING_CONTENT.en;
+      const ui = uiStrings();
+      document.getElementById('onboardingTitle').textContent = c.title;
+      document.getElementById('onboardingBody').innerHTML = c.html;
+      document.getElementById('onboardingBeginBtn').textContent = ui.onboardingBegin;
+      document.getElementById('onboardingHowtoBtn').textContent = ui.howtoToggle;
+      _onboardingPrevFocus = document.activeElement;
+      document.getElementById('onboardingModal').hidden = false;
+      document.getElementById('onboardingBeginBtn').focus();
+    }
+
+    function closeOnboarding(showHowto) {
+      try { localStorage.setItem('ydz.onboardingSeen', '1'); } catch (_) { }
+      document.getElementById('onboardingModal').hidden = true;
+      if (_onboardingPrevFocus && _onboardingPrevFocus.focus) {
+        try { _onboardingPrevFocus.focus(); } catch (_) { }
+        _onboardingPrevFocus = null;
+      }
+      if (showHowto) {
+        const body = document.getElementById('howtoBody');
+        if (!body.classList.contains('visible')) document.getElementById('howtoToggle').click();
+        document.getElementById('howtoToggle').scrollIntoView({ behavior: scrollBehavior(), block: 'center' });
+      }
+    }
+
+    (function initOnboarding() {
+      const modal = document.getElementById('onboardingModal');
+      document.getElementById('onboardingBeginBtn').addEventListener('click', () => closeOnboarding(false));
+      document.getElementById('onboardingHowtoBtn').addEventListener('click', () => closeOnboarding(true));
+      modal.addEventListener('click', e => { if (e.target === modal) closeOnboarding(false); });
+      document.addEventListener('keydown', e => {
+        if (modal.hidden) return;
+        if (e.key === 'Escape') { e.preventDefault(); closeOnboarding(false); return; }
+        // Keep Tab cycling inside the dialog while it is open.
+        if (e.key === 'Tab') {
+          const focusables = [
+            document.getElementById('onboardingBody'),
+            document.getElementById('onboardingHowtoBtn'),
+            document.getElementById('onboardingBeginBtn'),
+          ];
+          const idx = focusables.indexOf(document.activeElement);
+          if (idx === -1) { e.preventDefault(); focusables[focusables.length - 1].focus(); return; }
+          const next = (idx + (e.shiftKey ? -1 : 1) + focusables.length) % focusables.length;
+          e.preventDefault();
+          focusables[next].focus();
+        }
+      });
+      // The How-to body is re-rendered on every language change, so the
+      // "show the welcome screen again" link is handled by delegation.
+      document.getElementById('howtoBody').addEventListener('click', e => {
+        const a = e.target.closest('[data-action="show-onboarding"]');
+        if (a) { e.preventDefault(); openOnboarding(); }
       });
     })();
 
@@ -21946,6 +22752,39 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
       // Reading-position bar chip reuses the "back to outline" wording.
       const anbHintLabel = document.getElementById('anbHintLabel');
       if (anbHintLabel) anbHintLabel.textContent = ui.backToOutline;
+
+      // Tooltips and aria-labels of the fixed controls.
+      const searchClear = document.getElementById('searchClear');
+      if (searchClear) searchClear.title = ui.clearSearch;
+      const btnTib = document.getElementById('btnTib');
+      if (btnTib) btnTib.title = ui.toggleTib;
+      const btnSizeDown = document.getElementById('btnSizeDown');
+      if (btnSizeDown) btnSizeDown.title = ui.sizeDown;
+      const btnSizeUp = document.getElementById('btnSizeUp');
+      if (btnSizeUp) btnSizeUp.title = ui.sizeUp;
+      if (btnPrint) btnPrint.title = ui.printTitle;
+      const langSelectBtn = document.getElementById('langSelectBtn');
+      if (langSelectBtn) {
+        langSelectBtn.title = ui.changeLanguage;
+        langSelectBtn.setAttribute('aria-label', ui.changeLanguage);
+      }
+      const donateLink = document.querySelector('.header-links .donate-btn[aria-label]');
+      if (donateLink) donateLink.setAttribute('aria-label', ui.donateBtn);
+      const mandalaLink = document.querySelector('.header-links a[href*="Mandala-Explorer"]');
+      if (mandalaLink) {
+        mandalaLink.title = ui.mandalaTitle;
+        mandalaLink.setAttribute('aria-label', ui.mandalaTitle);
+      }
+      const activeNodeBar = document.getElementById('activeNodeBar');
+      if (activeNodeBar) activeNodeBar.setAttribute('aria-label', ui.activeBarAria);
+      const backToChapterBtn = document.getElementById('backToChapterBtn');
+      if (backToChapterBtn) {
+        backToChapterBtn.title = ui.backToChapterTitle;
+        backToChapterBtn.setAttribute('aria-label', ui.backToChapterTitle);
+      }
+      const crossRefClose = document.getElementById('crossRefModalClose');
+      if (crossRefClose) crossRefClose.setAttribute('aria-label', ui.crossRefClose);
+      if (typeof syncThemeButton === 'function') syncThemeButton();
     }
 
     function setTargetLang(code) {
@@ -21960,7 +22799,7 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
       document.getElementById('langCode').textContent = l.label;
       const btnEng = document.getElementById('btnEng');
       btnEng.textContent = l.label;
-      btnEng.title = `Toggle ${l.name}`;
+      btnEng.title = uiStrings().toggleTarget;
 
       updateUILanguage();
       buildLangMenu();
@@ -22083,7 +22922,9 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
 
     // Deep links: chapter and sholoka tags emit #rt-… anchors; honor them on
     // load so a shared/bookmarked URL opens the root text at the right place.
-    (function handleDeepLink() {
+    // Also re-run on hashchange — pasting a deep link into an already-open tab
+    // only fires hashchange, never a reload.
+    function handleDeepLink() {
       const m = location.hash.match(/^#rt-(chapter-(\d+)|prologue|colophon)(?:-sholoka-(\d+))?$/);
       if (!m) return;
       const chapter = m[2] ? parseInt(m[2], 10) : m[1];
@@ -22093,6 +22934,16 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
       } else {
         jumpToRootChapter(m[2] || m[1]);
       }
+    }
+    handleDeepLink();
+    window.addEventListener('hashchange', handleDeepLink);
+
+    // First visit: show the welcome screen (app introduction + the reminder
+    // about empowerment and reading transmission for the Vajrayāna chapters).
+    (function maybeShowOnboarding() {
+      let seen = null;
+      try { seen = localStorage.getItem('ydz.onboardingSeen'); } catch (_) { }
+      if (!seen) openOnboarding();
     })();
   </script>
 </body>
