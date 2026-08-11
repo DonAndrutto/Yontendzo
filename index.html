@@ -14,8 +14,24 @@
   <meta property="og:image" content="https://donandrutto.github.io/Yontendzo/IMG_8733.jpeg">
   <meta name="twitter:card" content="summary">
   <title>Sa bche Explorer — Yonten Dzo (Complete)</title>
-  <link rel="icon"
-    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%23231208'/%3E%3Ccircle cx='50' cy='50' r='30' fill='none' stroke='%23d4a55a' stroke-width='6'/%3E%3Ccircle cx='50' cy='50' r='8' fill='%23d4a55a'/%3E%3Cpath d='M50 4v26M50 70v26M4 50h26M70 50h26' stroke='%23d4a55a' stroke-width='6'/%3E%3C/svg%3E">
+
+  <!-- Icons, all cut from the same artwork (see tools/make-icons.py):
+       the tab favicons crop to the tree-and-wheel emblem, which is the only
+       part still legible at 16px, while the installed-app icons carry the
+       full composition. Sizes are declared so browsers pick without
+       downloading every candidate. -->
+  <link rel="icon" href="./icons/favicon.ico" sizes="16x16 32x32 48x48">
+  <link rel="icon" type="image/png" sizes="16x16" href="./icons/favicon-16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="./icons/favicon-96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Yontendzo">
+  <meta name="application-name" content="Yontendzo">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- "Noto Sans Tibetan" is not served by Google Fonts (the css2 endpoint
@@ -1825,6 +1841,7 @@
       .lang-select,
       .active-node-bar,
       .back-to-chapter-btn,
+      .install-prompt,
       .section-actions {
         display: none !important;
       }
@@ -2201,6 +2218,124 @@
       .onboarding-footer .btn {
         width: 100%;
       }
+    }
+
+    /* ========================================================
+       INSTALL PROMPT
+       A quiet strip along the bottom inviting phone and tablet
+       readers to keep the app on their home screen. It carries
+       the header's gradient so it reads as part of the app in
+       either theme, and it stays clear of the home indicator.
+       ======================================================== */
+    .install-prompt {
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      bottom: calc(12px + env(safe-area-inset-bottom));
+      z-index: 9998;
+      max-width: 440px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 9px 10px 9px 11px;
+      border-radius: 14px;
+      background: linear-gradient(170deg, #2e1a0b 0%, var(--header-bg) 55%, #1c0d05 100%);
+      color: var(--header-text);
+      border: 1px solid rgba(212, 165, 90, 0.3);
+      box-shadow: 0 6px 28px rgba(0, 0, 0, 0.34);
+      /* Kept out of the way until shown, so it slides up rather than
+         appearing under the reader's thumb. */
+      opacity: 0;
+      transform: translateY(150%);
+      transition: opacity 0.28s var(--ease-veil), transform 0.28s var(--ease-veil);
+    }
+
+    .install-prompt[hidden] {
+      display: none;
+    }
+
+    .install-prompt.show {
+      opacity: 1;
+      transform: none;
+    }
+
+    .install-prompt-icon {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      border-radius: 9px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+    }
+
+    .install-prompt-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .install-prompt-title {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .install-prompt-sub {
+      display: block;
+      margin-top: 1px;
+      font-size: 11px;
+      line-height: 1.4;
+      color: rgba(245, 230, 200, 0.72);
+    }
+
+    .install-prompt-accept {
+      flex-shrink: 0;
+      padding: 7px 13px;
+      border: 1px solid rgba(212, 165, 90, 0.55);
+      border-radius: 8px;
+      background: rgba(212, 165, 90, 0.16);
+      color: var(--accent-gold);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .install-prompt-accept:hover {
+      background: rgba(212, 165, 90, 0.26);
+    }
+
+    .install-prompt-close {
+      flex-shrink: 0;
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border: none;
+      border-radius: 6px;
+      background: none;
+      color: rgba(245, 230, 200, 0.5);
+      font-size: 14px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .install-prompt-close:hover {
+      color: var(--header-text);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .install-prompt-accept:focus-visible,
+    .install-prompt-close:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--accent-gold);
+    }
+
+    /* Lift the copy confirmation above the strip while it is up. */
+    body.install-prompt-open .copy-toast {
+      bottom: calc(92px + env(safe-area-inset-bottom));
     }
 
     /* ========================================================
@@ -2754,6 +2889,17 @@
     <div class="root-text-body" id="rootTextBody" hidden></div>
   </section>
   <div class="copy-toast" id="copyToast" role="status" aria-live="polite"></div>
+
+  <div class="install-prompt" id="installPrompt" hidden role="region" aria-label="Install this app">
+    <img class="install-prompt-icon" id="installPromptIcon" src="./icons/icon-192.png" alt="" width="40" height="40"
+      loading="lazy" decoding="async">
+    <span class="install-prompt-text">
+      <span class="install-prompt-title" id="installPromptTitle">Install Yontendzo</span>
+      <span class="install-prompt-sub" id="installPromptSub"></span>
+    </span>
+    <button class="install-prompt-accept" id="installPromptAccept" type="button">Install</button>
+    <button class="install-prompt-close" id="installPromptClose" type="button" aria-label="Dismiss">&#x2715;</button>
+  </div>
 
   <div class="cross-ref-backdrop" id="crossRefModal" hidden role="dialog" aria-modal="true"
     aria-labelledby="crossRefModalTitle">
@@ -6867,6 +7013,12 @@
         themeToDark: "Switch to night mode",
         themeToLight: "Switch to day mode",
         onboardingBegin: "Begin exploring",
+        installTitle: "Install Yontendzo",
+        installSub: "Keep it on your home screen — opens full screen, reads offline.",
+        installSubIos: "Tap Share, then “Add to Home Screen”.",
+        installAccept: "Install",
+        installAcceptIos: "Got it",
+        installDismiss: "Not now",
         chapterTitles: [
           "Meditating on the Difficulty of Obtaining a Free and Privileged Existence, the Cause for Turning the Mind Towards the Dharma",
           "Meditating on the Impermanence of Life, the Spur to Diligence",
@@ -6922,6 +7074,12 @@
         themeToDark: "Włącz tryb nocny",
         themeToLight: "Włącz tryb dzienny",
         onboardingBegin: "Rozpocznij eksplorację",
+        installTitle: "Zainstaluj Yontendzo",
+        installSub: "Zachowaj na ekranie głównym — pełny ekran, działa offline.",
+        installSubIos: "Dotknij Udostępnij, a potem „Do ekranu początkowego”.",
+        installAccept: "Zainstaluj",
+        installAcceptIos: "Rozumiem",
+        installDismiss: "Nie teraz",
         chapterTitles: [
           "Medytacja nad trudnością uzyskania wolnej i uprzywilejowanej egzystencji, jako przyczyna skierowania umysłu ku Dharmie",
           "Medytacja nad nietrwałością życia, jako bodziec do pilności",
@@ -6976,7 +7134,13 @@
         crossRefClose: "Закрыть",
         themeToDark: "Включить ночной режим",
         themeToLight: "Включить дневной режим",
-        onboardingBegin: "Начать изучение"
+        onboardingBegin: "Начать изучение",
+        installTitle: "Установить Yontendzo",
+        installSub: "Сохраните на главный экран — полноэкранный режим, работает офлайн.",
+        installSubIos: "Нажмите «Поделиться», затем «На экран «Домой»».",
+        installAccept: "Установить",
+        installAcceptIos: "Понятно",
+        installDismiss: "Не сейчас"
       },
       de: {
         searchPlaceholder: "Suchen",
@@ -7016,7 +7180,13 @@
         crossRefClose: "Schließen",
         themeToDark: "Nachtmodus einschalten",
         themeToLight: "Tagmodus einschalten",
-        onboardingBegin: "Erkunden beginnen"
+        onboardingBegin: "Erkunden beginnen",
+        installTitle: "Yontendzo installieren",
+        installSub: "Auf dem Startbildschirm behalten — Vollbild, auch offline.",
+        installSubIos: "Auf „Teilen“ tippen, dann „Zum Home-Bildschirm“.",
+        installAccept: "Installieren",
+        installAcceptIos: "Verstanden",
+        installDismiss: "Nicht jetzt"
       },
       fr: {
         searchPlaceholder: "Rechercher",
@@ -7056,7 +7226,13 @@
         crossRefClose: "Fermer",
         themeToDark: "Activer le mode nuit",
         themeToLight: "Activer le mode jour",
-        onboardingBegin: "Commencer l'exploration"
+        onboardingBegin: "Commencer l'exploration",
+        installTitle: "Installer Yontendzo",
+        installSub: "Gardez-le sur l'écran d'accueil — plein écran, hors ligne.",
+        installSubIos: "Touchez Partager, puis « Sur l'écran d'accueil ».",
+        installAccept: "Installer",
+        installAcceptIos: "J'ai compris",
+        installDismiss: "Plus tard"
       }
     };
 
@@ -22809,6 +22985,9 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
       const crossRefClose = document.getElementById('crossRefModalClose');
       if (crossRefClose) crossRefClose.setAttribute('aria-label', ui.crossRefClose);
       if (typeof syncThemeButton === 'function') syncThemeButton();
+      // The install strip relabels itself: its wording depends on state the
+      // prompt keeps to itself (whether the browser offered an install).
+      window.dispatchEvent(new CustomEvent('ydz:languagechange'));
     }
 
     function setTargetLang(code) {
@@ -22969,6 +23148,162 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
       try { seen = localStorage.getItem('ydz.onboardingSeen'); } catch (_) { }
       if (!seen) openOnboarding();
     })();
+
+    // --- Install prompt ---
+    // Invites phone and tablet readers to add the app to their home screen.
+    // Deliberately unobtrusive: it waits until the reader is settled in, it
+    // never appears on desktop (Chrome already offers install in the address
+    // bar there) or once the app is installed, it retreats on its own if it
+    // is ignored, and waving it away silences it for a month — three times
+    // and it stops asking altogether.
+    (function initInstallPrompt() {
+      const STORE_KEY = 'ydz.installPrompt';
+      const QUIET_AFTER_DISMISS_MS = 30 * 24 * 60 * 60 * 1000;
+      const QUIET_AFTER_IGNORE_MS = 3 * 24 * 60 * 60 * 1000;
+      const MAX_DISMISSALS = 3;
+      const DELAY_MS = 15000;   // let the reader look around first
+      const LINGER_MS = 20000;  // then withdraw rather than sit there
+
+      const el = document.getElementById('installPrompt');
+      const acceptBtn = document.getElementById('installPromptAccept');
+      const closeBtn = document.getElementById('installPromptClose');
+      if (!el) return;
+
+      const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent)
+        || (/macintosh/i.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
+
+      function isPhoneOrTablet() {
+        return window.matchMedia('(max-width: 820px)').matches
+          && window.matchMedia('(pointer: coarse)').matches;
+      }
+
+      function isInstalled() {
+        return window.matchMedia('(display-mode: standalone)').matches
+          || window.matchMedia('(display-mode: fullscreen)').matches
+          || window.matchMedia('(display-mode: minimal-ui)').matches
+          || window.navigator.standalone === true
+          || document.referrer.startsWith('android-app://');
+      }
+
+      function readState() {
+        try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (_) { return {}; }
+      }
+
+      function writeState(state) {
+        try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (_) { }
+      }
+
+      function mayAsk() {
+        const state = readState();
+        if (state.installed) return false;
+        if ((state.dismissals || 0) >= MAX_DISMISSALS) return false;
+        const quiet = state.ignored ? QUIET_AFTER_IGNORE_MS : QUIET_AFTER_DISMISS_MS;
+        return !state.at || Date.now() - state.at > quiet;
+      }
+
+      // Deferred beforeinstallprompt event on Chromium; iOS has no such API,
+      // so there the strip explains the Share-sheet route instead.
+      let deferredPrompt = null;
+      let lingerTimer = null;
+      let shown = false;
+
+      function label() {
+        const ui = uiStrings();
+        document.getElementById('installPromptTitle').textContent = ui.installTitle;
+        document.getElementById('installPromptSub').textContent =
+          deferredPrompt ? ui.installSub : ui.installSubIos;
+        acceptBtn.textContent = deferredPrompt ? ui.installAccept : ui.installAcceptIos;
+        el.setAttribute('aria-label', ui.installTitle);
+        closeBtn.setAttribute('aria-label', ui.installDismiss);
+        closeBtn.title = ui.installDismiss;
+      }
+      // Re-label on a language change while the strip is up.
+      window.addEventListener('ydz:languagechange', () => { if (shown) label(); });
+
+      function hide() {
+        clearTimeout(lingerTimer);
+        shown = false;
+        el.classList.remove('show');
+        document.body.classList.remove('install-prompt-open');
+        // Wait out the slide-down before removing it from the layout.
+        setTimeout(() => { if (!shown) el.hidden = true; }, 300);
+      }
+
+      function remember(kind) {
+        const state = readState();
+        writeState({
+          at: Date.now(),
+          // Accepting the browser's own dialog settles it, whether or not
+          // the appinstalled event follows.
+          installed: kind === 'accepted' || !!state.installed,
+          dismissals: (state.dismissals || 0) + (kind === 'dismissed' ? 1 : 0),
+          ignored: kind === 'ignored',
+        });
+      }
+
+      function show() {
+        if (shown || isInstalled() || !mayAsk()) return;
+        label();
+        el.hidden = false;
+        shown = true;
+        // Flush the off-screen state before revealing it, or both changes
+        // land in one style pass and the strip appears instead of sliding.
+        void el.offsetWidth;
+        el.classList.add('show');
+        document.body.classList.add('install-prompt-open');
+        lingerTimer = setTimeout(() => { remember('ignored'); hide(); }, LINGER_MS);
+      }
+
+      // Hold off while the welcome screen is up — one invitation at a time.
+      function showWhenSettled() {
+        const onboarding = document.getElementById('onboardingModal');
+        if (onboarding && !onboarding.hidden) { setTimeout(showWhenSettled, 2000); return; }
+        setTimeout(show, DELAY_MS);
+      }
+
+      window.addEventListener('beforeinstallprompt', e => {
+        // On desktop the browser's own install affordance is better placed
+        // than anything here, so leave the event alone.
+        if (!isPhoneOrTablet()) return;
+        e.preventDefault();
+        deferredPrompt = e;
+        showWhenSettled();
+      });
+
+      acceptBtn.addEventListener('click', async () => {
+        clearTimeout(lingerTimer);
+        if (!deferredPrompt) { remember('dismissed'); hide(); return; }  // iOS: "Got it"
+        hide();
+        const prompt = deferredPrompt;
+        deferredPrompt = null;
+        try {
+          prompt.prompt();
+          const choice = await prompt.userChoice;
+          remember(choice && choice.outcome === 'accepted' ? 'accepted' : 'dismissed');
+        } catch (_) {
+          remember('dismissed');
+        }
+      });
+
+      closeBtn.addEventListener('click', () => { remember('dismissed'); hide(); });
+
+      window.addEventListener('appinstalled', () => {
+        writeState({ installed: true, at: Date.now() });
+        deferredPrompt = null;
+        hide();
+      });
+
+      if (isIos && isPhoneOrTablet() && !isInstalled()) showWhenSettled();
+    })();
+
+    // Service worker: makes the app installable and lets it open without a
+    // connection. Navigations still go to the network first, so the text is
+    // never served stale to a reader who is online (see sw.js).
+    if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => { });
+      });
+    }
   </script>
 </body>
 

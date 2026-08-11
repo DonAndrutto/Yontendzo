@@ -1,0 +1,41 @@
+{
+  "id": "./",
+  "name": "Yontendzo — Sa bche Explorer",
+  "short_name": "Yontendzo",
+  "description": "Interactive explorer of Patrul Rinpoche's complete structural outline (sa bche) of the Treasury of Precious Qualities (Yönten Dzö) by Jigme Lingpa, linked to the root text in Tibetan and English.",
+  "lang": "en",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#231208",
+  "theme_color": "#231208",
+  "categories": ["books", "education", "reference"],
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
