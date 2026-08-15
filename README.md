@@ -2,6 +2,21 @@
 Structural outline of the Treasury of Precious Qualities, connected with the root text.
 Developed by Andrzej R. Rybszleger. 
 
+## Naming the controls
+
+The **?** at the end of the toolbar dims and blurs the text and names every
+control that is on screen at that moment, so the interface explains itself at a
+glance. Tap anywhere, press Escape, or tap the **?** again to put it away. It
+opens only when asked — never on its own — and changes nothing: no setting, no
+scroll position, nothing remembered.
+
+Which controls get named is worked out each time it opens, so it follows the
+app: the reading-position bar and the return-to-chapter button are named when
+they are up, and controls scrolled behind the header are left alone. Labels are
+too wide to sit under their own controls — a label runs about twice the width of
+the control it names, and controls within a group sit two pixels apart — so they
+are packed into a staircase of rows with a hairline drawn back to each control.
+
 ## Installing it as an app
 
 The site is a progressive web app, so it can be kept on a phone or tablet home
