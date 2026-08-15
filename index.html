@@ -1717,8 +1717,26 @@
         justify-content: space-between;
       }
 
+      /* The "?" rides the search row rather than the button row: the search
+         box has 300px of slack here and the button row has none, so adding
+         the help control costs no extra toolbar row at any width or in any
+         language. Explicit orders keep it at the toolbar's top right while
+         the groups below stay in source order. */
       .controls .search-wrap {
-        flex: 1 1 100%;
+        flex: 1 1 calc(100% - 36px);
+        order: 1;
+      }
+
+      .controls .help-btn {
+        order: 2;
+      }
+
+      .controls>.divider,
+      .controls>.lang-toggles,
+      .controls>.size-controls,
+      .controls>.theme-btn,
+      .controls>.btn--primary {
+        order: 5;
       }
 
       .controls .search-count {
@@ -1798,6 +1816,43 @@
       .node-id {
         white-space: pre-wrap;
         word-break: break-all;
+      }
+    }
+
+    /* Below the widths where the toolbar has room to spare, the "?" needs no
+       separator of its own — it already sits at a row edge. */
+    @media (max-width: 700px) {
+      .controls .divider--help {
+        display: none;
+      }
+    }
+
+    /* Just above the mobile breakpoint the toolbar is a single row with barely
+       any slack, and the "?" would wrap to a row of its own. Reclaimed from
+       two pieces of dead space: the status text reserves 60px even when it has
+       nothing to say, and the search box reserves more width than it needs. */
+    @media (min-width: 601px) and (max-width: 700px) {
+      .controls .search-wrap {
+        min-width: 150px;
+      }
+
+      .controls .search-count:empty {
+        min-width: 0;
+      }
+    }
+
+    /* At the very narrowest widths the button row falls a few pixels short of
+       holding the longer translations of "Print" (Russian 69px, German 75px,
+       French 78px against English's 53px). Two pixels off each toolbar gap and
+       three off Print's sides reclaim them, so adding the "?" costs no extra
+       row — and Russian, German and French now fit a row they used to wrap. */
+    @media (max-width: 340px) {
+      .controls {
+        gap: 4px;
+      }
+
+      .controls .btn--primary {
+        padding: 5px 9px;
       }
     }
 
@@ -2685,6 +2740,156 @@
     html[data-theme="dark"] .theme-btn .icon-moon {
       display: none;
     }
+
+    /* ========================================================
+       HELP OVERLAY
+       A circled "?" in the toolbar names every control that is
+       genuinely on screen, then gets out of the way. It changes
+       no setting and persists nothing.
+       ======================================================== */
+
+    /* Sibling of the toolbar's other icon buttons: same 28px box, same
+       border and colour tokens as .size-btn / .theme-btn, circled. */
+    .help-btn {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      color: var(--text-muted);
+    }
+
+    .help-btn[aria-expanded="true"] {
+      background: var(--selected-bg);
+      border-color: var(--selected-border);
+      color: var(--accent);
+    }
+
+    /* Technique 1: the CONTENT recedes, the chrome does not. These are the
+       content bodies only — their control bars are DOM siblings and so stay
+       sharp and appear to float. None of them contains a position:fixed
+       descendant, which `filter` would otherwise re-parent. */
+    html.help-open #introBody,
+    html.help-open #howtoBody,
+    html.help-open #breadcrumb,
+    html.help-open #treeSectionBody,
+    html.help-open #rootTextBody {
+      filter: blur(3px);
+      opacity: 0.4;
+      /* The overlay's own button takes every tap; belt and braces for the
+         controls buried in the receded content. */
+      pointer-events: none;
+    }
+
+    /* The app animates sparingly and honours prefers-reduced-motion; the
+       overlay takes the quiet option and appears instantly, no transition. */
+    .help-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      overscroll-behavior: contain;
+    }
+
+    /* A real focusable button covering the viewport, so keyboard and screen
+       reader users have an exit. It sits beneath the labels in paint order,
+       and because the labels are inert it swallows every tap — including one
+       aimed at a control it has just named. */
+    .help-dismiss {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: none;
+    }
+
+    .help-dismiss:focus-visible {
+      outline: 2px solid var(--selected-border);
+      outline-offset: -3px;
+    }
+
+    /* Technique 4: connectors live in their own layer BELOW the labels, so a
+       line running past an intervening row is hidden by that opaque label
+       instead of being drawn through its words. */
+    .help-connectors {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: visible;
+    }
+
+    .help-connectors line {
+      stroke: var(--accent);
+      stroke-width: 1;
+      opacity: 0.55;
+      shape-rendering: crispEdges;
+    }
+
+    .help-labels {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    /* The app's own small-caps label treatment (cf. .intro-header,
+       .onboarding-note h4), on an opaque ground so it can mask a connector. */
+    .help-label {
+      position: absolute;
+      top: 0;
+      left: 0;
+      font-family: inherit;
+      font-size: 0.58rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      line-height: 1.35;
+      white-space: nowrap;
+      color: var(--accent);
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      padding: 1px 5px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    }
+
+    .help-hint {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: calc(14px + env(safe-area-inset-bottom));
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 12px;
+      max-width: calc(100vw - 24px);
+      text-align: center;
+      pointer-events: none;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.14);
+    }
+
+    /* The overlay is the one thing on screen worth printing nothing of. */
+    @media print {
+
+      .help-overlay,
+      .help-btn {
+        display: none !important;
+      }
+    }
   </style>
   <script>
     // Apply the saved (or system-preferred) theme before first paint to avoid
@@ -2786,6 +2991,9 @@
       </button>
       <div class="divider"></div>
       <button class="btn btn--primary" id="btnPrint" title="Print / Save as PDF">Print</button>
+      <div class="divider divider--help"></div>
+      <button class="btn help-btn" id="btnHelp" type="button" aria-haspopup="dialog" aria-expanded="false"
+        title="Show what each control does">?</button>
     </div>
     <div id="activeNodeBar" class="active-node-bar" role="button" tabindex="0" aria-label="Jump to current outline node"
       hidden>
@@ -2946,6 +3154,19 @@
       <path d="m5 12 7-7 7 7" />
     </svg>
   </button>
+
+  <!-- Help overlay. Opens only on a tap of the "?" — never on its own, not
+       even once on first run. Labels and connectors are built at open time
+       from whatever is genuinely on screen, so nothing here is hardcoded. -->
+  <div class="help-overlay" id="helpOverlay" hidden role="dialog" aria-modal="true"
+    aria-label="Show what each control does" aria-describedby="helpHint">
+    <button class="help-dismiss" id="helpDismiss" type="button" aria-label="Close the labels"></button>
+    <svg class="help-connectors" id="helpConnectors" aria-hidden="true"></svg>
+    <!-- The labels restate accessible names the controls already carry, so
+         they are hidden from assistive tech rather than read out twice. -->
+    <div class="help-labels" id="helpLabels" aria-hidden="true"></div>
+    <div class="help-hint" id="helpHint">Tap anywhere to close</div>
+  </div>
   <script>
     const DATA = {
       "title_tib": "ཡོན་ཏན་རིན་པོ་ཆེའི་མཛོད་ཀྱི་སྤྱི་དོན་ས་བཅད",
@@ -7019,6 +7240,22 @@
         installAccept: "Install",
         installAcceptIos: "Got it",
         installDismiss: "Not now",
+        // Help overlay. Only controls the app has no name for get a new string
+        // here; Search, Donate, Print, Columns, Expand All and the rest reuse
+        // the wording already on the button, so no control has two names.
+        helpBtnTitle: "Show what each control does",
+        helpHint: "Tap anywhere to close",
+        helpDismissAria: "Close the labels",
+        helpSelfLabel: "This help",
+        helpLangLabel: "Language",
+        helpTibLabel: "Tibetan",
+        helpTargetLabel: "Translation",
+        helpSmallerLabel: "Smaller",
+        helpLargerLabel: "Larger",
+        helpThemeLabel: "Day / night",
+        helpMandalaLabel: "Mandala",
+        helpPlaceLabel: "Your place",
+        helpChapterTopLabel: "Chapter top",
         chapterTitles: [
           "Meditating on the Difficulty of Obtaining a Free and Privileged Existence, the Cause for Turning the Mind Towards the Dharma",
           "Meditating on the Impermanence of Life, the Spur to Diligence",
@@ -7080,6 +7317,19 @@
         installAccept: "Zainstaluj",
         installAcceptIos: "Rozumiem",
         installDismiss: "Nie teraz",
+        helpBtnTitle: "Pokaż, do czego służy każdy element",
+        helpHint: "Dotknij dowolnego miejsca, aby zamknąć",
+        helpDismissAria: "Zamknij etykiety",
+        helpSelfLabel: "Ta pomoc",
+        helpLangLabel: "Język",
+        helpTibLabel: "Tybetański",
+        helpTargetLabel: "Tłumaczenie",
+        helpSmallerLabel: "Mniejsze",
+        helpLargerLabel: "Większe",
+        helpThemeLabel: "Dzień / noc",
+        helpMandalaLabel: "Mandala",
+        helpPlaceLabel: "Twoje miejsce",
+        helpChapterTopLabel: "Początek rozdziału",
         chapterTitles: [
           "Medytacja nad trudnością uzyskania wolnej i uprzywilejowanej egzystencji, jako przyczyna skierowania umysłu ku Dharmie",
           "Medytacja nad nietrwałością życia, jako bodziec do pilności",
@@ -7140,7 +7390,20 @@
         installSubIos: "Нажмите «Поделиться», затем «На экран «Домой»».",
         installAccept: "Установить",
         installAcceptIos: "Понятно",
-        installDismiss: "Не сейчас"
+        installDismiss: "Не сейчас",
+        helpBtnTitle: "Показать назначение элементов управления",
+        helpHint: "Нажмите в любом месте, чтобы закрыть",
+        helpDismissAria: "Закрыть подписи",
+        helpSelfLabel: "Эта справка",
+        helpLangLabel: "Язык",
+        helpTibLabel: "Тибетский",
+        helpTargetLabel: "Перевод",
+        helpSmallerLabel: "Меньше",
+        helpLargerLabel: "Больше",
+        helpThemeLabel: "День / ночь",
+        helpMandalaLabel: "Мандала",
+        helpPlaceLabel: "Ваше место",
+        helpChapterTopLabel: "Начало главы"
       },
       de: {
         searchPlaceholder: "Suchen",
@@ -7186,7 +7449,20 @@
         installSubIos: "Auf „Teilen“ tippen, dann „Zum Home-Bildschirm“.",
         installAccept: "Installieren",
         installAcceptIos: "Verstanden",
-        installDismiss: "Nicht jetzt"
+        installDismiss: "Nicht jetzt",
+        helpBtnTitle: "Zeigen, wozu die Bedienelemente dienen",
+        helpHint: "Zum Schließen irgendwo tippen",
+        helpDismissAria: "Beschriftungen schließen",
+        helpSelfLabel: "Diese Hilfe",
+        helpLangLabel: "Sprache",
+        helpTibLabel: "Tibetisch",
+        helpTargetLabel: "Übersetzung",
+        helpSmallerLabel: "Kleiner",
+        helpLargerLabel: "Größer",
+        helpThemeLabel: "Tag / Nacht",
+        helpMandalaLabel: "Mandala",
+        helpPlaceLabel: "Ihre Stelle",
+        helpChapterTopLabel: "Kapitelanfang"
       },
       fr: {
         searchPlaceholder: "Rechercher",
@@ -7232,7 +7508,20 @@
         installSubIos: "Touchez Partager, puis « Sur l'écran d'accueil ».",
         installAccept: "Installer",
         installAcceptIos: "J'ai compris",
-        installDismiss: "Plus tard"
+        installDismiss: "Plus tard",
+        helpBtnTitle: "Afficher le rôle de chaque commande",
+        helpHint: "Touchez n'importe où pour fermer",
+        helpDismissAria: "Fermer les étiquettes",
+        helpSelfLabel: "Cette aide",
+        helpLangLabel: "Langue",
+        helpTibLabel: "Tibétain",
+        helpTargetLabel: "Traduction",
+        helpSmallerLabel: "Plus petit",
+        helpLargerLabel: "Plus grand",
+        helpThemeLabel: "Jour / nuit",
+        helpMandalaLabel: "Mandala",
+        helpPlaceLabel: "Votre place",
+        helpChapterTopLabel: "Début du chapitre"
       }
     };
 
@@ -22984,6 +23273,19 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
       }
       const crossRefClose = document.getElementById('crossRefModalClose');
       if (crossRefClose) crossRefClose.setAttribute('aria-label', ui.crossRefClose);
+      const btnHelp = document.getElementById('btnHelp');
+      if (btnHelp) {
+        btnHelp.title = ui.helpBtnTitle;
+        btnHelp.setAttribute('aria-label', ui.helpBtnTitle);
+      }
+      // The overlay relabels its own contents when it is open; these are the
+      // strings it needs even while it is shut.
+      const helpHint = document.getElementById('helpHint');
+      if (helpHint) helpHint.textContent = ui.helpHint;
+      const helpDismiss = document.getElementById('helpDismiss');
+      if (helpDismiss) helpDismiss.setAttribute('aria-label', ui.helpDismissAria);
+      const helpOverlay = document.getElementById('helpOverlay');
+      if (helpOverlay) helpOverlay.setAttribute('aria-label', ui.helpBtnTitle);
       if (typeof syncThemeButton === 'function') syncThemeButton();
       // The install strip relabels itself: its wording depends on state the
       // prompt keeps to itself (whether the browser offered an install).
@@ -23206,6 +23508,9 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
       let deferredPrompt = null;
       let lingerTimer = null;
       let shown = false;
+      // Withdraw countdown, tracked so the help overlay can hold it and resume
+      // it with the time that was actually left.
+      let lingerLeft = 0, lingerStartedAt = 0;
 
       function label() {
         const ui = uiStrings();
@@ -23220,8 +23525,26 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
       // Re-label on a language change while the strip is up.
       window.addEventListener('ydz:languagechange', () => { if (shown) label(); });
 
+      // Hold the withdraw countdown while the help overlay is up, so a strip
+      // the overlay has just named cannot vanish from under its own label.
+      // The remaining time is carried over rather than restarted.
+      window.addEventListener('ydz:helpopen', () => {
+        if (!shown || !lingerTimer) return;
+        clearTimeout(lingerTimer);
+        lingerTimer = null;
+        lingerLeft = Math.max(0, LINGER_MS - (Date.now() - lingerStartedAt));
+      });
+      window.addEventListener('ydz:helpclose', () => {
+        if (!shown || lingerTimer || !lingerLeft) return;
+        lingerStartedAt = Date.now() - (LINGER_MS - lingerLeft);
+        lingerTimer = setTimeout(() => { remember('ignored'); hide(); }, lingerLeft);
+        lingerLeft = 0;
+      });
+
       function hide() {
         clearTimeout(lingerTimer);
+        lingerTimer = null;
+        lingerLeft = 0;
         shown = false;
         el.classList.remove('show');
         document.body.classList.remove('install-prompt-open');
@@ -23251,6 +23574,7 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
         void el.offsetWidth;
         el.classList.add('show');
         document.body.classList.add('install-prompt-open');
+        lingerStartedAt = Date.now();
         lingerTimer = setTimeout(() => { remember('ignored'); hide(); }, LINGER_MS);
       }
 
@@ -23294,6 +23618,354 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
       });
 
       if (isIos && isPhoneOrTablet() && !isInstalled()) showWhenSettled();
+    })();
+
+    // --- Help overlay ---
+    // A circled "?" in the toolbar dims and blurs the content and names every
+    // control that is genuinely on screen, so the interface explains itself at
+    // a glance. It is purely informational: it changes no setting, moves
+    // nothing, and persists no state. It opens ONLY on a tap of the "?".
+    //
+    // Labels cannot sit under their own controls: measured at 360px, the
+    // labels average about twice the width of the controls they name and
+    // adjacent controls in a group are 2px apart, so every adjacent pair
+    // collides. They are therefore packed greedily into a staircase of rows
+    // that build outward from the bar, with a hairline connector drawn beneath
+    // the opaque labels back to each control.
+    (function () {
+      const overlay = document.getElementById('helpOverlay');
+      const dismissBtn = document.getElementById('helpDismiss');
+      const labelsLayer = document.getElementById('helpLabels');
+      const connectorLayer = document.getElementById('helpConnectors');
+      const hintEl = document.getElementById('helpHint');
+      const helpBtn = document.getElementById('btnHelp');
+      if (!overlay || !helpBtn) return;
+
+      // Layout constants (px).
+      const EDGE = 6;      // keep-out from the viewport's left/right edges
+      const GUTTER = 8;    // clear space demanded between labels in a row
+      const BAR_GAP = 6;   // bar to first row
+      const ROW_GAP = 4;   // row to row
+
+      // The registry. `labelKey` names a key in UI_STRINGS, so every label
+      // translates and falls back like the rest of the interface; keys that
+      // already exist are reused verbatim so no control ever has two names.
+      // `zone` groups targets that share an anchoring bar. Which of these are
+      // actually present varies by scroll position, app state and platform, so
+      // the list is filtered against the live layout on every opening — it is
+      // never treated as the set of controls that exist.
+      const REGISTRY = [
+        // Chrome: the sticky header, present at every scroll position.
+        { sel: '#langSelectBtn', labelKey: 'helpLangLabel', zone: 'chrome' },
+        { sel: '.header-links .donate-btn[aria-label]', labelKey: 'donateBtn', zone: 'chrome' },
+        { sel: '.header-links a[href*="Mandala-Explorer"]', labelKey: 'helpMandalaLabel', zone: 'chrome' },
+        { sel: '#searchBox', labelKey: 'searchPlaceholder', zone: 'chrome' },
+        { sel: '#searchClear', labelKey: 'clearSearch', zone: 'chrome' },
+        { sel: '#btnTib', labelKey: 'helpTibLabel', zone: 'chrome' },
+        { sel: '#btnEng', labelKey: 'helpTargetLabel', zone: 'chrome' },
+        { sel: '#btnSizeDown', labelKey: 'helpSmallerLabel', zone: 'chrome' },
+        { sel: '#btnSizeUp', labelKey: 'helpLargerLabel', zone: 'chrome' },
+        { sel: '#btnTheme', labelKey: 'helpThemeLabel', zone: 'chrome' },
+        { sel: '#btnPrint', labelKey: 'printBtn', zone: 'chrome' },
+        { sel: '#btnHelp', labelKey: 'helpSelfLabel', zone: 'chrome' },
+        { sel: '#activeNodeBar', labelKey: 'helpPlaceLabel', zone: 'chrome' },
+        // Section bars, which stay sharp while their bodies recede.
+        { sel: '#introToggle', labelKey: 'aboutToggle', zone: 'intro' },
+        { sel: '#howtoToggle', labelKey: 'howtoToggle', zone: 'howto' },
+        { sel: '#treeSectionToggle', labelKey: 'structuralOutline', zone: 'tree' },
+        { sel: '#btnMillerToggle', labelKey: 'millerToggle', zone: 'tree' },
+        { sel: '#btnTreeExpandAll', labelKey: 'expandAll', zone: 'tree' },
+        { sel: '#btnTreeCollapseAll', labelKey: 'collapseAll', zone: 'tree' },
+        { sel: '#rootTextToggle', labelKey: 'rootText', zone: 'root' },
+        { sel: '#btnRootExpandAll', labelKey: 'expandAll', zone: 'root' },
+        { sel: '#btnRootCollapseAll', labelKey: 'collapseAll', zone: 'root' },
+        // Floating control, only up once the reader is inside a chapter.
+        { sel: '#backToChapterBtn', labelKey: 'helpChapterTopLabel', zone: 'chapterTop' },
+      ];
+
+      let open = false;
+      let prevFocus = null;
+      let frozenScroll = null;
+
+      // Is the control genuinely on screen? A hidden element measures zero, an
+      // element scrolled behind the sticky header is present but invisible,
+      // and a position:fixed element has no offsetParent yet is perfectly
+      // visible — so all three cases are tested explicitly. The caller makes
+      // the overlay transparent to hit testing first, so elementFromPoint
+      // reports the app's own stacking rather than the dismiss layer.
+      function onScreen(el) {
+        const cs = getComputedStyle(el);
+        if (cs.visibility === 'hidden' || cs.display === 'none') return null;
+        if (parseFloat(cs.opacity) < 0.05) return null;
+        if (el.offsetParent === null && cs.position !== 'fixed') return null;
+        const r = el.getBoundingClientRect();
+        if (r.width <= 0 || r.height <= 0) return null;
+        const vw = window.innerWidth, vh = window.innerHeight;
+        if (r.bottom <= 0 || r.top >= vh || r.right <= 0 || r.left >= vw) return null;
+        // Occlusion: sample the centre, and the two flanks in case the centre
+        // happens to fall on a gap between an icon's strokes.
+        const cy = Math.min(Math.max(r.top + r.height / 2, 1), vh - 1);
+        const xs = [r.left + r.width / 2, r.left + r.width * 0.2, r.left + r.width * 0.8];
+        const hit = xs.some(x0 => {
+          const x = Math.min(Math.max(x0, 1), vw - 1);
+          const top = document.elementFromPoint(x, cy);
+          return top && (top === el || el.contains(top) || top.contains(el));
+        });
+        return hit ? r : null;
+      }
+
+      // Technique 3: greedy row packing. Sort by centre x, then drop each label
+      // into the lowest row (nearest its bar) whose occupied spans leave room,
+      // testing candidate rows outward from the bar. Collisions are checked
+      // against every label already placed anywhere and against the controls
+      // themselves, so no label lands on a neighbouring zone's row or covers
+      // the row of controls it names.
+      function pack(zones, placedBlockers) {
+        const vw = window.innerWidth, vh = window.innerHeight;
+        const placed = [];
+
+        const intersects = (a, b) =>
+          a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
+
+        for (const zone of zones) {
+          zone.items.sort((p, q) => p.cx - q.cx);
+          const rowH = zone.items.reduce((m, it) => Math.max(m, it.h), 0);
+          // Candidate row offsets: outward from the bar in the preferred
+          // direction first, then the other way if that side runs out.
+          const room = dir => dir === 'down' ? vh - zone.anchorBottom : zone.anchorTop;
+          const maxRows = d => Math.max(1, Math.floor((room(d) - BAR_GAP - EDGE) / (rowH + ROW_GAP)));
+          const primary = zone.dir, secondary = zone.dir === 'down' ? 'up' : 'down';
+          const candidates = [];
+          for (let i = 0; i < maxRows(primary); i++) candidates.push([primary, i]);
+          for (let i = 0; i < maxRows(secondary); i++) candidates.push([secondary, i]);
+
+          for (const it of zone.items) {
+            const left = Math.min(Math.max(it.cx - it.w / 2, EDGE), Math.max(EDGE, vw - EDGE - it.w));
+            let chosen = null;
+            for (const [dir, row] of candidates) {
+              const top = dir === 'down'
+                ? zone.anchorBottom + BAR_GAP + row * (rowH + ROW_GAP)
+                : zone.anchorTop - BAR_GAP - (row + 1) * rowH - row * ROW_GAP;
+              if (top < EDGE || top + it.h > vh - EDGE) continue;
+              const box = { left, right: left + it.w, top, bottom: top + it.h };
+              const probe = { left: left - GUTTER, right: left + it.w + GUTTER, top, bottom: top + it.h };
+              if (placed.some(p => intersects(probe, p))) continue;
+              if (placedBlockers.some(b => intersects(box, b))) continue;
+              chosen = box;
+              break;
+            }
+            // Nothing free anywhere: keep the label rather than drop it, at the
+            // first row of the preferred direction, so a control is never left
+            // unnamed. Overlap checks across every tested size and state show
+            // this never fires; it is here so a cramped future layout degrades
+            // by crowding rather than by silently losing a label.
+            if (!chosen) {
+              const top = Math.min(
+                Math.max(zone.dir === 'down' ? zone.anchorBottom + BAR_GAP : zone.anchorTop - BAR_GAP - it.h, EDGE),
+                vh - EDGE - it.h);
+              chosen = { left, right: left + it.w, top, bottom: top + it.h };
+            }
+            it.box = chosen;
+            placed.push(chosen);
+          }
+        }
+      }
+
+      function layout() {
+        if (!open) return;
+        const ui = uiStrings();
+        labelsLayer.textContent = '';
+        while (connectorLayer.firstChild) connectorLayer.removeChild(connectorLayer.firstChild);
+
+        // Filter the registry against the live layout. The overlay is already
+        // shown — labels must be measurable — so it is made transparent to hit
+        // testing for the length of this pass, or elementFromPoint would report
+        // the dismiss layer for every control and reject all of them.
+        const targets = [];
+        overlay.style.pointerEvents = 'none';
+        try {
+          for (const entry of REGISTRY) {
+            const el = document.querySelector(entry.sel);
+            if (!el) continue;
+            const rect = onScreen(el);
+            if (!rect) continue;
+            const text = ui[entry.labelKey];
+            if (!text) continue;
+            targets.push({ entry, el, rect, text });
+          }
+        } finally {
+          overlay.style.pointerEvents = '';
+        }
+        if (!targets.length) return;
+
+        // Create every label first, then measure: the overlay is already
+        // shown, so these have real dimensions (a hidden element measures 0).
+        for (const t of targets) {
+          const node = document.createElement('span');
+          node.className = 'help-label';
+          node.textContent = t.text;
+          labelsLayer.appendChild(node);
+          t.node = node;
+        }
+        for (const t of targets) {
+          const b = t.node.getBoundingClientRect();
+          t.w = b.width;
+          t.h = b.height;
+          t.cx = t.rect.left + t.rect.width / 2;
+        }
+
+        // Group into zones and anchor each to the bounding box of its members.
+        const byZone = new Map();
+        for (const t of targets) {
+          const z = t.entry.zone;
+          if (!byZone.has(z)) byZone.set(z, { name: z, items: [], anchorTop: Infinity, anchorBottom: -Infinity });
+          const zone = byZone.get(z);
+          zone.items.push(t);
+          zone.anchorTop = Math.min(zone.anchorTop, t.rect.top);
+          zone.anchorBottom = Math.max(zone.anchorBottom, t.rect.bottom);
+        }
+        const vh = window.innerHeight;
+        const zones = [...byZone.values()];
+        for (const z of zones) {
+          // Chrome labels hang below the chrome; a bar low on the screen has no
+          // room below, so its labels stand above it instead.
+          const below = vh - z.anchorBottom, above = z.anchorTop;
+          z.dir = below >= above ? 'down' : 'up';
+        }
+        // Pack the chrome first — it is the bar the reader is looking at — then
+        // the remaining zones from the top of the page down.
+        zones.sort((a, b) =>
+          (a.name === 'chrome' ? -1 : b.name === 'chrome' ? 1 : 0) || a.anchorTop - b.anchorTop);
+
+        // The controls themselves are keep-out boxes, so no label can cover the
+        // row of controls it is naming. The closing hint is one too — on a
+        // short viewport the rows can otherwise reach the bottom of the screen.
+        const blockers = targets.map(t => ({
+          left: t.rect.left, right: t.rect.right, top: t.rect.top, bottom: t.rect.bottom,
+        }));
+        const hr = hintEl.getBoundingClientRect();
+        blockers.push({ left: hr.left - GUTTER, right: hr.right + GUTTER, top: hr.top - ROW_GAP, bottom: hr.bottom });
+        pack(zones, blockers);
+
+        // Position the labels, then draw one hairline connector each into the
+        // layer below them: a 1px vertical at the control's centre x, running
+        // to the control's near edge.
+        const SVG = 'http://www.w3.org/2000/svg';
+        for (const t of targets) {
+          t.node.style.left = t.box.left + 'px';
+          t.node.style.top = t.box.top + 'px';
+          const below = t.box.top >= t.rect.bottom;
+          const y1 = below ? t.rect.bottom : t.rect.top;
+          const y2 = below ? t.box.top : t.box.bottom;
+          const x = Math.round(t.cx) + 0.5;
+          const line = document.createElementNS(SVG, 'line');
+          line.setAttribute('x1', x);
+          line.setAttribute('x2', x);
+          line.setAttribute('y1', Math.min(y1, y2));
+          line.setAttribute('y2', Math.max(y1, y2));
+          connectorLayer.appendChild(line);
+        }
+      }
+
+      // The page beneath must not move, so scrolling is blocked outright rather
+      // than re-laid-out; a wheel or a swipe over the overlay does nothing.
+      function blockScroll(e) { if (open) e.preventDefault(); }
+      const SCROLL_KEYS = new Set([
+        'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown', 'Home', 'End', ' ',
+      ]);
+
+      function openHelp() {
+        if (open) return;
+        // Never open on top of a modal dialog.
+        const crossRef = document.getElementById('crossRefModal');
+        const onboarding = document.getElementById('onboardingModal');
+        if ((crossRef && !crossRef.hidden) || (onboarding && !onboarding.hidden)) return;
+
+        // The language menu closes on any outside click, but that handler is on
+        // document and so runs after this one — it would still be covering the
+        // toolbar while the labels were being measured. Close it first.
+        if (typeof closeLangMenu === 'function') closeLangMenu();
+
+        const ui = uiStrings();
+        hintEl.textContent = ui.helpHint;
+        dismissBtn.setAttribute('aria-label', ui.helpDismissAria);
+        overlay.setAttribute('aria-label', ui.helpBtnTitle);
+
+        prevFocus = document.activeElement;
+        frozenScroll = { x: window.scrollX, y: window.scrollY };
+        // Freeze anything running, so nothing the labels name can move or
+        // withdraw while they are up.
+        window.dispatchEvent(new CustomEvent('ydz:helpopen'));
+
+        open = true;
+        // Shown BEFORE measuring: a hidden element measures zero.
+        overlay.hidden = false;
+        helpBtn.setAttribute('aria-expanded', 'true');
+        document.documentElement.classList.add('help-open');
+        layout();
+        // preventScroll: focusing must not be what moves the page.
+        dismissBtn.focus({ preventScroll: true });
+      }
+
+      function closeHelp() {
+        if (!open) return;
+        open = false;
+        overlay.hidden = true;
+        document.documentElement.classList.remove('help-open');
+        helpBtn.setAttribute('aria-expanded', 'false');
+        labelsLayer.textContent = '';
+        while (connectorLayer.firstChild) connectorLayer.removeChild(connectorLayer.firstChild);
+        window.dispatchEvent(new CustomEvent('ydz:helpclose'));
+        // Focus goes back to the "?"; the element that held it on opening is
+        // the fallback for the case where the toolbar has since been reflowed
+        // out from under it (a print stylesheet, a language change).
+        const restore = helpBtn.offsetParent !== null ? helpBtn
+          : (prevFocus && prevFocus.isConnected ? prevFocus : helpBtn);
+        restore.focus({ preventScroll: true });
+        if (frozenScroll) window.scrollTo(frozenScroll.x, frozenScroll.y);
+        frozenScroll = null;
+        prevFocus = null;
+      }
+
+      helpBtn.addEventListener('click', () => { open ? closeHelp() : openHelp(); });
+      dismissBtn.addEventListener('click', e => { e.preventDefault(); closeHelp(); });
+
+      // First in the Escape chain: a capture-phase listener on document runs
+      // before the app's bubble-phase handlers, and stops the event there so a
+      // single Escape does not also clear the search box or the selection.
+      document.addEventListener('keydown', e => {
+        if (!open) return;
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          e.stopPropagation();
+          closeHelp();
+          return;
+        }
+        // The overlay holds exactly one focusable element, so trapping Tab
+        // keeps focus on the exit instead of letting it wander onto a control
+        // the reader can no longer see.
+        if (e.key === 'Tab') { e.preventDefault(); e.stopPropagation(); dismissBtn.focus(); return; }
+        if (SCROLL_KEYS.has(e.key)) { e.preventDefault(); e.stopPropagation(); }
+      }, true);
+
+      // aria-modal tells assistive tech the overlay is modal but does not stop
+      // Tab from reaching the controls behind it, which would let a keyboard
+      // user fire one of them while the labels are up. Keep focus inside.
+      document.addEventListener('focusin', e => {
+        if (open && !overlay.contains(e.target)) dismissBtn.focus();
+      });
+
+      window.addEventListener('resize', () => { if (open) layout(); });
+      window.addEventListener('orientationchange', () => { if (open) layout(); });
+      // Relabel in place if the interface language changes underneath it.
+      window.addEventListener('ydz:languagechange', () => { if (open) layout(); });
+      // Routes a tap cannot intercept.
+      window.addEventListener('popstate', closeHelp);
+      window.addEventListener('hashchange', closeHelp);
+      window.addEventListener('pagehide', closeHelp);
+      window.addEventListener('beforeprint', closeHelp);
+      overlay.addEventListener('wheel', blockScroll, { passive: false });
+      overlay.addEventListener('touchmove', blockScroll, { passive: false });
     })();
 
     // Service worker: makes the app installable and lets it open without a
