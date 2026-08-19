@@ -112,10 +112,11 @@
     .app-header {
       background: linear-gradient(170deg, #2e1a0b 0%, var(--header-bg) 55%, #1c0d05 100%);
       color: var(--header-text);
-      /* Right padding clears the absolutely-positioned action column so the
-         title lines can never run underneath the buttons (widest localized
-         column, German, measures ~155px from the right edge). */
-      padding: 14px 168px 12px 22px;
+      /* The title block is centred in the header, so both side paddings clear
+         the absolutely-positioned columns that flank it — Introduction on the
+         left, the action stack on the right (widest localized column, German,
+         measures ~155px from the right edge). */
+      padding: 14px 168px 12px 168px;
       /* Tall enough for the two-row action column even when the title is a
          single line (e.g. Tibetan-only mode). */
       min-height: 88px;
@@ -123,47 +124,58 @@
       transition: padding 0.18s ease;
     }
 
+    .header-titles {
+      text-align: center;
+      min-width: 0;
+    }
+
     .sticky-header.scrolled .app-header {
-      padding: 6px 22px;
+      padding: 6px 168px;
       min-height: 0;
     }
 
-    .sticky-header.scrolled .header-tib,
-    html.hide-tib .sticky-header.scrolled .header-en {
-      /* Clears the compact row of three action buttons; ellipsize rather than
-         wrap so the compact header keeps a fixed height at any width. */
-      padding-right: 172px;
-      white-space: nowrap;
+    /* Scrolling folds the Tibetan line away and leaves the app's own name,
+       so the compact header is one line tall in every language and mode. The
+       fold is a height collapse rather than display:none so it reads as the
+       title tucking itself away; prefers-reduced-motion flattens it globally. */
+    .header-tib {
       overflow: hidden;
-      text-overflow: ellipsis;
+      /* Only an animation bound — set well clear of the tallest the line ever
+         gets (two wrapped lines on a narrow phone) so it never clips. */
+      max-height: 6em;
+      opacity: 1;
+      transition: max-height 0.18s ease, opacity 0.14s ease;
     }
 
     .sticky-header.scrolled .header-tib {
-      font-size: 14px;
-      /* Generous line box: Tibetan vowel signs extend well above the baseline
-         top and overflow:hidden would clip them at a tight line-height. */
-      line-height: 1.9;
+      max-height: 0;
+      opacity: 0;
     }
 
     .sticky-header.scrolled .header-en {
-      display: none;
-    }
-
-    /* When Tibetan is toggled off, the compact header shows the translated
-       title instead of nothing. */
-    html.hide-tib .sticky-header.scrolled .header-en {
-      display: block;
+      /* Ellipsize rather than wrap so the compact header keeps a fixed height
+         at any width, and clear the compact row of action buttons. */
+      font-size: 15px;
+      line-height: 1.6;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       margin-top: 0;
-      line-height: 1.9;
     }
 
-    /* The header shows only the language(s) selected in the toolbar. */
+    /* The header shows only the language(s) selected in the toolbar. The app's
+       own name is the one line that always survives: with the translation
+       toggled off the compact header would otherwise be empty. */
     html.hide-tib .header-tib {
       display: none;
     }
 
     html.hide-en .header-en {
       display: none;
+    }
+
+    html.hide-en .sticky-header.scrolled .header-en {
+      display: block;
     }
 
     .sticky-header.scrolled .header-actions {
@@ -315,23 +327,28 @@
       }
     }
 
+    /* The Tibetan title sits above the app's own name as the traditional
+       heading; the name below it is the primary line and the one that stays
+       when the header compacts. */
     .header-tib {
       font-family: 'Noto Serif Tibetan', 'Noto Sans Tibetan', serif;
-      font-size: 20px;
+      font-size: 18px;
       /* Roomy line box so the upper vowel signs are never clipped. */
       line-height: 1.7;
-      color: var(--header-text);
+      color: var(--accent-gold);
       display: block;
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
     }
 
     .header-en {
-      font-size: 12px;
-      color: #c0996a;
-      font-style: italic;
+      font-size: 19px;
+      font-weight: 600;
+      color: var(--header-text);
       display: block;
-      margin-top: 2px;
-      letter-spacing: 0.02em;
+      margin-top: 1px;
+      letter-spacing: 0.01em;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+      transition: font-size 0.18s ease;
     }
 
     .controls {
@@ -1044,50 +1061,218 @@
       font-variant-numeric: tabular-nums;
     }
 
-    .intro-section {
-      padding: 12px 22px;
-      border-bottom: 1px solid var(--border);
-      background: #fdfbf4;
-    }
-
-    .intro-toggle {
+    /* ========================================================
+       INTRODUCTION POPUP
+       The About-the-text and How-to-use material, reachable from
+       the header's one button. The page behind it is blurred, and
+       a tap anywhere outside the panel dismisses it.
+       ======================================================== */
+    .intro-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 10001;
       display: flex;
       align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--accent);
-      background: none;
+      justify-content: center;
+      padding: 24px 16px;
+      background: rgba(28, 16, 8, 0.5);
+      backdrop-filter: blur(7px) saturate(105%);
+      -webkit-backdrop-filter: blur(7px) saturate(105%);
+      animation: crFadeIn 0.13s ease-out;
+    }
+
+    .intro-modal {
+      position: relative;
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 12px;
+      box-shadow: 0 8px 48px rgba(0, 0, 0, 0.42);
+      max-width: 680px;
+      width: 100%;
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: crSlideIn 0.15s ease-out;
+    }
+
+    /* Same gradient as the app header, identical in both themes. */
+    .intro-modal-header {
+      position: relative;
+      background: linear-gradient(170deg, #2e1a0b 0%, var(--header-bg) 55%, #1c0d05 100%);
+      color: var(--header-text);
+      padding: 14px 22px 13px 52px;
+      flex-shrink: 0;
+    }
+
+    .intro-modal-title {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    /* Upper left, opposite the usual place: it is the way back out of the
+       Introduction, mirroring the button that opened it. */
+    .intro-modal-close {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       border: none;
-      padding: 0;
+      border-radius: 50%;
+      background: rgba(245, 230, 200, 0.12);
+      color: var(--header-text);
+      font-size: 14px;
+      line-height: 1;
+      cursor: pointer;
       font-family: inherit;
+      transition: background 0.15s ease;
     }
 
-    .intro-toggle:hover {
-      text-decoration: underline;
+    .intro-modal-close:hover {
+      background: rgba(245, 230, 200, 0.26);
     }
 
-    .intro-arrow {
-      display: inline-block;
-      font-size: 9px;
-      transition: transform 0.15s;
+    .intro-modal-close:focus-visible {
+      outline: 2px solid var(--accent-gold);
+      outline-offset: 2px;
     }
 
-    .intro-arrow.open {
-      transform: rotate(90deg);
+    .intro-modal-body {
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 4px 22px 20px;
+      scrollbar-width: thin;
+    }
+
+    .intro-card {
+      padding: 16px 0 4px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .intro-card:last-child {
+      border-bottom: none;
+    }
+
+    .intro-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 4px;
     }
 
     .intro-body {
-      margin-top: 10px;
+      margin-top: 6px;
       font-size: 13px;
       line-height: 1.7;
       color: var(--text-muted);
-      display: none;
     }
 
-    .intro-body.visible {
+    /* Collapsed, a card shows only its opening lines and fades out into the
+       "Read more" beneath it. The clamp is a max-height rather than a line
+       count so it holds whatever markup the language happens to open with. */
+    .intro-body.clamped {
+      max-height: 8.5em;
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+      mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+    }
+
+    .intro-body.clamped> :first-child {
+      margin-top: 0;
+    }
+
+    .intro-more {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin: 6px 0 12px;
+      padding: 5px 12px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: none;
+      color: var(--accent);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .intro-more::after {
+      content: "\25BC";
+      font-size: 8px;
+      transition: transform 0.15s ease;
+    }
+
+    .intro-more[aria-expanded="true"]::after {
+      transform: rotate(180deg);
+    }
+
+    .intro-more:hover {
+      background: var(--selected-bg);
+      border-color: var(--selected-border);
+    }
+
+    .intro-more:focus-visible {
+      outline: 2px solid var(--selected-border);
+      outline-offset: 1px;
+    }
+
+    /* The lede that opens each About card: the app's name over the text's. */
+    .intro-lede {
+      margin-bottom: 14px;
+    }
+
+    .intro-lede .text-title {
       display: block;
+      font-size: 15px;
+    }
+
+    .intro-lede-sub {
+      display: block;
+      font-style: italic;
+      color: var(--muted-warm);
+    }
+
+    /* The three works, the three views: a term with its Tibetan beside it and
+       the explanation indented beneath. */
+    .intro-defs {
+      margin: 0 0 16px;
+    }
+
+    .intro-defs dt {
+      font-weight: 600;
+      color: var(--text);
+      margin-top: 10px;
+    }
+
+    .intro-defs-tib {
+      font-weight: 400;
+      font-style: italic;
+      color: var(--muted-warm);
+    }
+
+    .intro-defs-tib::before {
+      content: "\00B7\00A0";
+      font-style: normal;
+    }
+
+    .intro-defs dd {
+      margin: 2px 0 0 14px;
+      max-width: 76ch;
+    }
+
+    .intro-cta {
+      border-left: 3px solid var(--accent-gold);
+      background: rgba(212, 165, 90, 0.10);
+      border-radius: 0 6px 6px 0;
+      padding: 9px 12px;
     }
 
     .intro-body p,
@@ -1239,6 +1424,47 @@
       gap: 6px;
       align-items: stretch;
       z-index: 110;
+    }
+
+    /* The single doorway to the About / How-to material, which no longer sits
+       in the page itself. Positioned opposite the action stack so the centred
+       title has symmetric room between them. */
+    .intro-btn {
+      position: absolute;
+      left: 18px;
+      top: 14px;
+      z-index: 110;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      height: 26px;
+      padding: 0 10px;
+      border: 1px solid rgba(212, 165, 90, 0.45);
+      border-radius: 13px;
+      background: rgba(212, 165, 90, 0.12);
+      color: var(--accent-gold);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s ease, border-color 0.15s ease, top 0.18s ease, height 0.18s ease;
+    }
+
+    .intro-btn:hover {
+      background: rgba(212, 165, 90, 0.22);
+      border-color: rgba(212, 165, 90, 0.7);
+    }
+
+    .intro-btn:focus-visible {
+      outline: 2px solid var(--accent-gold);
+      outline-offset: 2px;
+    }
+
+    .sticky-header.scrolled .intro-btn {
+      top: 4px;
+      height: 24px;
     }
 
     /* Donate + Mandala Explorer share one row so the action stack stays two
@@ -1620,7 +1846,6 @@
     .lang-btn:focus-visible,
     .crumb:focus-visible,
     .tree-section-toggle:focus-visible,
-    .intro-toggle:focus-visible,
     .rt-subsection-header:focus-visible,
     .rt-subsection-back:focus-visible,
     .donate-btn:focus-visible,
@@ -1699,13 +1924,35 @@
 
     @media (max-width: 600px) {
       .app-header {
-        padding: 12px 96px 10px 14px;
+        padding: 12px 96px 10px 96px;
       }
 
-      /* Small screens reuse the compact-header treatment: icon-only Donate
-         keeps the action column narrow enough to leave room for the title. */
-      #donateLabel {
+      .sticky-header.scrolled .app-header {
+        padding: 6px 96px;
+      }
+
+      /* Small screens reuse the compact-header treatment: icon-only Donate and
+         Introduction keep both flanking columns narrow enough to leave the
+         centred title a usable width. */
+      #donateLabel,
+      #introBtnLabel {
         display: none;
+      }
+
+      .intro-btn {
+        left: 12px;
+        top: 10px;
+        width: 30px;
+        height: 30px;
+        padding: 0;
+        justify-content: center;
+        border-radius: 50%;
+      }
+
+      .sticky-header.scrolled .intro-btn {
+        top: 4px;
+        width: 26px;
+        height: 26px;
       }
 
       /* Toolbar on small screens: the search bar takes its own row and the
@@ -1758,12 +2005,16 @@
         padding: 10px 8px 40px;
       }
 
-      .intro-section {
-        padding: 10px 14px;
+      .header-tib {
+        font-size: 15px;
       }
 
-      .header-tib {
-        font-size: 17px;
+      .header-en {
+        font-size: 16px;
+      }
+
+      .sticky-header.scrolled .header-en {
+        font-size: 14px;
       }
 
       .children-wrap {
@@ -1775,10 +2026,6 @@
         right: 12px;
         top: 10px;
         gap: 8px;
-      }
-
-      .sticky-header.scrolled .header-tib {
-        padding-right: 132px;
       }
 
       .back-to-chapter-btn {
@@ -1887,9 +2134,10 @@
       .app-header,
       .controls,
       .breadcrumb-bar,
-      .intro-section,
       .copy-toast,
       .cross-ref-backdrop,
+      .intro-backdrop,
+      .intro-btn,
       .node-copy-btn,
       .toggle-btn,
       .copy-path-btn,
@@ -2560,8 +2808,16 @@
       border-color: #453a2a;
     }
 
-    html[data-theme="dark"] .intro-section {
-      background: #1b140e;
+    html[data-theme="dark"] .intro-card {
+      border-bottom-color: #2f2619;
+    }
+
+    html[data-theme="dark"] .intro-more {
+      border-color: #453a2a;
+    }
+
+    html[data-theme="dark"] .intro-backdrop {
+      background: rgba(0, 0, 0, 0.62);
     }
 
     html[data-theme="dark"] .intro-header {
@@ -2774,8 +3030,6 @@
        content bodies only — their control bars are DOM siblings and so stay
        sharp and appear to float. None of them contains a position:fixed
        descendant, which `filter` would otherwise re-parent. */
-    html.help-open #introBody,
-    html.help-open #howtoBody,
     html.help-open #breadcrumb,
     html.help-open #treeSectionBody,
     html.help-open #rootTextBody {
@@ -2913,8 +3167,19 @@
   </div>
   <div class="sticky-header">
     <div class="app-header">
-      <span class="header-tib">ཡོན་ཏན་རིན་པོ་ཆེའི་མཛོད་ཀྱི་སྤྱི་དོན་ས་བཅད།</span>
-      <span class="header-en" id="appSubtitle">Structural Outline of the Treasury of Precious Qualities</span>
+      <button class="intro-btn" id="btnIntro" type="button" aria-haspopup="dialog" aria-expanded="false"
+        title="About this text and how to use it">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 16v-5M12 8h.01" />
+        </svg>
+        <span id="introBtnLabel">Introduction</span>
+      </button>
+      <div class="header-titles">
+        <span class="header-tib">ཡོན་ཏན་རིན་པོ་ཆེའི་མཛོད་ཀྱི་སྤྱི་དོན་ས་བཅད།</span>
+        <span class="header-en" id="appSubtitle">Sa-bche Explorer</span>
+      </div>
       <div class="header-actions">
         <div class="lang-select" id="langSelect">
           <button class="lang-select-btn" id="langSelectBtn" title="Change language" aria-haspopup="true"
@@ -3014,53 +3279,6 @@
       </div>
     </div>
   </div>
-  <div class="intro-section">
-    <button class="intro-toggle" id="introToggle" aria-expanded="false">
-      <span class="intro-arrow" id="introArrow">&#x25B6;</span> <span id="aboutLabel">About this text</span>
-    </button>
-    <div class="intro-body" id="introBody">
-      <p><span class="text-title">ཡོན་ཏན་མཛོད · Yönten Dzö</span> (<em>Treasury of Precious Qualities</em>) by Jigme
-        Lingpa (1730–1798) is a comprehensive overview of the entire Buddhist path according to the Nyingma tradition.
-      </p>
-      <p>This explorer presents <strong>Patrul Rinpoche's complete structural outline</strong> (sa bche) of the entire
-        text — all 13 chapters, covering the three types of individuals, the Six Pāramitās, Secret Mantra Vajrayāna, and
-        Dzogchen.</p>
-      <p>The outline spans from the preamble through the freedoms and advantages, impermanence, karma, the Four Truths,
-        Bodhicitta, the Six Perfections (including the full Wisdom chapter with the four philosophical schools), Secret
-        Mantra with empowerments and generation/completion stages, Dzogchen ground-path-fruition, and the five kāyas of
-        the result.</p>
-
-      <h4 class="intro-header">What is a Sa Bche?</h4>
-      <p>A <em>sa bche</em> (ས་བཅད།) — literally "division of ground" — is the traditional Tibetan method for mapping
-        the architecture of a text. It works exactly like a directory tree on a computer: every topic is nested inside a
-        larger topic, and every path through the outline — like
-        <code>2.3.3.3.1.2 > Bodhisattva vow > Precepts > Training</code> — is a unique address that tells you precisely
-        where you are within the whole. Just as folders contain subfolders on a hard drive, each division of the sa bche
-        contains further subdivisions, and the numbered path from root to leaf is your coordinate within the text's
-        total structure.
-      </p>
-      <p>Sa bche works like a mind-map. Great scholastic commentators used the sa bche as an analytical instrument — a
-        complete logical decomposition of the text's argument. It reveals how each topic relates to every other: what
-        contains what, what precedes what, and at what level of specificity any given passage operates. To read a text
-        without its sa bche is like navigating a city without a map. To read it with the sa bche is to see the entire
-        city from above while standing on any given street.</p>
-      <p>Patrul Rinpoche's outline of the Yönten Dzö is among the most meticulous such structures in the Nyingma
-        scholastic tradition — mapping Jigme Lingpa's verses from the broadest division (preamble, body, conclusion)
-        down through as many as twelve levels of nesting in the tantric chapters.</p>
-
-      <p>→ <a href="https://donandrutto.github.io/Mandala-Explorer/"><strong>Open the experimental Mandala Explorer</strong></a> — an alternative visual interface offering the same structural outline navigation.</p>
-
-      <h4 class="intro-header">Credits</h4>
-      <p>Developed by <strong>Andrzej R. Rybszleger</strong>, 2026. Contact: <a
-          href="mailto:translation@arybszleger.com">translation@arybszleger.com</a></p>
-    </div>
-  </div>
-  <div class="intro-section">
-    <button class="intro-toggle" id="howtoToggle" aria-expanded="false">
-      <span class="intro-arrow" id="howtoArrow">&#x25B6;</span> <span id="howtoLabel">How to use</span>
-    </button>
-    <div class="intro-body" id="howtoBody"></div>
-  </div>
   <div class="breadcrumb-bar empty" id="breadcrumb">Click any node to mark your place</div>
   <div class="tree-section-outer" id="treeSectionOuter">
     <div class="section-header-wrap">
@@ -3122,6 +3340,33 @@
         <button class="cross-ref-modal-close" id="crossRefModalClose" aria-label="Close">&#x2715;</button>
       </div>
       <div class="cross-ref-modal-body" id="crossRefModalBody" tabindex="0"></div>
+    </div>
+  </div>
+
+  <!-- Introduction. The About-the-text and How-to-use material used to sit in
+       the page itself; it now lives here, behind the header's one button. Each
+       card shows its opening lines and expands on "Read more". -->
+  <div class="intro-backdrop" id="introModal" hidden role="dialog" aria-modal="true"
+    aria-labelledby="introModalTitle">
+    <div class="intro-modal">
+      <div class="intro-modal-header">
+        <button class="intro-modal-close" id="introModalClose" type="button" aria-label="Close">&#x2715;</button>
+        <h2 class="intro-modal-title" id="introModalTitle">Introduction</h2>
+      </div>
+      <div class="intro-modal-body" id="introModalBody" tabindex="0">
+        <section class="intro-card" id="introCardAbout">
+          <h3 class="intro-card-title" id="aboutLabel">About this text</h3>
+          <div class="intro-body" id="introBody"></div>
+          <button class="intro-more" id="introMoreAbout" type="button" aria-expanded="false"
+            aria-controls="introBody">Read more</button>
+        </section>
+        <section class="intro-card" id="introCardHowto">
+          <h3 class="intro-card-title" id="howtoLabel">How to use</h3>
+          <div class="intro-body" id="howtoBody"></div>
+          <button class="intro-more" id="introMoreHowto" type="button" aria-expanded="false"
+            aria-controls="howtoBody">Read more</button>
+        </section>
+      </div>
     </div>
   </div>
 
@@ -6780,70 +7025,277 @@
       "3.3": { "pl": "Wyrażenie końcowego kolofonu" },
     };
 
+    // "About the text" for the Introduction popup, injected into #introBody by
+    // updateUILanguage(). Keys are target-language codes; missing languages
+    // fall back to English.
     const ABOUT_CONTENT = {
       en: `
-      <p><span class="text-title">ཡོན་ཏན་མཛོད · Yönten Dzö</span> (<em>Treasury of Precious Qualities</em>) by Jigme Lingpa (1730–1798) is a comprehensive overview of the entire Buddhist path according to the Nyingma tradition.</p>
-      <p>This explorer presents <strong>Patrul Rinpoche's complete structural outline</strong> (sa bche) of the entire text — all 13 chapters, covering the three types of individuals, the Six Pāramitās, Secret Mantra Vajrayāna, and Dzogchen.</p>
-      <p>The outline spans from the preamble through the freedoms and advantages, impermanence, karma, the Four Truths, Bodhicitta, the Six Perfections (including the full Wisdom chapter with the four philosophical schools), Secret Mantra with empowerments and generation/completion stages, Dzogchen ground-path-fruition, and the five kāyas of the result.</p>
-      
-      <h4 class="intro-header">What is a Sa Bche?</h4>
-      <p>A <em>sa bche</em> (ས་བཅད།) — literally "division of ground" — is the traditional Tibetan method for mapping the architecture of a text. It works exactly like a directory tree on a computer: every topic is nested inside a larger topic, and every path through the outline — like <code>2.3.3.3.1.2 > Bodhisattva vow > Precepts > Training</code> — is a unique address that tells you precisely where you are within the whole. Just as folders contain subfolders on a hard drive, each division of the sa bche contains further subdivisions, and the numbered path from root to leaf is your coordinate within the text's total structure.</p>
-      <p>Sa bche works like a mind-map. Great scholastic commentators used the sa bche as an analytical instrument — a complete logical decomposition of the text's argument. It reveals how each topic relates to every other: what contains what, what precedes what, and at what level of specificity any given passage operates. To read a text without its sa bche is like navigating a city without a map. To read it with the sa bche is to see the entire city from above while standing on any given street.</p>
-      <p>Patrul Rinpoche's outline of the Yönten Dzö is among the most meticulous such structures in the Nyingma scholastic tradition — mapping Jigme Lingpa's verses from the broadest division (preamble, body, conclusion) down through as many as twelve levels of nesting in the tantric chapters.</p>
-      
-      <p>→ <a href="https://donandrutto.github.io/Mandala-Explorer/"><strong>Open the experimental Mandala Explorer</strong></a> — an alternative visual interface offering the same structural outline navigation.</p>
+      <p class="intro-lede"><span class="text-title">ཡོན་ཏན་མཛོད། · Yönten Dzö Explorer</span><span class="intro-lede-sub">The Treasury of Precious Qualities</span></p>
+      <p>Jigme Lingpa (1730–1798) compressed the entire Buddhist path — from the first reflections on a precious human birth to the five kāyas of the result, continuing through Sūtrayāna, Vajrayāna and Dzogchen — into a single volume of verse. It is one of the most widely studied texts of the Nyingma tradition, and this explorer is a companion for studying it.</p>
+      <p>Traditional study of the Yönten Dzö brings together three works:</p>
+      <dl class="intro-defs">
+        <dt>Root Text <span class="intro-defs-tib">gzhung</span></dt>
+        <dd>Jigme Lingpa's verses, highly condensed and often carrying a great deal of meaning in only a few lines.</dd>
+        <dt>Structural Outline <span class="intro-defs-tib">sa bche</span></dt>
+        <dd>Patrul Rinpoche's detailed map of the text, showing how every topic and subdivision fits within the whole.</dd>
+        <dt>Commentary <span class="intro-defs-tib">'grel pa</span></dt>
+        <dd>Khenpo Yönga Yönten Gyatso's extensive explanation of Jigme Lingpa's verses.</dd>
+      </dl>
+      <p>The present explorer contains the Root Text and Structural Outline and links them directly with one another. The commentary is taught in the ongoing classes by Khenpo Karma Wangyel, organised by Yeshe Khorlo Germany.</p>
+      <p>The app grew out of these teachings and was initially developed as a practical aid for following and interpreting them. The first cycle covered the Sūtrayāna section of the Yönten Dzö. The Vajrayāna cycle began in 2025.</p>
+
+      <h4 class="intro-header">What is a sa bche?</h4>
+      <p>A <em>sa bche</em> (ས་བཅད།), literally "division of ground," is the traditional Tibetan method of mapping the architecture of a text.</p>
+      <p>Every topic sits within a larger topic and may itself divide into further subdivisions. A path such as <code>2.3.3.3.1.2</code> works almost like an address. It tells you exactly where a particular subject sits within the whole structure.</p>
+      <p>The closest modern comparison is a computer directory tree. Folders contain subfolders, those contain further subfolders, and the complete path tells you where you are. A traditional sa bche does something very similar for a commentary.</p>
+      <p>Jigme Lingpa's Root Text can be extremely condensed. Khenpo Yönga's Commentary may unfold a few words into a long explanation. Patrul Rinpoche's Structural Outline keeps those two ends connected and shows where the explanation belongs within the larger teaching.</p>
+      <p>In the Tibetan monastic colleges, or Shedras, students often memorise substantial portions or the entire bodies of these outlines. The section already covered is usually recited at the beginning of a class before proceeding further. With enough familiarity, the hierarchy becomes part of the scholar's memory. A verse then appears together with its place in the larger structure.</p>
+      <p>For many Western students, this layer of study remains much less familiar. The explorer app gives the sa bche a visual form and makes its hierarchy immediately accessible.</p>
+      <p>To read a text without its sa bche is rather like navigating a city without a map. With the sa bche, one can stand on a particular street while still seeing where that street lies within the city, with its unique address.</p>
+
+      <h4 class="intro-header">Three ways to visualize the structure</h4>
+      <p>The same Structural Outline can be explored in three different forms.</p>
+      <dl class="intro-defs">
+        <dt>Tree</dt>
+        <dd>The main view presents Patrul Rinpoche's sa bche as a nested tree. Indentation and colour show the relationship between mother and child sections and make the depth of the hierarchy visible at a glance.</dd>
+        <dt>Columns</dt>
+        <dd>The Columns view uses cascading Miller columns, familiar from the macOS Finder. Each column represents one level of the outline. Selecting a topic opens its subdivisions in the next column. This works particularly well in sections where the outline becomes very deep.</dd>
+        <dt>Mandala Explorer</dt>
+        <dd>The experimental <a href="https://donandrutto.github.io/Mandala-Explorer/">Mandala Explorer</a> presents the same hierarchy spatially. Entering a node reveals the divisions contained within it, allowing one to move progressively through the structure in a more graphical way.</dd>
+      </dl>
+
+      <h4 class="intro-header">Linking the outline and Root Text</h4>
+      <p>The Structural Outline and Root Text are directly connected.</p>
+      <p>A verse tag in the sa bche opens the exact portion of Jigme Lingpa's Root Text associated with that topic. The relationship also works in reverse. Selecting a verse in the Root Text returns you to its precise location in Patrul Rinpoche's outline.</p>
+      <p>While following Khenpo Karma Wangyel's teaching of Khenpo Yönga's Commentary, the three layers can therefore be kept together:</p>
+      <ul class="intro-list">
+        <li><strong>Jigme Lingpa</strong> — the Root Text being explained</li>
+        <li><strong>Patrul Rinpoche</strong> — the structure showing where the explanation belongs</li>
+        <li><strong>Khenpo Yönga</strong> — the Commentary being taught</li>
+      </ul>
+      <p>This is the main purpose of the explorer.</p>
+
+      <h4 class="intro-header">The teachings</h4>
+      <p>Khenpo Karma Wangyel has been teaching Khenpo Yönga Yönten Gyatso's Commentary on the Yönten Dzö for several years in a programme organised by Yeshe Khorlo Germany.</p>
+      <p>The app contains the materials needed to follow the structure of those teachings. The Commentary itself remains part of the teaching programme.</p>
+      <p class="intro-cta"><a href="mailto:kontakt@yeshekhorlo.de">Join the ongoing Yönten Dzö teachings: kontakt@yeshekhorlo.de</a></p>
 
       <h4 class="intro-header">Credits</h4>
       <p>Developed by <strong>Andrzej R. Rybszleger</strong>, 2026. Contact: <a href="mailto:translation@arybszleger.com">translation@arybszleger.com</a></p>
     `,
       pl: `
-      <p><span class="text-title">ཡོན་ཏན་མཛོད · Yönten Dzö</span> (Skarbnica Cennych Właściwości) autorstwa Dżigme Lingpy (1730–1798) to wszechstronny przegląd całej buddyjskiej ścieżki według tradycji Nyingma.</p>
-      <p>Niniejszy eksplorator przedstawia pełny zarys strukturalny (sa bcze) całego tekstu opracowany przez Patrula Rinpocze — wszystkie 13 rozdziałów, obejmujących trzy typy jednostek, Sześć Pāramit, Tajemną Mantrę Wadźrajany oraz Dzogczen.</p>
-      <p>Zarys obejmuje: od prologu, przez wolności i sprzyjające warunki, nietrwałość, karmę, Cztery Prawdy, Bodhićittę, Sześć Doskonałości (w tym pełny rozdział o Mądrości z czterema szkołami filozoficznymi), Tajemną Mantrę z upoważnieniami oraz fazami powstawania i dopełnienia, podstawę-ścieżkę-owoc Dzogczen, aż po pięć kaj wyniku.</p>
-      <h4 class="intro-header">Czym jest sa bcze?</h4>
-      <p>Sa bcze (ས་བཅད།) — dosłownie „podział terenu" — to tradycyjna tybetańska metoda odwzorowania architektury tekstu. Działa dokładnie jak drzewo katalogów na komputerze: każdy temat jest zagnieżdżony w większym temacie, a każda ścieżka przez zarys — np. <code>2.3.3.3.1.2 > Ślubowanie bodhisattwy > Wskazania > Trening</code> — stanowi unikalny adres, który precyzyjnie wskazuje położenie w obrębie całości. Tak jak foldery zawierają podfoldery na dysku twardym, każdy podział sa bcze zawiera dalsze podpodziały, a numerowana ścieżka od korzenia do liścia to współrzędna danego fragmentu w całej strukturze tekstu.</p>
-      <p>Sa bcze działa jak mapa myśli. Wielcy scholastyczni komentatorzy używali sa bcze jako narzędzia analitycznego — pełnej logicznej dekompozycji argumentacji tekstu. Ujawnia ono, jak każdy temat odnosi się do każdego innego: co zawiera co, co poprzedza co i na jakim poziomie szczegółowości działa dany fragment. Czytać tekst bez sa bcze to jak poruszać się po mieście bez mapy. Czytać go z sa bcze — to widzieć całe miasto z góry, stojąc na dowolnej ulicy.</p>
-      <p>Zarys Yönten Dzö opracowany przez Patrula Rinpocze należy do najbardziej skrupulatnych tego typu struktur w scholastycznej tradycji Nyingma — odwzorowuje wersy Dżigme Lingpy od najszerszego podziału (prolog, część główna, konkluzja) aż po dwanaście poziomów zagnieżdżenia w rozdziałach tantrycznych.</p>
-      <p>→ <a href="https://donandrutto.github.io/Mandala-Explorer/"><strong>Open the experimental Mandala Explorer</strong></a> — an alternative visual interface offering the same structural outline navigation.</p>
-      <h4 class="intro-header">Autorzy</h4>
-      <p>Opracowane przez <strong>Andrzeja R. Rybszlegera</strong>, 2026. Kontakt: <a href="mailto:translation@arybszleger.com">translation@arybszleger.com</a></p>
+      <p class="intro-lede"><span class="text-title">ཡོན་ཏན་མཛོད། · Yönten Dzö Explorer</span><span class="intro-lede-sub">Skarbnica Cennych Właściwości</span></p>
+      <p>Dzigme Lingpa (1730–1798) zawarł całą ścieżkę buddyjską, od pierwszych rozważań nad cennym ludzkim odrodzeniem aż po pięć kāyi rezultatu, prowadząc poprzez Sūtrajānę, Vadżrajānę i Dzogczen, w jednym tomie zapisanym wierszem. Jest to jeden z najczęściej studiowanych tekstów tradycji Njingma, a ten eksplorator został pomyślany jako pomoc w jego studiowaniu.</p>
+      <p>Tradycyjne studium Jönten Dzö opiera się na trzech tekstach:</p>
+      <dl class="intro-defs">
+        <dt>Tekst źródłowy <span class="intro-defs-tib">gzhung</span></dt>
+        <dd>Wersy Dzigme Lingpy, niezwykle zwięzłe, często mieszczące bardzo wiele znaczeń w zaledwie kilku linijkach.</dd>
+        <dt>Zarys strukturalny <span class="intro-defs-tib">sa bche</span></dt>
+        <dd>Szczegółowa mapa tekstu opracowana przez Patrula Rinpocze, pokazująca, jak każdy temat i każda kolejna jego część wpisują się w całość.</dd>
+        <dt>Komentarz <span class="intro-defs-tib">'grel pa</span></dt>
+        <dd>Obszerne objaśnienie wersów Dzigme Lingpy autorstwa Khenpo Yöngi (Yöntena Gjatso).</dd>
+      </dl>
+      <p>Eksplorator zawiera Tekst źródłowy oraz Zarys strukturalny i bezpośrednio je ze sobą łączy. Komentarz jest obecnie wykładany przez Khenpo Karmę Wangyela podczas cyklu nauk organizowanego przez Yeshe Khorlo Germany.</p>
+      <p>Aplikacja wyrosła właśnie z tych nauk. Początkowo powstała jako praktyczne narzędzie ułatwiające śledzenie wykładów i pracę tłumacza ustnego. Pierwszy cykl obejmował część Jönten Dzö poświęconą Sūtrajānie. Cykl Vadżrajāny rozpoczął się w 2025 roku.</p>
+
+      <h4 class="intro-header">Czym jest sa bche?</h4>
+      <p><em>Sa bche</em> (ས་བཅད།), dosłownie „podział obszaru", to tradycyjna tybetańska metoda przedstawiania architektury tekstu.</p>
+      <p>Każdy temat mieści się w szerszym temacie i sam może dzielić się na kolejne części. Ścieżka taka jak <code>2.3.3.3.1.2</code> działa niemal jak adres. Pokazuje dokładnie, gdzie dany temat znajduje się w całej strukturze.</p>
+      <p>Najbliższym współczesnym odpowiednikiem jest drzewo katalogów w komputerze. Foldery zawierają podfoldery, te kolejne podfoldery, a pełna ścieżka pokazuje dokładnie, gdzie się znajdujemy. Tradycyjne sa bche pełni bardzo podobną funkcję w odniesieniu do komentarza.</p>
+      <p>Tekst źródłowy Dzigme Lingpy bywa skrajnie zwięzły. Komentarz Khenpo Jöngi może rozwinąć kilka słów w długie objaśnienie. Zarys strukturalny Patrula Rinpocze utrzymuje te dwa poziomy w ścisłym związku i pokazuje, gdzie dana część komentarza znajduje się w szerszej strukturze nauk.</p>
+      <p>W tybetańskich kolegiach monastycznych, czyli szedrach, uczniowie często uczą się na pamięć dużych fragmentów, a niekiedy całych takich planów. Na początku zajęć zazwyczaj recytuje się część sa bche, która została już omówiona, zanim przejdzie się dalej. Z czasem hierarchia tekstu staje się częścią pamięci uczonego. Wtedy pojedynczy wers pojawia się w umyśle od razu wraz ze swoim miejscem w większej strukturze.</p>
+      <p>Dla wielu zachodnich uczniów ten sposób pracy z tekstem pozostaje mniej znajomy. Aplikacja nadaje sa bche formę wizualną i pozwala natychmiast zobaczyć jego hierarchię.</p>
+      <p>Czytanie tekstu bez jego sa bche przypomina poruszanie się po mieście bez mapy. Z sa bche można stać na konkretnej ulicy, a jednocześnie widzieć, gdzie znajduje się ona w obrębie całego miasta, wraz ze swoim właściwym adresem.</p>
+
+      <h4 class="intro-header">Trzy sposoby wizualizacji struktury</h4>
+      <p>Ten sam Zarys strukturalny można przeglądać na trzy sposoby.</p>
+      <dl class="intro-defs">
+        <dt>Drzewo</dt>
+        <dd>Główny widok przedstawia sa bche Patrula Rinpocze jako zagnieżdżone drzewo. Wcięcia i kolory pokazują relację pomiędzy nadrzędnymi i podrzędnymi częściami oraz pozwalają od razu ocenić głębokość hierarchii.</dd>
+        <dt>Kolumny</dt>
+        <dd>Widok Kolumny wykorzystuje kaskadowe kolumny Millera, znane między innymi z Findera w macOS. Każda kolumna odpowiada jednemu poziomowi planu. Wybranie tematu otwiera jego podziały w kolejnej kolumnie. Rozwiązanie to sprawdza się szczególnie dobrze w tych częściach tekstu, gdzie struktura staje się bardzo głęboka.</dd>
+        <dt>Mandala Explorer</dt>
+        <dd>Eksperymentalny <a href="https://donandrutto.github.io/Mandala-Explorer/">Mandala Explorer</a> przedstawia tę samą hierarchię przestrzennie. Wejście w dany węzeł odsłania zawarte w nim podziały i pozwala stopniowo zagłębiać się w strukturę w bardziej graficzny sposób. (Mandala Explorer na razie nie zawiera jeszcze polskiego tłumaczenia.)</dd>
+      </dl>
+
+      <h4 class="intro-header">Połączenie Zarysu strukturalnego z Tekstem źródłowym</h4>
+      <p>Zarys strukturalny i Tekst źródłowy są ze sobą bezpośrednio połączone.</p>
+      <p>Odnośnik do wersów w sa bche otwiera dokładnie ten fragment Tekstu źródłowego Dzigme Lingpy, którego dotyczy dany temat. Działa to również w drugą stronę. Wybranie wersu w Tekście źródłowym przenosi do jego dokładnego miejsca w planie Patrula Rinpocze.</p>
+      <p>Podczas słuchania wykładów Khenpo Karmy Wangyela poświęconych Komentarzowi Khenpo Jöngi można więc jednocześnie śledzić wszystkie trzy warstwy:</p>
+      <ul class="intro-list">
+        <li><strong>Dzigme Lingpa</strong> — Tekst źródłowy, który jest objaśniany</li>
+        <li><strong>Patrul Rinpocze</strong> — struktura pokazująca, gdzie dane objaśnienie się znajduje</li>
+        <li><strong>Khenpo Jönga</strong> — Komentarz będący przedmiotem nauk</li>
+      </ul>
+      <p>To właśnie jest głównym zadaniem eksploratora.</p>
+
+      <h4 class="intro-header">Nauki</h4>
+      <p>Khenpo Karma Wangyel od kilku lat naucza Komentarza Khenpo Yöngi Yönten Gyatso do Jönten Dzö w ramach programu organizowanego przez Yeshe Khorlo Germany.</p>
+      <p>Aplikacja zawiera materiały potrzebne do śledzenia struktury tych nauk. Sam Komentarz pozostaje częścią programu nauczania.</p>
+      <p class="intro-cta"><a href="mailto:kontakt@yeshekhorlo.de">Dołącz do trwających nauk Jönten Dzö: kontakt@yeshekhorlo.de</a></p>
+
+      <h4 class="intro-header">Autorstwo</h4>
+      <p>Opracowanie i aplikacja: <strong>Andrzej R. Rybszleger</strong>, 2026. Kontakt: <a href="mailto:translation@arybszleger.com">translation@arybszleger.com</a></p>
     `,
       ru: `
-      <p><span class="text-title">ཡོན་ཏན་མཛོད · Йонтен Дзо</span> (Сокровищница Драгоценных Качеств) Джигме Лингпы (1730–1798) — это всеобъемлющий обзор всего буддийского пути согласно традиции Ньингма.</p>
-      <p>Данный обозреватель представляет полную структурную схему (са че) всего текста, составленную Патрулом Ринпоче, — все 13 глав, охватывающих три типа личностей, Шесть Парамит, Тайную Мантру Ваджраяны и Дзогчен.</p>
-      <p>Схема простирается от пролога через свободы и благоприятные условия, непостоянство, карму, Четыре Истины, Бодхичитту, Шесть Совершенств (включая полную главу о Мудрости с четырьмя философскими школами), Тайную Мантру с посвящениями и стадиями зарождения и завершения, основу-путь-плод Дзогчена и пять кай результата.</p>
-      <h4 class="intro-header">Что такое са че?</h4>
-      <p>Са че (ས་བཅད།) — буквально «деление территории» — это традиционный тибетский метод отображения архитектуры текста. Он работает точно как дерево каталогов на компьютере: каждая тема вложена в более крупную тему, а каждый путь через схему — например, <code>2.3.3.3.1.2 > Обет бодхисаттвы > Заповеди > Тренировка</code> — является уникальным адресом, точно указывающим местоположение в пределах целого. Подобно тому, как папки содержат подпапки на жёстком диске, каждое деление са че содержит дальнейшие подразделения, а нумерованный путь от корня до листа — это координата данного фрагмента в общей структуре текста.</p>
-      <p>Са че работает как ментальная карта. Великие схоластические комментаторы использовали са че как аналитический инструмент — полное логическое разложение аргументации текста. Он раскрывает, как каждая тема соотносится с любой другой: что содержит что, что предшествует чему и на каком уровне детализации работает любой данный фрагмент. Читать текст без са че — всё равно что ориентироваться в городе без карты. Читать его с са че — значит видеть весь город сверху, стоя на любой улице.</p>
-      <p>Схема Йонтен Дзо, составленная Патрулом Ринпоче, является одной из наиболее тщательных подобных структур в учёной традиции Ньингма — она отображает стихи Джигме Лингпы от самого широкого деления (пролог, основная часть, заключение) до двенадцати уровней вложенности в тантрических главах.</p>
-      <p>→ <a href="https://donandrutto.github.io/Mandala-Explorer/"><strong>Open the experimental Mandala Explorer</strong></a> — an alternative visual interface offering the same structural outline navigation.</p>
-      <p><em>Примечание: Полная поддержка русского языка в интерфейсе и содержании находится в подготовке.</em></p>
-      <h4 class="intro-header">Авторство</h4>
-      <p>Разработано <strong>Анджеем Р. Рыбшлегером</strong>, 2026. Контакт: <a href="mailto:translation@arybszleger.com">translation@arybszleger.com</a></p>
+      <p class="intro-lede"><span class="text-title">ཡོན་ཏན་མཛོད། · Yönten Dzö Explorer</span><span class="intro-lede-sub">Сокровищница драгоценных качеств</span></p>
+      <p>Джигме Лингпа (1730–1798) вместил весь буддийский путь, от первых размышлений о драгоценном человеческом рождении до пяти kāya плода, проведя читателя через Сутраяну, Ваджраяну и Дзогчен, в один стихотворный том. Это один из наиболее широко изучаемых текстов традиции Ньингма, а данный навигатор создан как вспомогательный инструмент для его изучения.</p>
+      <p>Традиционное изучение Yönten Dzö объединяет три текста:</p>
+      <dl class="intro-defs">
+        <dt>Коренной текст <span class="intro-defs-tib">gzhung</span></dt>
+        <dd>Стихи Джигме Лингпы, предельно сжатые и нередко заключающие в нескольких строках огромный объём смысла.</dd>
+        <dt>Структурный план <span class="intro-defs-tib">sa bche</span></dt>
+        <dd>Подробная карта текста, составленная Патрулом Ринпоче и показывающая, как каждая тема и каждое подразделение входят в общую структуру.</dd>
+        <dt>Комментарий <span class="intro-defs-tib">'grel pa</span></dt>
+        <dd>Развёрнутое объяснение стихов Джигме Лингпы, составленное Кхенпо Йёнгой Йёнтеном Гьяцо.</dd>
+      </dl>
+      <p>В этом навигаторе содержатся Коренной текст и Структурный план, напрямую связанные друг с другом. Комментарий изучается на продолжающемся курсе Кхенпо Кармы Вангъела, организованном Yeshe Khorlo Germany.</p>
+      <p>Приложение выросло из этих учений. Первоначально оно создавалось как практический инструмент для того, чтобы легче следить за лекциями и работать с ними в качестве устного переводчика. Первый цикл был посвящён разделу Yönten Dzö по Сутраяне. Цикл Ваджраяны начался в 2025 году.</p>
+
+      <h4 class="intro-header">Что такое sa bche?</h4>
+      <p><em>Sa bche</em> (ས་བཅད།), буквально «разделение основы», представляет собой традиционный тибетский способ отображения архитектуры текста.</p>
+      <p>Каждая тема входит в более широкую тему и сама может делиться на дальнейшие подразделы. Путь вроде <code>2.3.3.3.1.2</code> работает почти как адрес. Он точно показывает, где конкретная тема находится внутри общей структуры.</p>
+      <p>Ближайшая современная аналогия заключается в дереве каталогов на компьютере. Папки содержат подпапки, те содержат следующие уровни подпапок, а полный путь позволяет точно определить своё местоположение. Традиционный sa bche выполняет очень похожую функцию для комментария.</p>
+      <p>Коренной текст Джигме Лингпы может быть чрезвычайно сжатым. Несколько его слов в Комментарии Кхенпо Йёнги могут разворачиваться в продолжительное объяснение. Структурный план Патрула Ринпоче связывает эти два уровня и показывает, какое место данное объяснение занимает в более широкой структуре учения.</p>
+      <p>В тибетских монастырских колледжах, или шедрах, ученики часто заучивают наизусть значительные части, а иногда и весь структурный план. В начале занятия обычно декламируется уже пройденная часть sa bche, после чего переходят дальше. При достаточной подготовке эта иерархия становится частью памяти учёного. Тогда отдельный стих воспринимается сразу вместе со своим местом в общей структуре.</p>
+      <p>Для многих западных учеников такой способ работы с текстом остаётся непривычным. Приложение придаёт sa bche наглядную форму и позволяет сразу увидеть его иерархию.</p>
+      <p>Читать текст без его sa bche примерно то же, что ходить по городу без карты. С sa bche можно находиться на конкретной улице и одновременно видеть её место во всём городе, вместе с её уникальным адресом.</p>
+
+      <h4 class="intro-header">Три способа увидеть структуру</h4>
+      <p>Один и тот же Структурный план можно просматривать в трёх формах.</p>
+      <dl class="intro-defs">
+        <dt>Дерево</dt>
+        <dd>Основной вид показывает sa bche Патрула Ринпоче как вложенное дерево. Отступы и цвета показывают отношения между вышестоящими и подчинёнными разделами и позволяют сразу видеть глубину иерархии.</dd>
+        <dt>Колонки</dt>
+        <dd>Режим Колонки использует каскадные колонки Миллера, знакомые по Finder в macOS. Каждая колонка соответствует одному уровню структуры. При выборе темы её подразделы открываются в следующей колонке. Этот режим особенно удобен в тех частях текста, где структура уходит на много уровней в глубину.</dd>
+        <dt>Mandala Explorer</dt>
+        <dd>Экспериментальный <a href="https://donandrutto.github.io/Mandala-Explorer/">Mandala Explorer</a> показывает ту же иерархию пространственно. Переход внутрь узла открывает содержащиеся в нём разделы, позволяя постепенно углубляться в структуру более наглядным и графическим способом.</dd>
+      </dl>
+
+      <h4 class="intro-header">Связь Структурного плана с Коренным текстом</h4>
+      <p>Структурный план и Коренной текст напрямую связаны.</p>
+      <p>Ссылка на стихи в sa bche открывает именно тот фрагмент Коренного текста Джигме Лингпы, к которому относится данный раздел. Связь работает и в обратном направлении. Выбор стиха в Коренном тексте возвращает к его точному месту в структуре Патрула Ринпоче.</p>
+      <p>Поэтому, следуя объяснению Комментария Кхенпо Йёнги в учениях Кхенпо Кармы Вангъела, можно одновременно держать перед глазами все три уровня:</p>
+      <ul class="intro-list">
+        <li><strong>Джигме Лингпа</strong> — объясняемый Коренной текст</li>
+        <li><strong>Патрул Ринпоче</strong> — структура, показывающая место данного объяснения</li>
+        <li><strong>Кхенпо Йёнга</strong> — Комментарий, который изучается на занятиях</li>
+      </ul>
+      <p>Именно в этом состоит основное назначение навигатора.</p>
+
+      <h4 class="intro-header">Учения</h4>
+      <p>Кхенпо Карма Вангъел уже несколько лет преподаёт Комментарий Кхенпо Йёнги Йонтена Гьяцо к Yönten Dzö в рамках программы, организованной Yeshe Khorlo Germany.</p>
+      <p>Приложение содержит материалы, необходимые для отслеживания структуры этих учений. Сам Комментарий изучается непосредственно в рамках учебного курса.</p>
+      <p class="intro-cta"><a href="mailto:kontakt@yeshekhorlo.de">Присоединиться к продолжающимся учениям по Yönten Dzö: kontakt@yeshekhorlo.de</a></p>
+
+      <h4 class="intro-header">Разработка</h4>
+      <p>Разработано <strong>Andrzej R. Rybszleger</strong>, 2026. Контакт: <a href="mailto:translation@arybszleger.com">translation@arybszleger.com</a></p>
     `,
       de: `
-      <p><span class="text-title">ཡོན་ཏན་མཛོད · Yönten Dzö</span> (Schatzkammer der Kostbaren Eigenschaften) von Jigme Lingpa (1730–1798) ist ein umfassender Überblick über den gesamten buddhistischen Pfad gemäß der Nyingma-Tradition.</p>
-      <p>Dieser Explorer präsentiert Patrul Rinpoches vollständige strukturelle Gliederung (Sa Bche) des gesamten Textes — alle 13 Kapitel, die die drei Typen von Individuen, die Sechs Pāramitās, die Geheime Mantra-Vajrayāna und Dzogchen umfassen.</p>
-      <p>Die Gliederung erstreckt sich vom Prolog über die Freiheiten und günstigen Bedingungen, Vergänglichkeit, Karma, die Vier Wahrheiten, Bodhicitta, die Sechs Vollkommenheiten (einschließlich des vollständigen Weisheitskapitels mit den vier philosophischen Schulen), die Geheime Mantra mit Ermächtigungen und Erzeugungs-/Vollendungsstufen, Dzogchen-Grund-Pfad-Frucht bis hin zu den fünf Kāyas des Ergebnisses.</p>
-      <h4 class="intro-header">Was ist ein Sa Bche?</h4>
-      <p>Ein Sa Bche (ས་བཅད།) — wörtlich „Einteilung des Bodens" — ist die traditionelle tibetische Methode zur Abbildung der Architektur eines Textes. Es funktioniert genau wie ein Verzeichnisbaum auf einem Computer: Jedes Thema ist in ein größeres Thema eingebettet, und jeder Pfad durch die Gliederung — etwa <code>2.3.3.3.1.2 > Bodhisattva-Gelübde > Vorschriften > Übung</code> — ist eine eindeutige Adresse, die genau anzeigt, wo man sich innerhalb des Ganzen befindet. So wie Ordner Unterordner auf einer Festplatte enthalten, enthält jede Unterteilung des Sa Bche weitere Unterunterteilungen, und der nummerierte Pfad von der Wurzel zum Blatt ist die Koordinate des jeweiligen Abschnitts in der Gesamtstruktur des Textes.</p>
-      <p>Sa Bche funktioniert wie eine Mindmap. Die großen scholastischen Kommentatoren nutzten das Sa Bche als analytisches Instrument — eine vollständige logische Zerlegung der Argumentation des Textes. Es offenbart, wie jedes Thema sich zu jedem anderen verhält: was was enthält, was wem vorausgeht und auf welcher Ebene der Spezifität ein gegebener Abschnitt operiert. Einen Text ohne sein Sa Bche zu lesen ist wie sich in einer Stadt ohne Karte zurechtzufinden. Ihn mit dem Sa Bche zu lesen heißt, die ganze Stadt von oben zu sehen, während man auf einer beliebigen Straße steht.</p>
-      <p>Patrul Rinpoches Gliederung des Yönten Dzö gehört zu den sorgfältigsten Strukturen dieser Art in der Nyingma-Gelehrtentradition — sie bildet Jigme Lingpas Verse von der breitesten Einteilung (Prolog, Hauptteil, Schluss) bis hin zu zwölf Verschachtelungsebenen in den tantrischen Kapiteln ab.</p>
-      <p>→ <a href="https://donandrutto.github.io/Mandala-Explorer/"><strong>Open the experimental Mandala Explorer</strong></a> — an alternative visual interface offering the same structural outline navigation.</p>
-      <p><em>Hinweis: Die vollständige Unterstützung der deutschen Sprache in Benutzeroberfläche und Inhalten wird zu einem späteren Zeitpunkt implementiert.</em></p>
-      <h4 class="intro-header">Urheberschaft</h4>
+      <p class="intro-lede"><span class="text-title">ཡོན་ཏན་མཛོད། · Yönten Dzö Explorer</span><span class="intro-lede-sub">Der Schatz der kostbaren Qualitäten</span></p>
+      <p>Jigme Lingpa (1730–1798) fasste den gesamten buddhistischen Weg, von den ersten Betrachtungen über die kostbare menschliche Existenz bis zu den fünf Kāyas des Ergebnisses, durch Sūtrayāna, Vajrayāna und Dzogchen hindurch, in einem einzigen Verswerk zusammen. Es gehört zu den am häufigsten studierten Texten der Nyingma-Tradition. Dieser Explorer wurde als Begleiter für sein Studium entwickelt.</p>
+      <p>Das traditionelle Studium des Yönten Dzö verbindet drei Werke:</p>
+      <dl class="intro-defs">
+        <dt>Grundtext <span class="intro-defs-tib">gzhung</span></dt>
+        <dd>Jigme Lingpas Verse, äußerst knapp formuliert und oft mit einer großen Bedeutungsfülle in nur wenigen Zeilen.</dd>
+        <dt>Strukturelle Gliederung <span class="intro-defs-tib">sa bche</span></dt>
+        <dd>Patrul Rinpoches detaillierte Karte des Textes, die zeigt, wie jedes Thema und jede Unterteilung in den Gesamtaufbau eingeordnet ist.</dd>
+        <dt>Kommentar <span class="intro-defs-tib">'grel pa</span></dt>
+        <dd>Khenpo Yönga Yönten Gyatshos ausführliche Erläuterung von Jigme Lingpas Versen.</dd>
+      </dl>
+      <p>Der Explorer enthält den Grundtext und die Strukturelle Gliederung und verknüpft beide unmittelbar miteinander. Der Kommentar wird in den laufenden Unterweisungen von Khenpo Karma Wangyel gelehrt, die von Yeshe Khorlo Germany organisiert werden.</p>
+      <p>Die App ist aus diesen Unterweisungen hervorgegangen. Ursprünglich wurde sie als praktisches Hilfsmittel entwickelt, um den Belehrungen leichter folgen und sie beim Dolmetschen besser erschließen zu können. Der erste Zyklus behandelte den Sūtrayāna-Teil des Yönten Dzö. Der Vajrayāna-Zyklus begann 2025.</p>
+
+      <h4 class="intro-header">Was ist ein sa bche?</h4>
+      <p>Ein <em>sa bche</em> (ས་བཅད།), wörtlich eine „Gliederung des Grundes", ist die traditionelle tibetische Methode, die Architektur eines Textes abzubilden.</p>
+      <p>Jedes Thema ist in ein größeres Thema eingebettet und kann sich selbst wiederum in weitere Unterpunkte verzweigen. Ein Pfad wie <code>2.3.3.3.1.2</code> funktioniert beinahe wie eine Adresse. Er zeigt genau, wo sich ein bestimmtes Thema innerhalb der Gesamtstruktur befindet.</p>
+      <p>Der nächstliegende moderne Vergleich ist die Verzeichnisstruktur eines Computers. Ordner enthalten Unterordner, diese wiederum weitere Unterordner, und der vollständige Pfad zeigt genau, wo man sich befindet. Ein traditionelles sa bche erfüllt für einen Kommentar eine sehr ähnliche Funktion.</p>
+      <p>Jigme Lingpas Grundtext kann äußerst knapp sein. Im Kommentar von Khenpo Yönga können wenige Worte zu einer langen Erklärung entfaltet werden. Patrul Rinpoches Strukturelle Gliederung hält diese beiden Ebenen zusammen und zeigt, an welcher Stelle des größeren Lehrgebäudes die jeweilige Erklärung einzuordnen ist.</p>
+      <p>In den tibetischen monastischen Hochschulen, den Shedras, lernen die Studenten häufig umfangreiche Teile, manchmal sogar die gesamte Gliederung auswendig. Zu Beginn einer Unterrichtsstunde wird gewöhnlich der bereits behandelte Abschnitt des sa bche rezitiert, bevor man mit dem nächsten Teil fortfährt. Mit zunehmender Vertrautheit wird die Hierarchie des Textes Bestandteil des Gedächtnisses eines Gelehrten. Ein Vers erscheint dann zusammen mit seinem Platz innerhalb der größeren Struktur.</p>
+      <p>Vielen westlichen Studierenden ist diese Form des Textstudiums weit weniger vertraut. Die App gibt dem sa bche eine visuelle Form und macht seine Hierarchie unmittelbar zugänglich.</p>
+      <p>Einen Text ohne sein sa bche zu lesen, ähnelt der Orientierung in einer Stadt ohne Karte. Mit dem sa bche kann man in einer bestimmten Straße stehen und zugleich sehen, wo sich diese Straße innerhalb der ganzen Stadt befindet, mitsamt ihrer eindeutigen Adresse.</p>
+
+      <h4 class="intro-header">Drei Möglichkeiten, die Struktur sichtbar zu machen</h4>
+      <p>Dieselbe Strukturelle Gliederung kann auf drei verschiedene Arten erkundet werden.</p>
+      <dl class="intro-defs">
+        <dt>Baum</dt>
+        <dd>Die Hauptansicht zeigt Patrul Rinpoches sa bche als verschachtelte Baumstruktur. Einrückungen und Farben verdeutlichen die Beziehung zwischen übergeordneten und untergeordneten Abschnitten und machen die Tiefe der Hierarchie auf einen Blick sichtbar.</dd>
+        <dt>Spalten</dt>
+        <dd>Die Ansicht Spalten verwendet kaskadierende Miller-Spalten, wie sie aus dem macOS Finder bekannt sind. Jede Spalte entspricht einer Ebene der Gliederung. Wird ein Thema ausgewählt, erscheinen seine Unterteilungen in der nächsten Spalte. Diese Darstellung ist besonders hilfreich in Bereichen, in denen die Gliederung sehr tief verzweigt ist.</dd>
+        <dt>Mandala Explorer</dt>
+        <dd>Der experimentelle <a href="https://donandrutto.github.io/Mandala-Explorer/">Mandala Explorer</a> stellt dieselbe Hierarchie räumlich dar. Beim Öffnen eines Knotens werden die darin enthaltenen Unterteilungen sichtbar, sodass man sich schrittweise und auf stärker grafische Weise durch die Struktur bewegen kann.</dd>
+      </dl>
+
+      <h4 class="intro-header">Verknüpfung von Gliederung und Grundtext</h4>
+      <p>Die Strukturelle Gliederung und der Grundtext sind direkt miteinander verknüpft.</p>
+      <p>Eine Versangabe im sa bche öffnet genau die Stelle in Jigme Lingpas Grundtext, auf die sich das betreffende Thema bezieht. Die Verbindung funktioniert auch in umgekehrter Richtung. Wählt man einen Vers im Grundtext aus, gelangt man zu seiner genauen Position in Patrul Rinpoches Gliederung.</p>
+      <p>Während man Khenpo Karma Wangyels Unterweisungen zu Khenpo Yöngas Kommentar folgt, lassen sich dadurch alle drei Ebenen gleichzeitig zusammenhalten:</p>
+      <ul class="intro-list">
+        <li><strong>Jigme Lingpa</strong> — der Grundtext, der erklärt wird</li>
+        <li><strong>Patrul Rinpoche</strong> — die Struktur, die zeigt, wo diese Erklärung einzuordnen ist</li>
+        <li><strong>Khenpo Yönga</strong> — der Kommentar, der gelehrt wird</li>
+      </ul>
+      <p>Darin liegt die Hauptfunktion des Explorers.</p>
+
+      <h4 class="intro-header">Die Unterweisungen</h4>
+      <p>Khenpo Karma Wangyel lehrt seit mehreren Jahren Khenpo Yönga Yönten Gyatshos Kommentar zum Yönten Dzö im Rahmen eines von Yeshe Khorlo Germany organisierten Programms.</p>
+      <p>Die App enthält die Materialien, die benötigt werden, um der Struktur dieser Unterweisungen zu folgen. Der Kommentar selbst bleibt Bestandteil des Unterrichtsprogramms.</p>
+      <p class="intro-cta"><a href="mailto:kontakt@yeshekhorlo.de">An den laufenden Yönten Dzö-Unterweisungen teilnehmen: kontakt@yeshekhorlo.de</a></p>
+
+      <h4 class="intro-header">Credits</h4>
       <p>Entwickelt von <strong>Andrzej R. Rybszleger</strong>, 2026. Kontakt: <a href="mailto:translation@arybszleger.com">translation@arybszleger.com</a></p>
     `,
       fr: `
-      <p><span class="text-title">ཡོན་ཏན་མཛོད · Yönten Dzö</span> (Trésor des Précieuses Qualités) de Jigme Lingpa (1730–1798) est un aperçu complet de l'ensemble du chemin bouddhiste selon la tradition Nyingma.</p>
-      <p>Cet explorateur présente le plan structurel complet (sa bche) de l'intégralité du texte élaboré par Patrul Rinpoché — les 13 chapitres, couvrant les trois types d'individus, les Six Pāramitā, le Mantra Secret du Vajrayāna et le Dzogchen.</p>
-      <p>Le plan s'étend du prologue aux libertés et conditions favorables, l'impermanence, le karma, les Quatre Vérités, la Bodhicitta, les Six Perfections (y compris le chapitre complet sur la Sagesse avec les quatre écoles philosophiques), le Mantra Secret avec les initiations et les phases de génération et d'accomplissement, la base-chemin-fruit du Dzogchen, et les cinq kāya du résultat.</p>
+      <p class="intro-lede"><span class="text-title">ཡོན་ཏན་མཛོད། · Yönten Dzö Explorer</span><span class="intro-lede-sub">Le Trésor des précieuses qualités</span></p>
+      <p>Jigme Lingpa (1730–1798) a condensé l'ensemble de la voie bouddhique, depuis les premières réflexions sur la précieuse existence humaine jusqu'aux cinq kāyas du fruit, en passant par le Sūtrayāna, le Vajrayāna et le Dzogchen, en un seul volume en vers. Il s'agit de l'un des textes les plus étudiés de la tradition Nyingma, et cet explorateur a été conçu pour en accompagner l'étude.</p>
+      <p>L'étude traditionnelle du Yönten Dzö réunit trois ouvrages :</p>
+      <dl class="intro-defs">
+        <dt>Texte racine <span class="intro-defs-tib">gzhung</span></dt>
+        <dd>Les vers de Jigme Lingpa, extrêmement condensés et capables de renfermer une grande richesse de sens en quelques lignes seulement.</dd>
+        <dt>Plan structurel <span class="intro-defs-tib">sa bche</span></dt>
+        <dd>La cartographie détaillée du texte établie par Patrul Rinpoché, montrant la place de chaque thème et de chacune de ses subdivisions dans l'ensemble.</dd>
+        <dt>Commentaire <span class="intro-defs-tib">'grel pa</span></dt>
+        <dd>L'explication détaillée des vers de Jigme Lingpa composée par Khenpo Yönga Yönten Gyatso.</dd>
+      </dl>
+      <p>Cet explorateur contient le Texte racine et le Plan structurel, directement reliés l'un à l'autre. Le Commentaire est actuellement enseigné par Khenpo Karma Wangyel dans le cadre du cycle de cours organisé par Yeshe Khorlo Germany.</p>
+      <p>L'application est née de ces enseignements. Elle a d'abord été développée comme un outil pratique pour suivre les cours et faciliter le travail d'interprétation. Le premier cycle portait sur la partie Sūtrayāna du Yönten Dzö. Le cycle consacré au Vajrayāna a commencé en 2025.</p>
+
       <h4 class="intro-header">Qu'est-ce qu'un sa bche ?</h4>
-      <p>Un sa bche (ས་བཅད།) — littéralement « division du terrain » — est la méthode tibétaine traditionnelle pour cartographier l'architecture d'un texte. Il fonctionne exactement comme une arborescence de répertoires sur un ordinateur : chaque sujet est imbriqué dans un sujet plus large, et chaque chemin à travers le plan — par exemple <code>2.3.3.3.1.2 > Vœu de bodhisattva > Préceptes > Entraînement</code> — est une adresse unique qui indique précisément où l'on se trouve au sein de l'ensemble. Tout comme les dossiers contiennent des sous-dossiers sur un disque dur, chaque division du sa bche contient des subdivisions supplémentaires, et le chemin numéroté de la racine à la feuille constitue la coordonnée du passage dans la structure totale du texte.</p>
-      <p>Le sa bche fonctionne comme une carte mentale. Les grands commentateurs scolastiques utilisaient le sa bche comme instrument analytique — une décomposition logique complète de l'argumentation du texte. Il révèle comment chaque sujet se rapporte à tous les autres : ce qui contient quoi, ce qui précède quoi, et à quel niveau de spécificité opère tout passage donné. Lire un texte sans son sa bche, c'est comme se repérer dans une ville sans carte. Le lire avec le sa bche, c'est voir la ville entière d'en haut tout en se tenant dans n'importe quelle rue.</p>
-      <p>Le plan du Yönten Dzö élaboré par Patrul Rinpoché figure parmi les structures les plus méticuleuses de ce type dans la tradition scolastique Nyingma — il cartographie les vers de Jigme Lingpa depuis la division la plus large (prologue, corps, conclusion) jusqu'à douze niveaux d'imbrication dans les chapitres tantriques.</p>
-      <p>→ <a href="https://donandrutto.github.io/Mandala-Explorer/"><strong>Open the experimental Mandala Explorer</strong></a> — an alternative visual interface offering the same structural outline navigation.</p>
-      <p><em>Note : La prise en charge complète de la langue française dans l'interface et le contenu sera mise en œuvre ultérieurement.</em></p>
+      <p>Un <em>sa bche</em> (ས་བཅད།), littéralement une « division du terrain », est la méthode tibétaine traditionnelle permettant de cartographier l'architecture d'un texte.</p>
+      <p>Chaque sujet s'inscrit dans un sujet plus vaste et peut lui-même se subdiviser. Un chemin tel que <code>2.3.3.3.1.2</code> fonctionne presque comme une adresse. Il indique avec précision où se situe un sujet particulier dans l'ensemble de la structure.</p>
+      <p>L'équivalent moderne le plus proche serait l'arborescence de dossiers d'un ordinateur. Un dossier contient des sous-dossiers, qui en contiennent d'autres, et le chemin complet indique exactement où l'on se trouve. Le sa bche traditionnel remplit une fonction très similaire pour un commentaire.</p>
+      <p>Le Texte racine de Jigme Lingpa peut être extrêmement condensé. Quelques mots peuvent donner lieu, dans le Commentaire de Khenpo Yönga, à une longue explication. Le Plan structurel de Patrul Rinpoché maintient le lien entre ces deux niveaux et indique la place de chaque explication dans l'architecture plus vaste de l'enseignement.</p>
+      <p>Dans les collèges monastiques tibétains, les shedras, les étudiants mémorisent souvent de larges portions, voire parfois la totalité de ces plans. Au début d'un cours, il est courant de réciter la partie du sa bche déjà étudiée avant de poursuivre. À force de familiarité, cette hiérarchie finit par faire partie de la mémoire du lettré. Un vers apparaît alors avec sa place dans la structure générale.</p>
+      <p>Pour de nombreux étudiants occidentaux, cette dimension de l'étude reste beaucoup moins familière. L'application donne au sa bche une forme visuelle et rend sa hiérarchie immédiatement accessible.</p>
+      <p>Lire un texte sans son sa bche revient un peu à parcourir une ville sans carte. Avec le sa bche, on peut se trouver dans une rue précise tout en voyant où cette rue se situe dans la ville entière, avec son adresse propre.</p>
+
+      <h4 class="intro-header">Trois façons de visualiser la structure</h4>
+      <p>Le même Plan structurel peut être exploré sous trois formes différentes.</p>
+      <dl class="intro-defs">
+        <dt>Arbre</dt>
+        <dd>La vue principale présente le sa bche de Patrul Rinpoché sous la forme d'une arborescence imbriquée. Les retraits et les couleurs indiquent les relations entre sections principales et subdivisions et permettent de percevoir immédiatement la profondeur de la hiérarchie.</dd>
+        <dt>Colonnes</dt>
+        <dd>La vue Colonnes utilise les colonnes de Miller en cascade, bien connues des utilisateurs du Finder de macOS. Chaque colonne représente un niveau du plan. La sélection d'un sujet fait apparaître ses subdivisions dans la colonne suivante. Cette présentation est particulièrement utile dans les parties où le plan devient très profond.</dd>
+        <dt>Mandala Explorer</dt>
+        <dd>Le <a href="https://donandrutto.github.io/Mandala-Explorer/">Mandala Explorer</a>, encore expérimental, représente la même hiérarchie dans l'espace. Entrer dans un nœud révèle les divisions qu'il contient et permet de progresser graduellement dans la structure sous une forme plus graphique.</dd>
+      </dl>
+
+      <h4 class="intro-header">Relier le Plan structurel au Texte racine</h4>
+      <p>Le Plan structurel et le Texte racine sont directement reliés.</p>
+      <p>Une référence de vers dans le sa bche ouvre précisément le passage du Texte racine de Jigme Lingpa correspondant au sujet concerné. Le lien fonctionne également dans l'autre sens. Sélectionner un vers dans le Texte racine ramène à son emplacement exact dans le plan de Patrul Rinpoché.</p>
+      <p>En suivant l'enseignement de Khenpo Karma Wangyel sur le Commentaire de Khenpo Yönga, il devient ainsi possible de garder simultanément sous les yeux les trois niveaux :</p>
+      <ul class="intro-list">
+        <li><strong>Jigme Lingpa</strong> — le Texte racine en cours d'explication</li>
+        <li><strong>Patrul Rinpoché</strong> — la structure qui indique où se situe cette explication</li>
+        <li><strong>Khenpo Yönga</strong> — le Commentaire étudié dans les enseignements</li>
+      </ul>
+      <p>C'est la fonction centrale de l'explorateur.</p>
+
+      <h4 class="intro-header">Les enseignements</h4>
+      <p>Depuis plusieurs années, Khenpo Karma Wangyel enseigne le Commentaire de Khenpo Yönga Yönten Gyatso sur le Yönten Dzö dans le cadre d'un programme organisé par Yeshe Khorlo Germany.</p>
+      <p>L'application contient les éléments nécessaires pour suivre la structure de ces enseignements. Le Commentaire lui-même reste étudié dans le cadre du programme d'enseignement.</p>
+      <p class="intro-cta"><a href="mailto:kontakt@yeshekhorlo.de">Rejoindre les enseignements en cours sur le Yönten Dzö : kontakt@yeshekhorlo.de</a></p>
+
       <h4 class="intro-header">Crédits</h4>
       <p>Développé par <strong>Andrzej R. Rybszleger</strong>, 2026. Contact : <a href="mailto:translation@arybszleger.com">translation@arybszleger.com</a></p>
     `
@@ -6853,343 +7305,463 @@
     // Same shape as ABOUT_CONTENT; missing languages fall back to English.
     const HOWTO_CONTENT = {
       en: `
-      <p>The explorer has two linked layers: the <strong>Structural Outline</strong> (Patrul Rinpoche's sa bche) and the <strong>Root Text</strong> (Jigme Lingpa's verses). Every control is described below, top of the page to bottom.</p>
+      <p>The explorer contains two directly linked layers:</p>
+      <ul class="intro-list">
+        <li><strong>Structural Outline</strong> — Patrul Rinpoche's sa bche</li>
+        <li><strong>Root Text</strong> — Jigme Lingpa's verses</li>
+      </ul>
+      <p>The Commentary by Khenpo Yönga Yönten Gyatso is followed through the teachings of Khenpo Karma Wangyel.</p>
+      <p>The basic use of the app is simple: locate the subject currently being discussed in the Structural Outline, see where it sits within the complete sa bche, and move from there to the corresponding verses of the Root Text.</p>
 
-      <h4 class="intro-header">Quick start</h4>
+      <h4 class="intro-header">Quick Start</h4>
       <ol class="intro-list">
-        <li>Pick your <strong>language</strong> with the flag button at the top right.</li>
-        <li>Click the <strong>▶ arrows</strong> in the Structural Outline to open a chapter's divisions, and click a row to mark your place.</li>
-        <li>Follow a <span class="sholoka-tag">vs. 10–17</span> tag to read the verses that a topic comments on — then click any verse card to jump back to its exact place in the outline.</li>
+        <li>Choose your language with the flag button at the top right.</li>
+        <li>Open the Structural Outline.</li>
+        <li>Use the ▶ arrows to open successive divisions of the sa bche.</li>
+        <li>Select a row to mark your current place.</li>
+        <li>Tap a verse tag such as <span class="sholoka-tag">vs. 10–17</span> to open the exact passage of Jigme Lingpa's Root Text.</li>
+        <li>Tap any verse card in the Root Text to return to its place in Patrul Rinpoche's outline.</li>
       </ol>
+      <p>That is the basic loop.</p>
 
-      <h4 class="intro-header">Top bar</h4>
-      <ul class="intro-list">
-        <li><strong>Language selector</strong> (flag button, top right) — choose the translation language for the outline, chapter headings, and root text. Languages still marked as pending fall back to English until their translation is ready.</li>
-        <li><strong>Donate</strong> — supports the ongoing translation work (opens PayPal in a new tab).</li>
-        <li>The header shrinks automatically while you scroll, leaving more room for reading.</li>
-      </ul>
-
-      <h4 class="intro-header">Toolbar</h4>
-      <ul class="intro-list">
-        <li><strong>Search</strong> — filters the outline as you type. It matches Tibetan, English, the chosen language, and section numbers (e.g. <code>2.3.1</code>). Diacritics are optional — "sutra" finds "sūtra". A counter shows how many topics match; press <kbd>Esc</kbd> or the ✕ to clear. <kbd>Ctrl</kbd>+<kbd>F</kbd> (<kbd>⌘</kbd>+<kbd>F</kbd> on Mac) jumps straight to the search box.</li>
-        <li><strong>བོད་ཡིག / ENG</strong> — show or hide the Tibetan line or the translation line everywhere at once (outline, breadcrumb, root text). Hide one to read the other on its own.</li>
-        <li><strong>− / +</strong> — decrease or increase the text size for comfortable reading on any device.</li>
-        <li><strong>☾ / ☀</strong> — switch between the day and night reading themes. The app follows your system preference until you choose; your choice is remembered on this device.</li>
-        <li><strong>Print</strong> — opens the print dialog with a clean, print-ready view of the outline <em>exactly as currently expanded</em>, headed by the title and your selected path. Save as PDF to make a study handout.</li>
-      </ul>
+      <h4 class="intro-header">Three views of the outline</h4>
+      <p><strong>Tree.</strong> The default view shows the outline as a nested hierarchy. Each row represents one division of the text. The number at the beginning is its unique structural address, followed by the Tibetan heading and translation.</p>
+      <p>Tap ▶ to reveal the subdivisions contained within a section. A small badge shows how many immediate subdivisions it has.</p>
+      <p>Indentation and coloured left-hand rails show the depth of the hierarchy. As you move deeper into the outline, the colour changes with each level.</p>
+      <p>Tap a row to select it and mark your place. Tap it again, or press <kbd>Esc</kbd>, to deselect. Use <strong>Expand All</strong> or <strong>Collapse All</strong> to open or close the complete tree.</p>
+      <p><strong>Columns.</strong> Select <strong>Columns</strong> to display the same sa bche through cascading Miller columns. Each column represents one level of the hierarchy. Selecting a topic opens its subdivisions in the next column. This is especially convenient in the more deeply nested sections of the text.</p>
+      <p><strong>Mandala Explorer.</strong> The <a href="https://donandrutto.github.io/Mandala-Explorer/">Mandala Explorer</a> provides an experimental visual presentation of the same Structural Outline. Enter a node to see the divisions contained within it, then continue into progressively more specific levels. The underlying structure is the same as in the Tree and Columns views.</p>
 
       <h4 class="intro-header">Breadcrumb trail</h4>
-      <ul class="intro-list">
-        <li>After you select a topic, the strip beneath the toolbar shows its full path from the root of the text down to it. Every crumb is clickable — tap one to move your selection up the chain. The <strong>Copy</strong> button at the end copies the whole path as plain text.</li>
-      </ul>
+      <p>After selecting a topic, the strip beneath the toolbar shows its full path through the outline. For example, the topic in front of you may be several levels below a major section. The breadcrumb lets you see the complete chain above it.</p>
+      <p>Each part of the path is clickable. Tap one to move back up the hierarchy.</p>
+      <p>The <strong>Copy</strong> button copies the whole path as plain text, useful for notes, references and translation work.</p>
+
+      <h4 class="intro-header">From the Outline to the Root Text</h4>
+      <p>Verse tags such as <span class="sholoka-tag">vs. 10–17</span> indicate which verses of Jigme Lingpa's Root Text correspond to a particular section of Patrul Rinpoche's sa bche.</p>
+      <p>Tap the tag to open those verses. The complete range is marked in gold, making the passage covered by that section immediately visible.</p>
+
+      <h4 class="intro-header">From the Root Text back to the Outline</h4>
+      <p>Each verse of the Root Text appears as a numbered card. Tap a card to jump to the precise section of Patrul Rinpoche's Structural Outline associated with that verse.</p>
+      <p>This makes it possible to move continuously between the compressed Root Text and the larger structure through which the Commentary unfolds it.</p>
 
       <h4 class="intro-header">Reading-position bar</h4>
-      <ul class="intro-list">
-        <li>While you scroll through the Root Text, a slim bar stays at the top naming the outline topic that the verse at the top of your screen belongs to — so you always know <em>where you are</em> in the sa bche.</li>
-        <li><strong>The bar is a button.</strong> Tap or click anywhere on it (or its round "Outline" chip) to jump back to exactly that topic in the Structural Outline.</li>
-      </ul>
+      <p>While scrolling through the Root Text, a slim bar remains at the top of the screen showing which section of the sa bche corresponds to the verse currently in view.</p>
+      <p>Tap the bar, or its <strong>Outline</strong> button, to return directly to that topic.</p>
 
-      <h4 class="intro-header">Structural Outline</h4>
+      <h4 class="intro-header">Search</h4>
+      <p>Search filters the Structural Outline as you type. It matches:</p>
       <ul class="intro-list">
-        <li><strong>Rows</strong> — each row is one division of the text: its number (a unique address), the Tibetan heading, and the translation. Click a row to select it and mark your place; click again (or press <kbd>Esc</kbd>) to deselect.</li>
-        <li><strong>▶ arrows</strong> expand or collapse a division. The small badge <span class="child-count">7</span> shows how many subdivisions it contains.</li>
-        <li><strong>Colored left rails</strong> shift hue as you go deeper — a quick visual cue for nesting depth.</li>
-        <li><strong>Copy icon</strong> — appears when you hover over a row; copies that topic's full path.</li>
-        <li><strong>Chapter tags</strong> such as <span class="chapter-tag">(Chapter 4)</span> jump down to that chapter's verses in the Root Text.</li>
-        <li><strong>Verse tags</strong> such as <span class="sholoka-tag">vs. 10–17</span> open the Root Text at the exact verses the topic comments on, and veil the whole range in gold so you can see its full extent.</li>
-        <li><strong>Cross-reference tags</strong> such as <span class="cross-ref-tag">LtaF 89–97</span> open the cited verses of Nāgārjuna's <em>Letter to a Friend</em> in a popup, in Tibetan and English.</li>
-        <li><strong>Expand All / Collapse All</strong> — open or close the entire tree at once.</li>
-        <li><strong>Columns</strong> — switches to a column-by-column (Miller) view: each column is one level of the outline; clicking an item opens its subdivisions in the next column. Convenient for the very deep tantric chapters.</li>
+        <li>Tibetan</li>
+        <li>English</li>
+        <li>the currently selected translation language</li>
+        <li>structural addresses such as <code>2.3.1</code></li>
       </ul>
+      <p>Diacritics are optional. Searching for <em>sutra</em>, for example, will also find <em>sūtra</em>.</p>
+      <p>A counter shows how many results match. Press <kbd>Esc</kbd> or ✕ to clear the search. On a computer, <kbd>Ctrl</kbd>+<kbd>F</kbd> or <kbd>⌘</kbd>+<kbd>F</kbd> takes you directly to the search field.</p>
+
+      <h4 class="intro-header">Tibetan and Translation</h4>
+      <p>Use <strong>བོད་ཡིག / ENG</strong> to show or hide the Tibetan or translated lines. The setting applies throughout the explorer, including the Structural Outline, breadcrumb trail and Root Text. You can therefore read bilingually, Tibetan-only, or translation-only.</p>
+
+      <h4 class="intro-header">Language</h4>
+      <p>Use the flag button at the top right to select the translation language. Languages still being prepared fall back to English until their translations are complete. Currently the English and Polish are complete.</p>
+
+      <h4 class="intro-header">Text Size</h4>
+      <p>Use <strong>−</strong> / <strong>+</strong> to decrease or increase the text size.</p>
+
+      <h4 class="intro-header">Day and Night Display</h4>
+      <p>Use <strong>☾ / ☀</strong> to switch between day and night themes. The app initially follows your system preference. Once you choose manually, the setting is remembered on that device.</p>
+
+      <h4 class="intro-header">Cross-references</h4>
+      <p>Some sections contain references to other classical texts. Tags such as <span class="cross-ref-tag">LtaF 89–97</span> open the corresponding verses of Nāgārjuna's <em>Letter to a Friend</em> in a popup, in Tibetan and English.</p>
+      <p>This allows the cited passage to be consulted without losing your position in the Yönten Dzö.</p>
 
       <h4 class="intro-header">Root Text</h4>
-      <ul class="intro-list">
-        <li>One section per chapter, plus the Prologue and the Colophon. Click a section header to open or close it. The <strong>← Outline</strong> button at the right of each header jumps to the matching topic in the Structural Outline.</li>
-        <li><strong>Verse cards</strong> — every verse is a card with a numbered badge. Cards glow softly under the pointer: click or tap one to jump to the precise outline topic that comments on that verse.</li>
-        <li><strong>Gold-veiled cards</strong> mark the verse range you last jumped to from the outline; the veil stays until your next jump.</li>
-        <li>The round <strong>↑ button</strong> at the top right returns you to the beginning of the chapter you are currently reading.</li>
-      </ul>
+      <p>The Root Text is divided into the Prologue, thirteen chapters and Colophon. Tap a section heading to open or close it.</p>
+      <p>The <strong>← Outline</strong> button beside each heading returns to the corresponding place in the Structural Outline. The round <strong>↑</strong> button returns to the beginning of the chapter currently being read.</p>
+
+      <h4 class="intro-header">Print and PDF</h4>
+      <p>The <strong>Print</strong> command creates a clean version of the Structural Outline exactly as you have expanded it. Select the topic you want, open the branches to the depth required, then press <strong>Print</strong>.</p>
+      <p>The output includes the title, your selected path and the visible structure. Choose <strong>Save as PDF</strong> in the print dialogue to create a study handout or a sheet for reciting the sa bche before class.</p>
 
       <h4 class="intro-header">Keyboard</h4>
       <ul class="intro-list">
-        <li><kbd>Ctrl</kbd>+<kbd>F</kbd> / <kbd>⌘</kbd>+<kbd>F</kbd> — focus the search box · <kbd>Esc</kbd> — clear the search, deselect, or close the popup · <kbd>Enter</kbd> / <kbd>Space</kbd> — activate the focused element · <kbd>Tab</kbd> — move between controls.</li>
+        <li><kbd>Ctrl</kbd>+<kbd>F</kbd> / <kbd>⌘</kbd>+<kbd>F</kbd> — Search</li>
+        <li><kbd>Esc</kbd> — Clear search, deselect or close popup</li>
+        <li><kbd>Enter</kbd> / <kbd>Space</kbd> — Activate the focused element</li>
+        <li><kbd>Tab</kbd> — Move between controls</li>
       </ul>
 
-      <h4 class="intro-header">Recipe: a study handout</h4>
-      <p>Select the topic you want, expand it to the depth you need (or use Expand All), then press Print — the PDF will contain the title, your path, and the outline exactly as displayed.</p>
-
+      <h4 class="intro-header">Donate</h4>
+      <p>The <strong>Donate</strong> button supports the ongoing translation and development work.</p>
       <p>→ <a href="#" data-action="show-onboarding">Show the welcome screen again</a></p>
     `,
       pl: `
-      <p>Eksplorator ma dwie połączone warstwy: <strong>Zarys strukturalny</strong> (sa bcze Patrula Rinpocze) oraz <strong>Tekst rdzenny</strong> (wersy Dżigme Lingpy). Poniżej opisano każdy element, od góry strony do dołu.</p>
+      <p>Eksplorator zawiera dwie bezpośrednio połączone warstwy:</p>
+      <ul class="intro-list">
+        <li><strong>Zarys strukturalny</strong> — sa bche Patrula Rinpocze</li>
+        <li><strong>Tekst źródłowy</strong> — wersy Dzigme Lingpy</li>
+      </ul>
+      <p>Komentarz Khenpo Yöngi Yönten Gyatso jest studiowany poprzez nauki Khenpo Karmy Wangyela.</p>
+      <p>Podstawowa zasada korzystania z aplikacji jest prosta: znajdź w Zarysie strukturalnym temat, który jest właśnie omawiany, zobacz jego miejsce w pełnym sa bche, a następnie przejdź do odpowiadających mu wersów Tekstu źródłowego.</p>
 
       <h4 class="intro-header">Szybki start</h4>
       <ol class="intro-list">
-        <li>Wybierz <strong>język</strong> przyciskiem z flagą u góry po prawej.</li>
-        <li>Klikaj <strong>strzałki ▶</strong> w Zarysie strukturalnym, aby otwierać podziały rozdziału, a kliknięciem wiersza zaznacz swoje miejsce.</li>
-        <li>Przejdź za znacznikiem <span class="sholoka-tag">ślo. 10–17</span>, aby przeczytać wersy, które komentuje dany temat — a potem kliknij dowolną kartę wersu, aby wrócić dokładnie do jego miejsca w zarysie.</li>
+        <li>Wybierz język za pomocą przycisku z flagą w prawym górnym rogu.</li>
+        <li>Otwórz Zarys strukturalny.</li>
+        <li>Użyj strzałek ▶, aby rozwijać kolejne poziomy sa bche.</li>
+        <li>Wybierz wiersz, aby zaznaczyć swoje aktualne miejsce.</li>
+        <li>Dotknij odnośnika do wersów, np. <span class="sholoka-tag">vs. 10–17</span>, aby otworzyć dokładny fragment Tekstu źródłowego Dzigme Lingpy.</li>
+        <li>Dotknij dowolnej karty wersu w Tekście źródłowym, aby wrócić do jego miejsca w planie Patrula Rinpocze.</li>
       </ol>
+      <p>To podstawowy sposób poruszania się między obiema warstwami.</p>
 
-      <h4 class="intro-header">Górny pasek</h4>
-      <ul class="intro-list">
-        <li><strong>Wybór języka</strong> (przycisk z flagą, u góry po prawej) — wybierz język tłumaczenia zarysu, nagłówków rozdziałów i tekstu rdzennego. Języki oznaczone jako przygotowywane korzystają tymczasowo z angielskiego.</li>
-        <li><strong>Wpłać</strong> — wspiera trwające prace tłumaczeniowe (otwiera PayPal w nowej karcie).</li>
-        <li>Nagłówek automatycznie zmniejsza się podczas przewijania, zostawiając więcej miejsca na czytanie.</li>
-      </ul>
-
-      <h4 class="intro-header">Pasek narzędzi</h4>
-      <ul class="intro-list">
-        <li><strong>Wyszukiwanie</strong> — filtruje zarys w trakcie pisania. Przeszukuje tybetański, angielski, wybrany język oraz numery sekcji (np. <code>2.3.1</code>). Znaki diakrytyczne są opcjonalne — „sutra" znajdzie „sūtra". Licznik pokazuje liczbę dopasowań; <kbd>Esc</kbd> lub ✕ czyści wyszukiwanie. <kbd>Ctrl</kbd>+<kbd>F</kbd> (<kbd>⌘</kbd>+<kbd>F</kbd> na Macu) przenosi kursor do pola wyszukiwania.</li>
-        <li><strong>བོད་ཡིག / POL</strong> — pokazuje lub ukrywa linię tybetańską albo linię tłumaczenia wszędzie naraz (zarys, ścieżka, tekst rdzenny). Ukryj jedną, aby czytać samą drugą.</li>
-        <li><strong>− / +</strong> — zmniejsza lub zwiększa rozmiar tekstu dla wygodnego czytania na dowolnym urządzeniu.</li>
-        <li><strong>☾ / ☀</strong> — przełącza między dziennym i nocnym motywem czytania. Do czasu dokonania wyboru aplikacja podąża za ustawieniem systemowym; wybór jest zapamiętywany na tym urządzeniu.</li>
-        <li><strong>Drukuj</strong> — otwiera okno wydruku z czystym widokiem zarysu <em>dokładnie tak, jak jest obecnie rozwinięty</em>, z tytułem i wybraną ścieżką w nagłówku. Zapisz jako PDF, aby przygotować materiał do nauki.</li>
-      </ul>
+      <h4 class="intro-header">Trzy widoki planu</h4>
+      <p><strong>Drzewo.</strong> Domyślny widok przedstawia plan jako zagnieżdżoną hierarchię. Każdy wiersz odpowiada jednemu działowi tekstu. Numer na początku jest jego unikalnym adresem w strukturze, po którym następują tybetański nagłówek i tłumaczenie.</p>
+      <p>Dotknij ▶, aby wyświetlić podziały znajdujące się w danym dziale. Mały znacznik pokazuje liczbę bezpośrednich podziałów.</p>
+      <p>Wcięcia oraz kolorowe linie po lewej stronie wskazują głębokość hierarchii. W miarę zagłębiania się w plan kolor zmienia się na każdym kolejnym poziomie.</p>
+      <p>Dotknij wiersza, aby go zaznaczyć i oznaczyć swoje miejsce. Dotknij ponownie lub naciśnij <kbd>Esc</kbd>, aby usunąć zaznaczenie. Użyj <strong>Rozwiń wszystko</strong> lub <strong>Zwiń wszystko</strong>, aby otworzyć albo zamknąć całe drzewo.</p>
+      <p><strong>Kolumny.</strong> Wybierz <strong>Kolumny</strong>, aby wyświetlić to samo sa bche w formie kaskadowych kolumn Millera. Każda kolumna odpowiada jednemu poziomowi hierarchii. Wybranie tematu otwiera jego podziały w kolejnej kolumnie. Ten widok jest szczególnie wygodny w głęboko zagnieżdżonych częściach tekstu.</p>
+      <p><strong>Mandala Explorer.</strong> <a href="https://donandrutto.github.io/Mandala-Explorer/">Mandala Explorer</a> oferuje eksperymentalny, wizualny sposób przedstawienia tego samego Zarysu strukturalnego. Wejdź w wybrany węzeł, aby zobaczyć zawarte w nim podziały, a następnie przechodź dalej do coraz bardziej szczegółowych poziomów. Podstawowa struktura pozostaje taka sama jak w widokach Drzewa i Kolumn.</p>
 
       <h4 class="intro-header">Ścieżka nawigacyjna</h4>
-      <ul class="intro-list">
-        <li>Po wybraniu tematu pasek pod paskiem narzędzi pokazuje pełną ścieżkę od korzenia tekstu aż do niego. Każdy element ścieżki można kliknąć — dotknij, aby przenieść zaznaczenie wyżej. Przycisk <strong>Kopiuj</strong> na końcu kopiuje całą ścieżkę jako tekst.</li>
-      </ul>
+      <p>Po wybraniu tematu pasek pod paskiem narzędzi pokazuje jego pełną ścieżkę w strukturze. Dany temat może znajdować się kilka poziomów poniżej głównego działu. Ścieżka pozwala zobaczyć cały łańcuch nadrzędnych sekcji.</p>
+      <p>Każdy element ścieżki jest klikalny. Dotknij go, aby przejść wyżej w hierarchii.</p>
+      <p>Przycisk <strong>Kopiuj</strong> kopiuje całą ścieżkę jako zwykły tekst, co przydaje się w notatkach, odnośnikach i pracy translatorskiej.</p>
 
-      <h4 class="intro-header">Pasek bieżącej pozycji</h4>
-      <ul class="intro-list">
-        <li>Podczas przewijania Tekstu rdzennego u góry ekranu pozostaje wąski pasek z nazwą tematu zarysu, do którego należy wers widoczny u góry — zawsze wiesz, <em>gdzie jesteś</em> w sa bcze.</li>
-        <li><strong>Ten pasek jest przyciskiem.</strong> Dotknij lub kliknij w dowolnym miejscu (albo w okrągłą plakietkę „Zarys"), aby przeskoczyć dokładnie do tego tematu w Zarysie strukturalnym.</li>
-      </ul>
+      <h4 class="intro-header">Z Zarysu strukturalnego do Tekstu źródłowego</h4>
+      <p>Odnośniki takie jak <span class="sholoka-tag">vs. 10–17</span> wskazują, które wersy Tekstu źródłowego Dzigme Lingpy odpowiadają danemu działowi sa bche Patrula Rinpocze.</p>
+      <p>Dotknij odnośnika, aby otworzyć te wersy. Cały odpowiadający im zakres zostanie zaznaczony na złoto, dzięki czemu od razu widać fragment objęty danym działem.</p>
 
-      <h4 class="intro-header">Zarys strukturalny</h4>
-      <ul class="intro-list">
-        <li><strong>Wiersze</strong> — każdy wiersz to jeden podział tekstu: numer (unikalny adres), nagłówek tybetański i tłumaczenie. Kliknij wiersz, aby go zaznaczyć i odnotować swoje miejsce; kliknij ponownie (lub naciśnij <kbd>Esc</kbd>), aby odznaczyć.</li>
-        <li><strong>Strzałki ▶</strong> rozwijają lub zwijają podział. Plakietka <span class="child-count">7</span> pokazuje liczbę poddziałów.</li>
-        <li><strong>Kolorowe linie po lewej</strong> zmieniają odcień wraz z głębokością — szybka wizualna wskazówka zagnieżdżenia.</li>
-        <li><strong>Ikona kopiowania</strong> — pojawia się po najechaniu na wiersz; kopiuje pełną ścieżkę tematu.</li>
-        <li><strong>Znaczniki rozdziałów</strong>, np. <span class="chapter-tag">(Rozdział 4)</span>, przenoszą do wersów danego rozdziału w Tekście rdzennym.</li>
-        <li><strong>Znaczniki wersów</strong>, np. <span class="sholoka-tag">ślo. 10–17</span>, otwierają Tekst rdzenny na dokładnie tych wersach, które temat komentuje, i zaznaczają cały zakres na złoto.</li>
-        <li><strong>Znaczniki odsyłaczy</strong>, np. <span class="cross-ref-tag">LtaF 89–97</span>, otwierają cytowane wersy <em>Listu do przyjaciela</em> Nagardżuny w okienku, po tybetańsku i angielsku.</li>
-        <li><strong>Rozwiń wszystko / Zwiń wszystko</strong> — otwiera lub zamyka całe drzewo naraz.</li>
-        <li><strong>Kolumny</strong> — przełącza na widok kolumnowy (Millera): każda kolumna to jeden poziom zarysu; kliknięcie elementu otwiera jego poddziały w następnej kolumnie. Wygodne w bardzo głębokich rozdziałach tantrycznych.</li>
-      </ul>
+      <h4 class="intro-header">Z Tekstu źródłowego z powrotem do planu</h4>
+      <p>Każdy wers Tekstu źródłowego jest przedstawiony jako numerowana karta. Dotknij karty, aby przejść bezpośrednio do odpowiadającego jej działu Zarysu strukturalnego Patrula Rinpocze.</p>
+      <p>Pozwala to swobodnie poruszać się między skondensowanym Tekstem źródłowym a większą strukturą, w ramach której rozwija go Komentarz.</p>
 
-      <h4 class="intro-header">Tekst rdzenny</h4>
+      <h4 class="intro-header">Pasek pozycji w tekście</h4>
+      <p>Podczas przewijania Tekstu źródłowego u góry ekranu pozostaje wąski pasek pokazujący, któremu działowi sa bche odpowiada aktualnie widoczny wers.</p>
+      <p>Dotknij paska lub przycisku <strong>Zarys</strong>, aby wrócić bezpośrednio do tego tematu.</p>
+
+      <h4 class="intro-header">Wyszukiwanie</h4>
+      <p>Wyszukiwarka filtruje Zarys strukturalny na bieżąco podczas wpisywania. Wyszukuje w:</p>
       <ul class="intro-list">
-        <li>Jedna sekcja na rozdział, plus Prolog i Kolofon. Kliknij nagłówek sekcji, aby ją otworzyć lub zamknąć. Przycisk <strong>← Zarys</strong> po prawej stronie nagłówka przenosi do odpowiadającego tematu w Zarysie strukturalnym.</li>
-        <li><strong>Karty wersów</strong> — każdy wers to karta z numerowaną plakietką. Karty delikatnie rozjaśniają się pod kursorem: kliknij lub dotknij, aby przejść do dokładnie tego tematu zarysu, który komentuje dany wers.</li>
-        <li><strong>Karty zaznaczone na złoto</strong> wskazują zakres wersów, do którego ostatnio przeskoczono z zarysu; zaznaczenie pozostaje do następnego skoku.</li>
-        <li>Okrągły przycisk <strong>↑</strong> u góry po prawej wraca na początek aktualnie czytanego rozdziału.</li>
+        <li>języku tybetańskim</li>
+        <li>języku angielskim</li>
+        <li>aktualnie wybranym języku tłumaczenia</li>
+        <li>adresach strukturalnych, takich jak <code>2.3.1</code></li>
       </ul>
+      <p>Znaki diakrytyczne są opcjonalne. Wyszukanie <em>sutra</em> znajdzie więc również <em>sūtra</em>.</p>
+      <p>Licznik pokazuje liczbę pasujących wyników. Naciśnij <kbd>Esc</kbd> lub ✕, aby wyczyścić wyszukiwanie. Na komputerze <kbd>Ctrl</kbd>+<kbd>F</kbd> lub <kbd>⌘</kbd>+<kbd>F</kbd> przenosi bezpośrednio do pola wyszukiwania.</p>
+
+      <h4 class="intro-header">Tybetański i tłumaczenie</h4>
+      <p>Użyj <strong>བོད་ཡིག / ENG</strong>, aby pokazać lub ukryć linie tybetańskie albo tłumaczenie. Ustawienie działa w całym eksploratorze, w tym w Zarysie strukturalnym, ścieżce nawigacyjnej i Tekście źródłowym. Możesz więc czytać tekst dwujęzycznie, wyłącznie po tybetańsku albo tylko w tłumaczeniu.</p>
+
+      <h4 class="intro-header">Język</h4>
+      <p>Użyj przycisku z flagą w prawym górnym rogu, aby wybrać język tłumaczenia. W przypadku języków, nad którymi nadal trwają prace, aplikacja wyświetla angielski do czasu ukończenia tłumaczenia. Obecnie kompletne są wersje angielska i polska.</p>
+
+      <h4 class="intro-header">Rozmiar tekstu</h4>
+      <p>Użyj <strong>−</strong> / <strong>+</strong>, aby zmniejszyć lub zwiększyć rozmiar tekstu.</p>
+
+      <h4 class="intro-header">Tryb dzienny i nocny</h4>
+      <p>Użyj <strong>☾ / ☀</strong>, aby przełączać się między trybem dziennym i nocnym. Początkowo aplikacja korzysta z ustawień systemowych. Po ręcznym wyborze zapamiętuje ustawienie na danym urządzeniu.</p>
+
+      <h4 class="intro-header">Odnośniki do innych tekstów</h4>
+      <p>Niektóre działy zawierają odwołania do innych klasycznych tekstów. Znaczniki takie jak <span class="cross-ref-tag">LtaF 89–97</span> otwierają w osobnym oknie odpowiadające im wersy <em>Listu do przyjaciela</em> Nagardżuny, po tybetańsku i angielsku.</p>
+      <p>Pozwala to sprawdzić cytowany fragment bez utraty miejsca w Yönten Dzö.</p>
+
+      <h4 class="intro-header">Tekst źródłowy</h4>
+      <p>Tekst źródłowy jest podzielony na Prolog, trzynaście rozdziałów i Kolofon. Dotknij nagłówka sekcji, aby ją otworzyć lub zamknąć.</p>
+      <p>Przycisk <strong>← Zarys</strong> obok każdego nagłówka przenosi do odpowiadającego miejsca w Zarysie strukturalnym. Okrągły przycisk <strong>↑</strong> przenosi na początek aktualnie czytanego rozdziału.</p>
+
+      <h4 class="intro-header">Drukowanie i PDF</h4>
+      <p>Polecenie <strong>Drukuj</strong> tworzy czystą wersję Zarysu strukturalnego dokładnie w takim rozwinięciu, jakie aktualnie widzisz. Wybierz interesujący Cię temat, rozwiń gałęzie do potrzebnego poziomu, a następnie naciśnij <strong>Drukuj</strong>.</p>
+      <p>Wydruk zawiera tytuł, wybraną ścieżkę oraz widoczną strukturę. W oknie drukowania wybierz <strong>Zapisz jako PDF</strong>, aby utworzyć materiał do nauki albo arkusz do recytacji sa bche przed zajęciami.</p>
 
       <h4 class="intro-header">Klawiatura</h4>
       <ul class="intro-list">
-        <li><kbd>Ctrl</kbd>+<kbd>F</kbd> / <kbd>⌘</kbd>+<kbd>F</kbd> — przejście do wyszukiwania · <kbd>Esc</kbd> — czyszczenie wyszukiwania, odznaczenie lub zamknięcie okienka · <kbd>Enter</kbd> / <kbd>Spacja</kbd> — aktywacja wskazanego elementu · <kbd>Tab</kbd> — przechodzenie między elementami.</li>
+        <li><kbd>Ctrl</kbd>+<kbd>F</kbd> / <kbd>⌘</kbd>+<kbd>F</kbd> — Wyszukiwanie</li>
+        <li><kbd>Esc</kbd> — Wyczyść wyszukiwanie, usuń zaznaczenie lub zamknij okno</li>
+        <li><kbd>Enter</kbd> / <kbd>Spacja</kbd> — Uruchom zaznaczony element</li>
+        <li><kbd>Tab</kbd> — Przechodź między elementami sterującymi</li>
       </ul>
 
-      <h4 class="intro-header">Przepis: materiał do nauki</h4>
-      <p>Wybierz temat, rozwiń go do potrzebnej głębokości (lub użyj „Rozwiń wszystko"), a następnie naciśnij Drukuj — PDF będzie zawierał tytuł, Twoją ścieżkę i zarys dokładnie tak, jak jest wyświetlany.</p>
-
+      <h4 class="intro-header">Wesprzyj projekt</h4>
+      <p>Przycisk <strong>Wpłać</strong> służy do wspierania dalszych prac translatorskich i rozwoju aplikacji.</p>
       <p>→ <a href="#" data-action="show-onboarding">Pokaż ponownie ekran powitalny</a></p>
     `,
       ru: `
-      <p>Обозреватель состоит из двух связанных слоёв: <strong>Структурный план</strong> (са че Патрула Ринпоче) и <strong>Коренной текст</strong> (строфы Джигме Лингпы). Ниже описан каждый элемент, сверху страницы вниз.</p>
+      <p>Навигатор содержит два напрямую связанных уровня:</p>
+      <ul class="intro-list">
+        <li><strong>Структурный план</strong> — sa bche Патрула Ринпоче</li>
+        <li><strong>Коренной текст</strong> — стихи Джигме Лингпы</li>
+      </ul>
+      <p>Комментарий Кхенпо Йёнги Йонтена Гьяцо изучается в рамках учений Кхенпо Кармы Вангъела.</p>
+      <p>Основной принцип работы с приложением прост: найдите в Структурном плане тему, которая сейчас обсуждается, посмотрите, какое место она занимает в полном sa bche, а затем перейдите к соответствующим стихам Коренного текста.</p>
 
       <h4 class="intro-header">Быстрый старт</h4>
       <ol class="intro-list">
-        <li>Выберите <strong>язык</strong> кнопкой с флагом справа вверху.</li>
-        <li>Нажимайте <strong>стрелки ▶</strong> в Структурном плане, чтобы открывать деления главы, и щёлкните строку, чтобы отметить своё место.</li>
-        <li>Перейдите по метке <span class="sholoka-tag">vs. 10–17</span>, чтобы прочитать строфы, которые комментирует тема, — затем нажмите на любую карточку строфы, чтобы вернуться точно к её месту в плане.</li>
+        <li>Выберите язык с помощью кнопки с флагом в правом верхнем углу.</li>
+        <li>Откройте Структурный план.</li>
+        <li>Используйте стрелки ▶, чтобы раскрывать последующие уровни sa bche.</li>
+        <li>Выберите строку, чтобы отметить своё текущее место.</li>
+        <li>Нажмите на ссылку на стихи, например <span class="sholoka-tag">vs. 10–17</span>, чтобы открыть точный отрывок Коренного текста Джигме Лингпы.</li>
+        <li>Нажмите на любую карточку стиха в Коренном тексте, чтобы вернуться к его месту в плане Патрула Ринпоче.</li>
       </ol>
+      <p>Это основной способ перехода между двумя уровнями.</p>
 
-      <h4 class="intro-header">Верхняя панель</h4>
-      <ul class="intro-list">
-        <li><strong>Выбор языка</strong> (кнопка с флагом, справа вверху) — выберите язык перевода плана, заголовков глав и коренного текста. Языки, отмеченные как готовящиеся, временно отображаются по-английски.</li>
-        <li><strong>Помочь</strong> — поддерживает текущую переводческую работу (открывает PayPal в новой вкладке).</li>
-        <li>Шапка автоматически сжимается при прокрутке, оставляя больше места для чтения.</li>
-      </ul>
+      <h4 class="intro-header">Три вида Структурного плана</h4>
+      <p><strong>Дерево.</strong> По умолчанию план отображается как вложенная иерархия. Каждая строка представляет один раздел текста. Номер в начале является его уникальным структурным адресом, за которым следуют тибетский заголовок и перевод.</p>
+      <p>Нажмите ▶, чтобы раскрыть подразделы выбранной секции. Небольшой значок показывает количество её непосредственных подразделов.</p>
+      <p>Отступы и цветные линии слева показывают глубину иерархии. По мере продвижения вглубь структуры цвет меняется на каждом уровне.</p>
+      <p>Нажмите на строку, чтобы выбрать её и отметить своё место. Нажмите ещё раз или клавишу <kbd>Esc</kbd>, чтобы снять выделение. Используйте <strong>Развернуть всё</strong> или <strong>Свернуть всё</strong>, чтобы открыть или закрыть всё дерево.</p>
+      <p><strong>Колонки.</strong> Выберите <strong>Колонки</strong>, чтобы увидеть тот же sa bche в виде каскадных колонок Миллера. Каждая колонка соответствует одному уровню иерархии. При выборе темы её подразделы открываются в следующей колонке. Этот режим особенно удобен в глубоко вложенных частях текста.</p>
+      <p><strong>Mandala Explorer.</strong> <a href="https://donandrutto.github.io/Mandala-Explorer/">Mandala Explorer</a> предлагает экспериментальный визуальный способ отображения того же Структурного плана. Войдите в узел, чтобы увидеть содержащиеся в нём разделы, затем продолжайте переходить к всё более подробным уровням. Основная структура остаётся той же, что и в режимах Дерева и Колонок.</p>
 
-      <h4 class="intro-header">Панель инструментов</h4>
-      <ul class="intro-list">
-        <li><strong>Поиск</strong> — фильтрует план по мере ввода. Ищет по тибетскому, английскому, выбранному языку и номерам разделов (например, <code>2.3.1</code>). Диакритика необязательна — «sutra» найдёт «sūtra». Счётчик показывает число совпадений; <kbd>Esc</kbd> или ✕ очищает поиск. <kbd>Ctrl</kbd>+<kbd>F</kbd> (<kbd>⌘</kbd>+<kbd>F</kbd> на Mac) переводит курсор в поле поиска.</li>
-        <li><strong>བོད་ཡིག / RUS</strong> — показывает или скрывает тибетскую строку либо строку перевода везде сразу (план, цепочка навигации, коренной текст). Скройте одну, чтобы читать только другую.</li>
-        <li><strong>− / +</strong> — уменьшает или увеличивает размер текста для комфортного чтения на любом устройстве.</li>
-        <li><strong>☾ / ☀</strong> — переключает дневную и ночную тему чтения. Пока вы не сделали выбор, приложение следует системной настройке; выбор запоминается на этом устройстве.</li>
-        <li><strong>Печать</strong> — открывает диалог печати с чистым видом плана <em>ровно в текущем развёрнутом состоянии</em>, с заголовком и выбранным путём наверху. Сохраните как PDF для учебного пособия.</li>
-      </ul>
+      <h4 class="intro-header">Навигационная цепочка</h4>
+      <p>После выбора темы полоса под панелью инструментов показывает её полный путь в структуре. Например, текущая тема может находиться на несколько уровней ниже одного из основных разделов. Навигационная цепочка показывает всю последовательность вышестоящих разделов.</p>
+      <p>Каждый элемент пути можно нажать. Выберите один из них, чтобы подняться выше по иерархии.</p>
+      <p>Кнопка <strong>Копировать</strong> копирует весь путь в виде обычного текста, что удобно для заметок, ссылок и переводческой работы.</p>
 
-      <h4 class="intro-header">Цепочка навигации</h4>
-      <ul class="intro-list">
-        <li>После выбора темы полоса под панелью инструментов показывает её полный путь от корня текста. Каждое звено кликабельно — нажмите, чтобы переместить выбор выше. Кнопка <strong>Копировать</strong> в конце копирует весь путь как текст.</li>
-      </ul>
+      <h4 class="intro-header">От Структурного плана к Коренному тексту</h4>
+      <p>Ссылки вроде <span class="sholoka-tag">vs. 10–17</span> показывают, какие стихи Коренного текста Джигме Лингпы соответствуют определённому разделу sa bche Патрула Ринпоче.</p>
+      <p>Нажмите на ссылку, чтобы открыть эти стихи. Весь соответствующий диапазон выделяется золотым цветом, поэтому границы рассматриваемого отрывка сразу видны.</p>
 
-      <h4 class="intro-header">Полоса текущей позиции</h4>
-      <ul class="intro-list">
-        <li>Пока вы прокручиваете Коренной текст, вверху остаётся узкая полоса с названием темы плана, к которой относится строфа в верхней части экрана, — вы всегда знаете, <em>где находитесь</em> в са че.</li>
-        <li><strong>Эта полоса — кнопка.</strong> Нажмите в любом её месте (или на круглую метку «К плану»), чтобы перейти точно к этой теме в Структурном плане.</li>
-      </ul>
+      <h4 class="intro-header">От Коренного текста обратно к плану</h4>
+      <p>Каждый стих Коренного текста отображается как пронумерованная карточка. Нажмите на карточку, чтобы перейти прямо к соответствующему разделу Структурного плана Патрула Ринпоче.</p>
+      <p>Так можно свободно переходить между сжатым Коренным текстом и более широкой структурой, в рамках которой Комментарий раскрывает его содержание.</p>
 
-      <h4 class="intro-header">Структурный план</h4>
+      <h4 class="intro-header">Индикатор текущей позиции</h4>
+      <p>При прокрутке Коренного текста в верхней части экрана остаётся узкая полоса, показывающая, к какому разделу sa bche относится стих, находящийся в данный момент на экране.</p>
+      <p>Нажмите на эту полосу или кнопку <strong>План</strong>, чтобы сразу вернуться к соответствующей теме.</p>
+
+      <h4 class="intro-header">Поиск</h4>
+      <p>Поиск фильтрует Структурный план по мере ввода. Он ищет по:</p>
       <ul class="intro-list">
-        <li><strong>Строки</strong> — каждая строка — это одно деление текста: номер (уникальный адрес), тибетский заголовок и перевод. Нажмите на строку, чтобы выбрать её и отметить своё место; нажмите ещё раз (или <kbd>Esc</kbd>), чтобы снять выбор.</li>
-        <li><strong>Стрелки ▶</strong> разворачивают и сворачивают деление. Метка <span class="child-count">7</span> показывает число подразделов.</li>
-        <li><strong>Цветные линии слева</strong> меняют оттенок с глубиной — быстрый визуальный признак уровня вложенности.</li>
-        <li><strong>Значок копирования</strong> — появляется при наведении на строку; копирует полный путь темы.</li>
-        <li><strong>Метки глав</strong>, например <span class="chapter-tag">(Chapter 4)</span>, переходят к строфам этой главы в Коренном тексте.</li>
-        <li><strong>Метки строф</strong>, например <span class="sholoka-tag">vs. 10–17</span>, открывают Коренной текст ровно на тех строфах, которые комментирует тема, и выделяют весь диапазон золотым.</li>
-        <li><strong>Метки перекрёстных ссылок</strong>, например <span class="cross-ref-tag">LtaF 89–97</span>, открывают цитируемые строфы «Письма к другу» Нагарджуны во всплывающем окне, по-тибетски и по-английски.</li>
-        <li><strong>Развернуть все / Свернуть все</strong> — открывает или закрывает всё дерево сразу.</li>
-        <li><strong>Колонки</strong> — переключает на постолбцовый вид (колонки Миллера): каждая колонка — один уровень плана; щелчок по элементу открывает его подразделы в следующей колонке. Удобно для очень глубоких тантрических глав.</li>
+        <li>тибетскому тексту</li>
+        <li>английскому тексту</li>
+        <li>выбранному языку перевода</li>
+        <li>структурным адресам, например <code>2.3.1</code></li>
       </ul>
+      <p>Диакритические знаки необязательны. Например, поиск <em>sutra</em> также найдёт <em>sūtra</em>.</p>
+      <p>Счётчик показывает количество найденных совпадений. Нажмите <kbd>Esc</kbd> или ✕, чтобы очистить поиск. На компьютере <kbd>Ctrl</kbd>+<kbd>F</kbd> или <kbd>⌘</kbd>+<kbd>F</kbd> переводит курсор прямо в строку поиска.</p>
+
+      <h4 class="intro-header">Тибетский текст и перевод</h4>
+      <p>Используйте <strong>བོད་ཡིག / ENG</strong>, чтобы показать или скрыть тибетские строки либо перевод. Настройка действует во всём навигаторе, включая Структурный план, навигационную цепочку и Коренной текст. Таким образом можно читать двуязычную версию, только тибетский текст или только перевод.</p>
+
+      <h4 class="intro-header">Язык</h4>
+      <p>Используйте кнопку с флагом в правом верхнем углу, чтобы выбрать язык перевода. Для языков, перевод которых ещё готовится, приложение временно использует английский. В настоящее время полностью готовы английская и польская версии.</p>
+
+      <h4 class="intro-header">Размер текста</h4>
+      <p>Используйте <strong>−</strong> / <strong>+</strong>, чтобы уменьшить или увеличить размер текста.</p>
+
+      <h4 class="intro-header">Дневной и ночной режим</h4>
+      <p>Используйте <strong>☾ / ☀</strong>, чтобы переключаться между дневной и ночной темами. Сначала приложение следует системным настройкам устройства. После ручного выбора режим запоминается на этом устройстве.</p>
+
+      <h4 class="intro-header">Перекрёстные ссылки</h4>
+      <p>Некоторые разделы содержат ссылки на другие классические тексты. Метки вроде <span class="cross-ref-tag">LtaF 89–97</span> открывают во всплывающем окне соответствующие стихи из <em>Письма другу</em> Нагарджуны на тибетском и английском языках.</p>
+      <p>Это позволяет обратиться к цитируемому отрывку, не теряя своего места в Yönten Dzö.</p>
 
       <h4 class="intro-header">Коренной текст</h4>
-      <ul class="intro-list">
-        <li>Один раздел на главу, плюс Пролог и Колофон. Нажмите на заголовок раздела, чтобы открыть или закрыть его. Кнопка <strong>← К плану</strong> справа от заголовка переходит к соответствующей теме Структурного плана.</li>
-        <li><strong>Карточки строф</strong> — каждая строфа — карточка с нумерованной меткой. Карточки мягко подсвечиваются под курсором: нажмите, чтобы перейти точно к той теме плана, которая комментирует эту строфу.</li>
-        <li><strong>Карточки с золотой подсветкой</strong> отмечают диапазон строф, к которому вы в последний раз переходили из плана; подсветка сохраняется до следующего перехода.</li>
-        <li>Круглая кнопка <strong>↑</strong> справа вверху возвращает к началу читаемой главы.</li>
-      </ul>
+      <p>Коренной текст разделён на Пролог, тринадцать глав и Колофон. Нажмите на заголовок раздела, чтобы открыть или закрыть его.</p>
+      <p>Кнопка <strong>← План</strong> рядом с каждым заголовком возвращает к соответствующему месту в Структурном плане. Круглая кнопка <strong>↑</strong> возвращает к началу главы, которую вы читаете.</p>
+
+      <h4 class="intro-header">Печать и PDF</h4>
+      <p>Команда <strong>Печать</strong> создаёт чистую версию Структурного плана именно в том виде, в котором вы его раскрыли. Выберите нужную тему, раскройте ветви до требуемой глубины, затем нажмите <strong>Печать</strong>.</p>
+      <p>В документ войдут название, выбранный вами путь и видимая структура. Выберите <strong>Сохранить как PDF</strong> в окне печати, чтобы создать учебный материал или лист для чтения sa bche перед занятием.</p>
 
       <h4 class="intro-header">Клавиатура</h4>
       <ul class="intro-list">
-        <li><kbd>Ctrl</kbd>+<kbd>F</kbd> / <kbd>⌘</kbd>+<kbd>F</kbd> — фокус на поиске · <kbd>Esc</kbd> — очистка поиска, снятие выбора или закрытие окна · <kbd>Enter</kbd> / <kbd>Пробел</kbd> — активация выделенного элемента · <kbd>Tab</kbd> — перемещение между элементами.</li>
+        <li><kbd>Ctrl</kbd>+<kbd>F</kbd> / <kbd>⌘</kbd>+<kbd>F</kbd> — Поиск</li>
+        <li><kbd>Esc</kbd> — Очистить поиск, снять выделение или закрыть окно</li>
+        <li><kbd>Enter</kbd> / <kbd>Пробел</kbd> — Активировать выбранный элемент</li>
+        <li><kbd>Tab</kbd> — Перемещаться между элементами управления</li>
       </ul>
 
-      <h4 class="intro-header">Рецепт: учебное пособие</h4>
-      <p>Выберите нужную тему, разверните её до нужной глубины (или «Развернуть все»), затем нажмите «Печать» — PDF будет содержать заголовок, ваш путь и план ровно в отображаемом виде.</p>
-
+      <h4 class="intro-header">Поддержать проект</h4>
+      <p>Кнопка <strong>Поддержать</strong> позволяет поддержать продолжающуюся переводческую работу и дальнейшее развитие приложения.</p>
       <p>→ <a href="#" data-action="show-onboarding">Показать приветственный экран ещё раз</a></p>
     `,
       de: `
-      <p>Der Explorer besteht aus zwei verbundenen Ebenen: der <strong>Strukturellen Gliederung</strong> (Patrul Rinpoches Sa Bche) und dem <strong>Wurzeltext</strong> (Jigme Lingpas Verse). Unten ist jedes Element beschrieben, vom Seitenanfang bis zum Ende.</p>
+      <p>Der Explorer enthält zwei direkt miteinander verknüpfte Ebenen:</p>
+      <ul class="intro-list">
+        <li><strong>Strukturelle Gliederung</strong> — Patrul Rinpoches sa bche</li>
+        <li><strong>Grundtext</strong> — Jigme Lingpas Verse</li>
+      </ul>
+      <p>Khenpo Yönga Yönten Gyatshos Kommentar wird im Rahmen der Unterweisungen von Khenpo Karma Wangyel studiert.</p>
+      <p>Die grundlegende Verwendung der App ist einfach: Suchen Sie in der Strukturellen Gliederung das Thema, das gerade besprochen wird, sehen Sie nach, wo es innerhalb des vollständigen sa bche eingeordnet ist, und wechseln Sie von dort zu den entsprechenden Versen des Grundtextes.</p>
 
       <h4 class="intro-header">Schnellstart</h4>
       <ol class="intro-list">
-        <li>Wählen Sie Ihre <strong>Sprache</strong> über die Flaggen-Schaltfläche oben rechts.</li>
-        <li>Öffnen Sie mit den <strong>▶-Pfeilen</strong> in der Strukturellen Gliederung die Einteilungen eines Kapitels und markieren Sie Ihre Stelle per Klick auf eine Zeile.</li>
-        <li>Folgen Sie einem <span class="sholoka-tag">vs. 10–17</span>-Tag, um die Verse zu lesen, die ein Thema kommentiert — und klicken Sie dann auf eine Vers-Karte, um genau zu ihrer Stelle in der Gliederung zurückzuspringen.</li>
+        <li>Wählen Sie Ihre Sprache mit der Flaggen-Schaltfläche oben rechts.</li>
+        <li>Öffnen Sie die Strukturelle Gliederung.</li>
+        <li>Verwenden Sie die ▶-Pfeile, um die aufeinanderfolgenden Ebenen des sa bche zu öffnen.</li>
+        <li>Wählen Sie eine Zeile aus, um Ihre aktuelle Position zu markieren.</li>
+        <li>Tippen Sie auf eine Versangabe wie <span class="sholoka-tag">vs. 10–17</span>, um die genaue Stelle in Jigme Lingpas Grundtext zu öffnen.</li>
+        <li>Tippen Sie auf eine beliebige Verskarte im Grundtext, um zu ihrer Position in Patrul Rinpoches Gliederung zurückzukehren.</li>
       </ol>
+      <p>Das ist der grundlegende Navigationsweg zwischen den beiden Ebenen.</p>
 
-      <h4 class="intro-header">Kopfleiste</h4>
-      <ul class="intro-list">
-        <li><strong>Sprachauswahl</strong> (Flaggen-Schaltfläche, oben rechts) — wählen Sie die Übersetzungssprache für Gliederung, Kapitelüberschriften und Wurzeltext. Noch in Vorbereitung befindliche Sprachen greifen vorerst auf Englisch zurück.</li>
-        <li><strong>Spenden</strong> — unterstützt die laufende Übersetzungsarbeit (öffnet PayPal in einem neuen Tab).</li>
-        <li>Die Kopfzeile verkleinert sich beim Scrollen automatisch und lässt mehr Raum zum Lesen.</li>
-      </ul>
+      <h4 class="intro-header">Drei Ansichten der Gliederung</h4>
+      <p><strong>Baum.</strong> Die Standardansicht zeigt die Gliederung als verschachtelte Hierarchie. Jede Zeile stellt eine Unterteilung des Textes dar. Die Nummer am Anfang ist ihre eindeutige strukturelle Adresse, gefolgt von der tibetischen Überschrift und der Übersetzung.</p>
+      <p>Tippen Sie auf ▶, um die Unterteilungen eines Abschnitts anzuzeigen. Eine kleine Markierung zeigt, wie viele direkte Unterteilungen der Abschnitt enthält.</p>
+      <p>Einrückungen und farbige Linien am linken Rand zeigen die Tiefe der Hierarchie. Je tiefer Sie in die Gliederung gehen, desto weiter verändert sich die Farbe von Ebene zu Ebene.</p>
+      <p>Tippen Sie auf eine Zeile, um sie auszuwählen und Ihre Position zu markieren. Tippen Sie erneut darauf oder drücken Sie <kbd>Esc</kbd>, um die Auswahl aufzuheben. Mit <strong>Alles ausklappen</strong> oder <strong>Alles einklappen</strong> können Sie den gesamten Baum öffnen oder schließen.</p>
+      <p><strong>Spalten.</strong> Wählen Sie <strong>Spalten</strong>, um dasselbe sa bche in Form kaskadierender Miller-Spalten anzuzeigen. Jede Spalte entspricht einer Ebene der Hierarchie. Wenn Sie ein Thema auswählen, erscheinen seine Unterteilungen in der nächsten Spalte. Diese Ansicht ist besonders praktisch in stärker verschachtelten Abschnitten des Textes.</p>
+      <p><strong>Mandala Explorer.</strong> Der <a href="https://donandrutto.github.io/Mandala-Explorer/">Mandala Explorer</a> bietet eine experimentelle visuelle Darstellung derselben Strukturellen Gliederung. Öffnen Sie einen Knoten, um die darin enthaltenen Unterteilungen zu sehen, und bewegen Sie sich von dort schrittweise in immer spezifischere Ebenen. Die zugrunde liegende Struktur ist dieselbe wie in den Ansichten Baum und Spalten.</p>
 
-      <h4 class="intro-header">Werkzeugleiste</h4>
-      <ul class="intro-list">
-        <li><strong>Suche</strong> — filtert die Gliederung während der Eingabe. Durchsucht Tibetisch, Englisch, die gewählte Sprache und Abschnittsnummern (z. B. <code>2.3.1</code>). Diakritika sind optional — „sutra" findet „sūtra". Ein Zähler zeigt die Trefferzahl; <kbd>Esc</kbd> oder ✕ löscht die Suche. <kbd>Strg</kbd>+<kbd>F</kbd> (<kbd>⌘</kbd>+<kbd>F</kbd> am Mac) springt direkt ins Suchfeld.</li>
-        <li><strong>བོད་ཡིག / GER</strong> — blendet die tibetische Zeile oder die Übersetzungszeile überall gleichzeitig ein oder aus (Gliederung, Pfadleiste, Wurzeltext).</li>
-        <li><strong>− / +</strong> — verkleinert oder vergrößert die Schrift für bequemes Lesen auf jedem Gerät.</li>
-        <li><strong>☾ / ☀</strong> — wechselt zwischen Tag- und Nachtthema. Bis zu Ihrer Wahl folgt die App der Systemeinstellung; die Wahl wird auf diesem Gerät gespeichert.</li>
-        <li><strong>Drucken</strong> — öffnet den Druckdialog mit einer sauberen Ansicht der Gliederung <em>genau im aktuell ausgeklappten Zustand</em>, mit Titel und gewähltem Pfad im Kopf. Als PDF speichern, um ein Studienblatt zu erstellen.</li>
-      </ul>
+      <h4 class="intro-header">Navigationspfad</h4>
+      <p>Nachdem Sie ein Thema ausgewählt haben, zeigt die Leiste unterhalb der Werkzeugleiste dessen vollständigen Pfad durch die Gliederung. Das aktuelle Thema kann beispielsweise mehrere Ebenen unterhalb eines Hauptabschnitts liegen. Der Navigationspfad zeigt die gesamte übergeordnete Kette.</p>
+      <p>Jeder Teil des Pfades ist anklickbar. Tippen Sie auf einen Eintrag, um in der Hierarchie eine Ebene oder mehrere Ebenen zurückzugehen.</p>
+      <p>Die Schaltfläche <strong>Kopieren</strong> kopiert den vollständigen Pfad als einfachen Text. Das ist besonders praktisch für Notizen, Verweise und Übersetzungsarbeit.</p>
 
-      <h4 class="intro-header">Pfadleiste (Breadcrumb)</h4>
-      <ul class="intro-list">
-        <li>Nach Auswahl eines Themas zeigt die Leiste unter der Werkzeugleiste dessen vollständigen Pfad von der Wurzel des Textes. Jedes Glied ist klickbar — tippen Sie darauf, um die Auswahl nach oben zu verschieben. <strong>Kopieren</strong> am Ende kopiert den gesamten Pfad als Text.</li>
-      </ul>
+      <h4 class="intro-header">Von der Gliederung zum Grundtext</h4>
+      <p>Versangaben wie <span class="sholoka-tag">vs. 10–17</span> zeigen, welche Verse von Jigme Lingpas Grundtext einem bestimmten Abschnitt von Patrul Rinpoches sa bche entsprechen.</p>
+      <p>Tippen Sie auf die Versangabe, um diese Stelle zu öffnen. Der gesamte entsprechende Bereich wird goldfarben markiert, sodass der von diesem Abschnitt abgedeckte Text sofort sichtbar ist.</p>
 
-      <h4 class="intro-header">Leseposition-Leiste</h4>
-      <ul class="intro-list">
-        <li>Beim Scrollen durch den Wurzeltext bleibt oben eine schmale Leiste, die das Gliederungsthema des obersten sichtbaren Verses nennt — Sie wissen stets, <em>wo Sie sich</em> im Sa Bche befinden.</li>
-        <li><strong>Die Leiste ist eine Schaltfläche.</strong> Tippen oder klicken Sie irgendwo darauf (oder auf den runden „Gliederung"-Chip), um genau zu diesem Thema in der Strukturellen Gliederung zu springen.</li>
-      </ul>
+      <h4 class="intro-header">Vom Grundtext zurück zur Gliederung</h4>
+      <p>Jeder Vers des Grundtextes erscheint als nummerierte Karte. Tippen Sie auf eine Karte, um direkt zu dem Abschnitt in Patrul Rinpoches Struktureller Gliederung zu gelangen, der diesem Vers zugeordnet ist.</p>
+      <p>So können Sie fortlaufend zwischen dem komprimierten Grundtext und der größeren Struktur wechseln, innerhalb derer der Kommentar seinen Inhalt entfaltet.</p>
 
-      <h4 class="intro-header">Strukturelle Gliederung</h4>
-      <ul class="intro-list">
-        <li><strong>Zeilen</strong> — jede Zeile ist eine Einteilung des Textes: Nummer (eindeutige Adresse), tibetische Überschrift und Übersetzung. Klicken Sie eine Zeile an, um sie auszuwählen und Ihre Stelle zu markieren; erneut klicken (oder <kbd>Esc</kbd>) hebt die Auswahl auf.</li>
-        <li><strong>▶-Pfeile</strong> klappen eine Einteilung aus oder ein. Die kleine Plakette <span class="child-count">7</span> zeigt die Zahl der Unterteilungen.</li>
-        <li><strong>Farbige Linien links</strong> ändern ihren Ton mit der Tiefe — ein schneller visueller Hinweis auf die Verschachtelung.</li>
-        <li><strong>Kopier-Symbol</strong> — erscheint beim Überfahren einer Zeile; kopiert den vollständigen Pfad des Themas.</li>
-        <li><strong>Kapitel-Tags</strong> wie <span class="chapter-tag">(Chapter 4)</span> springen zu den Versen dieses Kapitels im Wurzeltext.</li>
-        <li><strong>Vers-Tags</strong> wie <span class="sholoka-tag">vs. 10–17</span> öffnen den Wurzeltext genau bei den Versen, die das Thema kommentiert, und hinterlegen den gesamten Bereich golden.</li>
-        <li><strong>Querverweis-Tags</strong> wie <span class="cross-ref-tag">LtaF 89–97</span> öffnen die zitierten Verse aus Nāgārjunas <em>Brief an einen Freund</em> in einem Fenster, auf Tibetisch und Englisch.</li>
-        <li><strong>Alle ausklappen / Alle einklappen</strong> — öffnet oder schließt den gesamten Baum auf einmal.</li>
-        <li><strong>Spalten</strong> — wechselt zur Spaltenansicht (Miller-Spalten): Jede Spalte ist eine Ebene der Gliederung; ein Klick öffnet die Unterteilungen in der nächsten Spalte. Praktisch für die sehr tiefen tantrischen Kapitel.</li>
-      </ul>
+      <h4 class="intro-header">Lesepositionsleiste</h4>
+      <p>Während Sie durch den Grundtext scrollen, bleibt oben auf dem Bildschirm eine schmale Leiste sichtbar. Sie zeigt, welchem Abschnitt des sa bche der aktuell angezeigte Vers entspricht.</p>
+      <p>Tippen Sie auf die Leiste oder auf die Schaltfläche <strong>Gliederung</strong>, um direkt zu diesem Thema zurückzukehren.</p>
 
-      <h4 class="intro-header">Wurzeltext</h4>
+      <h4 class="intro-header">Suche</h4>
+      <p>Die Suche filtert die Strukturelle Gliederung bereits während der Eingabe. Durchsucht werden:</p>
       <ul class="intro-list">
-        <li>Ein Abschnitt pro Kapitel, dazu Prolog und Kolophon. Klicken Sie auf eine Abschnittsüberschrift, um sie zu öffnen oder zu schließen. <strong>← Gliederung</strong> rechts in der Überschrift springt zum passenden Thema der Strukturellen Gliederung.</li>
-        <li><strong>Vers-Karten</strong> — jeder Vers ist eine Karte mit nummerierter Plakette. Karten leuchten unter dem Zeiger sanft auf: Klicken oder tippen Sie, um zum exakten Gliederungsthema dieses Verses zu springen.</li>
-        <li><strong>Golden hinterlegte Karten</strong> markieren den Versbereich, zu dem Sie zuletzt aus der Gliederung gesprungen sind; die Markierung bleibt bis zum nächsten Sprung.</li>
-        <li>Die runde <strong>↑-Schaltfläche</strong> oben rechts bringt Sie zum Anfang des gerade gelesenen Kapitels zurück.</li>
+        <li>Tibetisch</li>
+        <li>Englisch</li>
+        <li>die aktuell ausgewählte Übersetzungssprache</li>
+        <li>strukturelle Adressen wie <code>2.3.1</code></li>
       </ul>
+      <p>Diakritische Zeichen sind optional. Eine Suche nach <em>sutra</em> findet beispielsweise auch <em>sūtra</em>.</p>
+      <p>Ein Zähler zeigt die Anzahl der Treffer. Drücken Sie <kbd>Esc</kbd> oder ✕, um die Suche zu löschen. Auf dem Computer führt <kbd>Ctrl</kbd>+<kbd>F</kbd> oder <kbd>⌘</kbd>+<kbd>F</kbd> direkt zum Suchfeld.</p>
+
+      <h4 class="intro-header">Tibetisch und Übersetzung</h4>
+      <p>Verwenden Sie <strong>བོད་ཡིག / ENG</strong>, um die tibetischen oder übersetzten Zeilen ein- oder auszublenden. Diese Einstellung gilt im gesamten Explorer, einschließlich der Strukturellen Gliederung, des Navigationspfades und des Grundtextes. Sie können den Text daher zweisprachig, nur auf Tibetisch oder nur in Übersetzung lesen.</p>
+
+      <h4 class="intro-header">Sprache</h4>
+      <p>Mit der Flaggen-Schaltfläche oben rechts wählen Sie die Übersetzungssprache. Bei Sprachen, deren Übersetzung noch in Arbeit ist, wird vorläufig Englisch angezeigt. Derzeit sind die englische und die polnische Version vollständig.</p>
+
+      <h4 class="intro-header">Textgröße</h4>
+      <p>Mit <strong>−</strong> / <strong>+</strong> können Sie die Textgröße verkleinern oder vergrößern.</p>
+
+      <h4 class="intro-header">Tag- und Nachtansicht</h4>
+      <p>Mit <strong>☾ / ☀</strong> wechseln Sie zwischen Tag- und Nachtansicht. Zu Beginn übernimmt die App die Systemeinstellung Ihres Geräts. Sobald Sie eine Auswahl manuell treffen, wird diese auf dem Gerät gespeichert.</p>
+
+      <h4 class="intro-header">Querverweise</h4>
+      <p>Einige Abschnitte enthalten Verweise auf andere klassische Texte. Markierungen wie <span class="cross-ref-tag">LtaF 89–97</span> öffnen die entsprechenden Verse aus Nāgārjunas <em>Brief an einen Freund</em> in einem Popup, auf Tibetisch und Englisch.</p>
+      <p>So können Sie die zitierte Stelle nachlesen, ohne Ihre Position im Yönten Dzö zu verlieren.</p>
+
+      <h4 class="intro-header">Grundtext</h4>
+      <p>Der Grundtext ist in Prolog, dreizehn Kapitel und Kolophon gegliedert. Tippen Sie auf eine Abschnittsüberschrift, um den Abschnitt zu öffnen oder zu schließen.</p>
+      <p>Die Schaltfläche <strong>← Gliederung</strong> neben jeder Überschrift führt zur entsprechenden Stelle in der Strukturellen Gliederung zurück. Die runde Schaltfläche <strong>↑</strong> führt zum Anfang des aktuell gelesenen Kapitels zurück.</p>
+
+      <h4 class="intro-header">Drucken und PDF</h4>
+      <p>Der Befehl <strong>Drucken</strong> erstellt eine übersichtliche Version der Strukturellen Gliederung genau in dem Zustand, in dem Sie sie ausgeklappt haben. Wählen Sie das gewünschte Thema, öffnen Sie die Zweige bis zur benötigten Tiefe und drücken Sie anschließend <strong>Drucken</strong>.</p>
+      <p>Die Ausgabe enthält den Titel, den ausgewählten Pfad und die sichtbare Struktur. Wählen Sie im Druckdialog <strong>Als PDF sichern</strong>, um ein Studienblatt oder eine Vorlage für die Rezitation des sa bche vor dem Unterricht zu erstellen.</p>
 
       <h4 class="intro-header">Tastatur</h4>
       <ul class="intro-list">
-        <li><kbd>Strg</kbd>+<kbd>F</kbd> / <kbd>⌘</kbd>+<kbd>F</kbd> — Suchfeld fokussieren · <kbd>Esc</kbd> — Suche löschen, Auswahl aufheben oder Fenster schließen · <kbd>Enter</kbd> / <kbd>Leertaste</kbd> — fokussiertes Element aktivieren · <kbd>Tab</kbd> — zwischen Bedienelementen wechseln.</li>
+        <li><kbd>Ctrl</kbd>+<kbd>F</kbd> / <kbd>⌘</kbd>+<kbd>F</kbd> — Suche</li>
+        <li><kbd>Esc</kbd> — Suche löschen, Auswahl aufheben oder Popup schließen</li>
+        <li><kbd>Enter</kbd> / <kbd>Leertaste</kbd> — Fokussiertes Element aktivieren</li>
+        <li><kbd>Tab</kbd> — Zwischen Bedienelementen wechseln</li>
       </ul>
 
-      <h4 class="intro-header">Rezept: ein Studienblatt</h4>
-      <p>Wählen Sie das gewünschte Thema, klappen Sie es bis zur benötigten Tiefe aus (oder „Alle ausklappen"), und drücken Sie dann „Drucken" — das PDF enthält Titel, Ihren Pfad und die Gliederung genau wie angezeigt.</p>
-
+      <h4 class="intro-header">Projekt unterstützen</h4>
+      <p>Mit der Schaltfläche <strong>Unterstützen</strong> können Sie die laufende Übersetzungsarbeit und die weitere Entwicklung der App unterstützen.</p>
       <p>→ <a href="#" data-action="show-onboarding">Begrüßungsbildschirm erneut anzeigen</a></p>
     `,
       fr: `
-      <p>L'explorateur comporte deux couches liées : le <strong>Plan structurel</strong> (le sa bche de Patrul Rinpoché) et le <strong>Texte racine</strong> (les vers de Jigme Lingpa). Chaque élément est décrit ci-dessous, du haut de la page vers le bas.</p>
+      <p>L'explorateur contient deux niveaux directement reliés :</p>
+      <ul class="intro-list">
+        <li><strong>Plan structurel</strong> — le sa bche de Patrul Rinpoché</li>
+        <li><strong>Texte racine</strong> — les vers de Jigme Lingpa</li>
+      </ul>
+      <p>Le Commentaire de Khenpo Yönga Yönten Gyatso est étudié à travers les enseignements de Khenpo Karma Wangyel.</p>
+      <p>Le principe d'utilisation est simple : repérez dans le Plan structurel le sujet actuellement abordé, voyez où il se situe dans l'ensemble du sa bche, puis accédez aux vers correspondants du Texte racine.</p>
 
       <h4 class="intro-header">Démarrage rapide</h4>
       <ol class="intro-list">
-        <li>Choisissez votre <strong>langue</strong> avec le bouton drapeau en haut à droite.</li>
-        <li>Cliquez sur les <strong>flèches ▶</strong> du Plan structurel pour ouvrir les divisions d'un chapitre, puis cliquez sur une ligne pour marquer votre place.</li>
-        <li>Suivez une étiquette <span class="sholoka-tag">vs. 10–17</span> pour lire les vers commentés par un sujet — puis cliquez sur une carte de vers pour revenir exactement à sa place dans le plan.</li>
+        <li>Choisissez votre langue à l'aide du bouton avec le drapeau, en haut à droite.</li>
+        <li>Ouvrez le Plan structurel.</li>
+        <li>Utilisez les flèches ▶ pour déployer successivement les divisions du sa bche.</li>
+        <li>Sélectionnez une ligne pour marquer votre position actuelle.</li>
+        <li>Touchez une référence de vers telle que <span class="sholoka-tag">vs. 10–17</span> pour ouvrir le passage exact du Texte racine de Jigme Lingpa.</li>
+        <li>Touchez n'importe quelle carte de vers dans le Texte racine pour revenir à sa place dans le plan de Patrul Rinpoché.</li>
       </ol>
+      <p>C'est le principe de navigation de base entre les deux niveaux.</p>
 
-      <h4 class="intro-header">Barre supérieure</h4>
-      <ul class="intro-list">
-        <li><strong>Sélecteur de langue</strong> (bouton drapeau, en haut à droite) — choisissez la langue de traduction du plan, des titres de chapitres et du texte racine. Les langues encore en préparation reviennent provisoirement à l'anglais.</li>
-        <li><strong>Donner</strong> — soutient le travail de traduction en cours (ouvre PayPal dans un nouvel onglet).</li>
-        <li>L'en-tête se réduit automatiquement pendant le défilement, laissant plus de place à la lecture.</li>
-      </ul>
-
-      <h4 class="intro-header">Barre d'outils</h4>
-      <ul class="intro-list">
-        <li><strong>Recherche</strong> — filtre le plan au fil de la saisie. Elle parcourt le tibétain, l'anglais, la langue choisie et les numéros de sections (p. ex. <code>2.3.1</code>). Les diacritiques sont facultatifs — « sutra » trouve « sūtra ». Un compteur affiche le nombre de résultats ; <kbd>Échap</kbd> ou ✕ efface la recherche. <kbd>Ctrl</kbd>+<kbd>F</kbd> (<kbd>⌘</kbd>+<kbd>F</kbd> sur Mac) place le curseur dans le champ de recherche.</li>
-        <li><strong>བོད་ཡིག / FRE</strong> — affiche ou masque partout à la fois la ligne tibétaine ou la ligne de traduction (plan, fil d'Ariane, texte racine).</li>
-        <li><strong>− / +</strong> — réduit ou agrandit la taille du texte pour une lecture confortable sur tout appareil.</li>
-        <li><strong>☾ / ☀</strong> — bascule entre les thèmes de lecture jour et nuit. Tant que vous n'avez pas choisi, l'application suit le réglage du système ; le choix est mémorisé sur cet appareil.</li>
-        <li><strong>Imprimer</strong> — ouvre la boîte d'impression avec une vue propre du plan <em>exactement tel qu'il est actuellement développé</em>, coiffée du titre et de votre chemin sélectionné. Enregistrez en PDF pour créer un support d'étude.</li>
-      </ul>
+      <h4 class="intro-header">Trois vues du Plan structurel</h4>
+      <p><strong>Arbre.</strong> La vue par défaut présente le plan sous la forme d'une hiérarchie imbriquée. Chaque ligne représente une division du texte. Le numéro au début constitue son adresse structurelle unique, suivi du titre tibétain et de sa traduction.</p>
+      <p>Touchez ▶ pour afficher les subdivisions contenues dans une section. Un petit indicateur montre le nombre de subdivisions immédiates qu'elle contient.</p>
+      <p>Les retraits et les lignes colorées sur la gauche indiquent la profondeur de la hiérarchie. À mesure que l'on descend dans la structure, la couleur change à chaque niveau.</p>
+      <p>Touchez une ligne pour la sélectionner et marquer votre position. Touchez-la à nouveau ou appuyez sur <kbd>Esc</kbd> pour désélectionner. Utilisez <strong>Tout développer</strong> ou <strong>Tout réduire</strong> pour ouvrir ou fermer l'ensemble de l'arborescence.</p>
+      <p><strong>Colonnes.</strong> Sélectionnez <strong>Colonnes</strong> pour afficher le même sa bche sous la forme de colonnes de Miller en cascade. Chaque colonne représente un niveau de la hiérarchie. La sélection d'un sujet ouvre ses subdivisions dans la colonne suivante. Cette vue est particulièrement pratique dans les parties du texte où les niveaux d'imbrication deviennent nombreux.</p>
+      <p><strong>Mandala Explorer.</strong> Le <a href="https://donandrutto.github.io/Mandala-Explorer/">Mandala Explorer</a> propose une représentation visuelle expérimentale du même Plan structurel. Entrez dans un nœud pour découvrir les divisions qu'il contient, puis poursuivez vers des niveaux de plus en plus précis. La structure sous-jacente reste identique à celle des vues Arbre et Colonnes.</p>
 
       <h4 class="intro-header">Fil d'Ariane</h4>
-      <ul class="intro-list">
-        <li>Après la sélection d'un sujet, la bande sous la barre d'outils affiche son chemin complet depuis la racine du texte. Chaque maillon est cliquable — touchez-en un pour remonter la sélection. Le bouton <strong>Copier</strong> à la fin copie tout le chemin sous forme de texte.</li>
-      </ul>
+      <p>Après avoir sélectionné un sujet, la bande située sous la barre d'outils affiche son chemin complet dans le plan. Le sujet affiché peut, par exemple, se trouver plusieurs niveaux sous une grande section. Le fil d'Ariane permet de voir toute la chaîne des niveaux supérieurs.</p>
+      <p>Chaque élément du chemin est cliquable. Touchez-en un pour remonter dans la hiérarchie.</p>
+      <p>Le bouton <strong>Copier</strong> copie le chemin complet sous forme de texte brut, pratique pour les notes, les références et le travail de traduction.</p>
+
+      <h4 class="intro-header">Du Plan structurel au Texte racine</h4>
+      <p>Les références telles que <span class="sholoka-tag">vs. 10–17</span> indiquent quels vers du Texte racine de Jigme Lingpa correspondent à une section donnée du sa bche de Patrul Rinpoché.</p>
+      <p>Touchez la référence pour ouvrir ces vers. L'ensemble du passage correspondant est signalé en doré, ce qui permet d'en voir immédiatement l'étendue.</p>
+
+      <h4 class="intro-header">Du Texte racine au Plan structurel</h4>
+      <p>Chaque vers du Texte racine apparaît sous la forme d'une carte numérotée. Touchez une carte pour accéder directement à la section précise du Plan structurel de Patrul Rinpoché correspondant à ce vers.</p>
+      <p>On peut ainsi passer continuellement du Texte racine condensé à la structure plus vaste à travers laquelle le Commentaire en développe le sens.</p>
 
       <h4 class="intro-header">Barre de position de lecture</h4>
-      <ul class="intro-list">
-        <li>Pendant le défilement du Texte racine, une fine barre reste en haut et nomme le sujet du plan auquel appartient le vers visible en haut de l'écran — vous savez toujours <em>où vous êtes</em> dans le sa bche.</li>
-        <li><strong>Cette barre est un bouton.</strong> Touchez ou cliquez n'importe où (ou sur la pastille ronde « Plan ») pour rejoindre exactement ce sujet dans le Plan structurel.</li>
-      </ul>
+      <p>Lorsque vous faites défiler le Texte racine, une fine barre reste visible en haut de l'écran et indique à quelle section du sa bche correspond le vers actuellement affiché.</p>
+      <p>Touchez cette barre, ou son bouton <strong>Plan</strong>, pour revenir directement au sujet correspondant.</p>
 
-      <h4 class="intro-header">Plan structurel</h4>
+      <h4 class="intro-header">Recherche</h4>
+      <p>La recherche filtre le Plan structurel à mesure que vous tapez. Elle recherche dans :</p>
       <ul class="intro-list">
-        <li><strong>Lignes</strong> — chaque ligne est une division du texte : son numéro (adresse unique), le titre tibétain et la traduction. Cliquez sur une ligne pour la sélectionner et marquer votre place ; cliquez à nouveau (ou <kbd>Échap</kbd>) pour désélectionner.</li>
-        <li><strong>Flèches ▶</strong> — développent ou réduisent une division. La pastille <span class="child-count">7</span> indique le nombre de subdivisions.</li>
-        <li><strong>Liserés colorés à gauche</strong> — leur teinte évolue avec la profondeur : un repère visuel rapide du niveau d'imbrication.</li>
-        <li><strong>Icône de copie</strong> — apparaît au survol d'une ligne ; copie le chemin complet du sujet.</li>
-        <li><strong>Étiquettes de chapitre</strong> comme <span class="chapter-tag">(Chapter 4)</span> — mènent aux vers de ce chapitre dans le Texte racine.</li>
-        <li><strong>Étiquettes de vers</strong> comme <span class="sholoka-tag">vs. 10–17</span> — ouvrent le Texte racine exactement aux vers commentés par le sujet et voilent d'or toute la plage.</li>
-        <li><strong>Étiquettes de renvoi</strong> comme <span class="cross-ref-tag">LtaF 89–97</span> — ouvrent les vers cités de la <em>Lettre à un ami</em> de Nāgārjuna dans une fenêtre, en tibétain et en anglais.</li>
-        <li><strong>Tout développer / Tout réduire</strong> — ouvre ou ferme l'arborescence entière d'un coup.</li>
-        <li><strong>Colonnes</strong> — bascule en vue par colonnes (colonnes de Miller) : chaque colonne est un niveau du plan ; cliquer sur un élément ouvre ses subdivisions dans la colonne suivante. Pratique pour les chapitres tantriques très profonds.</li>
+        <li>le tibétain</li>
+        <li>l'anglais</li>
+        <li>la langue de traduction actuellement sélectionnée</li>
+        <li>les adresses structurelles telles que <code>2.3.1</code></li>
       </ul>
+      <p>Les signes diacritiques sont facultatifs. Une recherche de <em>sutra</em>, par exemple, trouvera également <em>sūtra</em>.</p>
+      <p>Un compteur indique le nombre de résultats correspondants. Appuyez sur <kbd>Esc</kbd> ou ✕ pour effacer la recherche. Sur ordinateur, <kbd>Ctrl</kbd>+<kbd>F</kbd> ou <kbd>⌘</kbd>+<kbd>F</kbd> place directement le curseur dans le champ de recherche.</p>
+
+      <h4 class="intro-header">Tibétain et traduction</h4>
+      <p>Utilisez <strong>བོད་ཡིག / ENG</strong> pour afficher ou masquer les lignes tibétaines ou traduites. Ce réglage s'applique à l'ensemble de l'explorateur, notamment au Plan structurel, au fil d'Ariane et au Texte racine. Vous pouvez ainsi lire en version bilingue, en tibétain seulement ou uniquement en traduction.</p>
+
+      <h4 class="intro-header">Langue</h4>
+      <p>Utilisez le bouton avec le drapeau en haut à droite pour choisir la langue de traduction. Pour les langues encore en cours de préparation, l'anglais s'affiche par défaut jusqu'à ce que leur traduction soit terminée. Les versions anglaise et polonaise sont actuellement complètes.</p>
+
+      <h4 class="intro-header">Taille du texte</h4>
+      <p>Utilisez <strong>−</strong> / <strong>+</strong> pour réduire ou augmenter la taille du texte.</p>
+
+      <h4 class="intro-header">Affichage jour et nuit</h4>
+      <p>Utilisez <strong>☾ / ☀</strong> pour passer du thème clair au thème sombre. Au départ, l'application suit les préférences système de votre appareil. Une fois votre choix effectué manuellement, il est mémorisé sur cet appareil.</p>
+
+      <h4 class="intro-header">Renvois</h4>
+      <p>Certaines sections comportent des références à d'autres textes classiques. Des balises telles que <span class="cross-ref-tag">LtaF 89–97</span> ouvrent dans une fenêtre contextuelle les vers correspondants de la <em>Lettre à un ami</em> de Nāgārjuna, en tibétain et en anglais.</p>
+      <p>Vous pouvez ainsi consulter le passage cité sans perdre votre position dans le Yönten Dzö.</p>
 
       <h4 class="intro-header">Texte racine</h4>
-      <ul class="intro-list">
-        <li>Une section par chapitre, plus le Prologue et le Colophon. Cliquez sur l'en-tête d'une section pour l'ouvrir ou la fermer. Le bouton <strong>← Plan</strong> à droite de l'en-tête rejoint le sujet correspondant du Plan structurel.</li>
-        <li><strong>Cartes de vers</strong> — chaque vers est une carte avec une pastille numérotée. Les cartes s'éclairent doucement sous le pointeur : cliquez ou touchez pour rejoindre le sujet précis du plan qui commente ce vers.</li>
-        <li><strong>Les cartes voilées d'or</strong> marquent la plage de vers atteinte lors de votre dernier saut depuis le plan ; le voile demeure jusqu'au saut suivant.</li>
-        <li>Le bouton rond <strong>↑</strong> en haut à droite vous ramène au début du chapitre en cours de lecture.</li>
-      </ul>
+      <p>Le Texte racine est divisé en un Prologue, treize chapitres et un Colophon. Touchez le titre d'une section pour l'ouvrir ou la fermer.</p>
+      <p>Le bouton <strong>← Plan</strong> placé à côté de chaque titre ramène à l'emplacement correspondant dans le Plan structurel. Le bouton rond <strong>↑</strong> ramène au début du chapitre en cours de lecture.</p>
+
+      <h4 class="intro-header">Impression et PDF</h4>
+      <p>La commande <strong>Imprimer</strong> crée une version propre du Plan structurel exactement tel que vous l'avez développé. Sélectionnez le sujet voulu, ouvrez les branches jusqu'au niveau souhaité, puis appuyez sur <strong>Imprimer</strong>.</p>
+      <p>Le document comprend le titre, le chemin sélectionné et la structure visible. Choisissez <strong>Enregistrer au format PDF</strong> dans la fenêtre d'impression pour créer un support d'étude ou une feuille permettant de réciter le sa bche avant le cours.</p>
 
       <h4 class="intro-header">Clavier</h4>
       <ul class="intro-list">
-        <li><kbd>Ctrl</kbd>+<kbd>F</kbd> / <kbd>⌘</kbd>+<kbd>F</kbd> — focaliser la recherche · <kbd>Échap</kbd> — effacer la recherche, désélectionner ou fermer la fenêtre · <kbd>Entrée</kbd> / <kbd>Espace</kbd> — activer l'élément focalisé · <kbd>Tab</kbd> — naviguer entre les commandes.</li>
+        <li><kbd>Ctrl</kbd>+<kbd>F</kbd> / <kbd>⌘</kbd>+<kbd>F</kbd> — Recherche</li>
+        <li><kbd>Esc</kbd> — Effacer la recherche, désélectionner ou fermer la fenêtre</li>
+        <li><kbd>Entrée</kbd> / <kbd>Espace</kbd> — Activer l'élément sélectionné</li>
+        <li><kbd>Tab</kbd> — Passer d'une commande à l'autre</li>
       </ul>
 
-      <h4 class="intro-header">Recette : un support d'étude</h4>
-      <p>Sélectionnez le sujet voulu, développez-le à la profondeur nécessaire (ou « Tout développer »), puis appuyez sur Imprimer — le PDF contiendra le titre, votre chemin et le plan exactement tel qu'affiché.</p>
-
+      <h4 class="intro-header">Soutenir le projet</h4>
+      <p>Le bouton <strong>Soutenir</strong> contribue au travail de traduction en cours et au développement de l'application.</p>
       <p>→ <a href="#" data-action="show-onboarding">Réafficher l'écran de bienvenue</a></p>
     `
     };
@@ -7197,6 +7769,11 @@
     const UI_STRINGS = {
       en: {
         searchPlaceholder: "Search",
+        introBtn: "Introduction",
+        introBtnTitle: "About this text and how to use it",
+        introClose: "Close",
+        readMore: "Read more",
+        readLess: "Show less",
         aboutToggle: "About this text",
         howtoToggle: "How to use",
         expandAll: "Expand All",
@@ -7208,6 +7785,7 @@
         emptyBreadcrumb: "Click any node to mark your place",
         structuralOutline: "Structural Outline",
         rootText: "Root Text",
+        appTitle: "Sa-bche Explorer",
         appSubtitle: "Structural Outline of the Treasury of Precious Qualities",
         prologue: "Prologue",
         chapterPrefix: "Chapter",
@@ -7274,6 +7852,11 @@
       },
       pl: {
         searchPlaceholder: "Szukaj",
+        introBtn: "Wprowadzenie",
+        introBtnTitle: "O tym tekście i jak z niego korzystać",
+        introClose: "Zamknij",
+        readMore: "Czytaj więcej",
+        readLess: "Zwiń",
         aboutToggle: "O tym tekście",
         howtoToggle: "Jak korzystać",
         expandAll: "Rozwiń wszystko",
@@ -7285,6 +7868,7 @@
         emptyBreadcrumb: "Kliknij dowolny węzeł, aby zaznaczyć swoje miejsce",
         structuralOutline: "Zarys strukturalny",
         rootText: "Tekst rdzenny",
+        appTitle: "Sa-bche Explorer",
         appSubtitle: "Zarys Strukturalny Skarbnicy Cennych Właściwości",
         prologue: "Prolog",
         chapterPrefix: "ROZDZIAŁ",
@@ -7348,6 +7932,11 @@
       },
       ru: {
         searchPlaceholder: "Поиск",
+        introBtn: "Введение",
+        introBtnTitle: "Об этом тексте и как им пользоваться",
+        introClose: "Закрыть",
+        readMore: "Читать далее",
+        readLess: "Свернуть",
         aboutToggle: "Об этом тексте",
         howtoToggle: "Как пользоваться",
         expandAll: "Развернуть все",
@@ -7359,6 +7948,7 @@
         emptyBreadcrumb: "Нажмите на любой узел, чтобы отметить место",
         structuralOutline: "Структурный план",
         rootText: "Коренной текст",
+        appTitle: "Sa-bche Explorer",
         appSubtitle: "Структурный план Сокровищницы Драгоценных Качеств",
         prologue: "Пролог",
         chapterPrefix: "ГЛАВА",
@@ -7407,6 +7997,11 @@
       },
       de: {
         searchPlaceholder: "Suchen",
+        introBtn: "Einführung",
+        introBtnTitle: "Über diesen Text und seine Bedienung",
+        introClose: "Schließen",
+        readMore: "Mehr lesen",
+        readLess: "Weniger",
         aboutToggle: "Über diesen Text",
         howtoToggle: "Bedienung",
         expandAll: "Alle ausklappen",
@@ -7418,6 +8013,7 @@
         emptyBreadcrumb: "Klicken Sie auf einen Knoten, um Ihren Platz zu markieren",
         structuralOutline: "Strukturelle Gliederung",
         rootText: "Wurzeltext",
+        appTitle: "Sa-bche Explorer",
         appSubtitle: "Strukturelle Gliederung der Schatzkammer der Kostbaren Eigenschaften",
         prologue: "Prolog",
         chapterPrefix: "KAPITEL",
@@ -7466,6 +8062,11 @@
       },
       fr: {
         searchPlaceholder: "Rechercher",
+        introBtn: "Introduction",
+        introBtnTitle: "À propos de ce texte et son utilisation",
+        introClose: "Fermer",
+        readMore: "Lire la suite",
+        readLess: "Réduire",
         aboutToggle: "À propos de ce texte",
         howtoToggle: "Mode d'emploi",
         expandAll: "Tout développer",
@@ -7477,6 +8078,7 @@
         emptyBreadcrumb: "Cliquez sur un nœud pour marquer votre place",
         structuralOutline: "Plan structurel",
         rootText: "Texte racine",
+        appTitle: "Sa-bche Explorer",
         appSubtitle: "Plan structurel du Trésor des Précieuses Qualités",
         prologue: "Prologue",
         chapterPrefix: "CHAPITRE",
@@ -8894,6 +9496,8 @@
         // before anything else.
         if (!document.getElementById('crossRefModal').hidden) return;
         if (!document.getElementById('onboardingModal').hidden) return;
+        const introModal = document.getElementById('introModal');
+        if (introModal && !introModal.hidden) { e.preventDefault(); closeIntroModal(); return; }
         const langMenu = document.getElementById('langMenu');
         if (!langMenu.hidden) { closeLangMenu(); document.getElementById('langSelectBtn').focus(); return; }
         if (state.query) { document.getElementById('searchBox').value = ''; state.query = ''; document.getElementById('searchClear').classList.remove('visible'); renderTree(); }
@@ -8902,16 +9506,87 @@
       if ((e.key === 'f' || e.key === 'F') && (e.ctrlKey || e.metaKey)) { e.preventDefault(); document.getElementById('searchBox').focus(); }
     });
 
-    [['introToggle', 'introBody', 'introArrow'], ['howtoToggle', 'howtoBody', 'howtoArrow']].forEach(([btnId, bodyId, arrowId]) => {
-      const btn = document.getElementById(btnId);
-      if (!btn) return;
-      btn.addEventListener('click', () => {
-        const body = document.getElementById(bodyId), arrow = document.getElementById(arrowId);
-        const isOpen = body.classList.toggle('visible');
-        arrow.classList.toggle('open', isOpen);
-        btn.setAttribute('aria-expanded', String(isOpen));
+    /* ----------------------------------------------------------
+       Introduction popup. Holds the About-the-text and How-to-use
+       material, each card opening on a few lines and expanding on
+       "Read more". Closes on the ✕, on a tap outside the panel, and
+       on Esc — the same three exits as the cross-reference modal.
+       ---------------------------------------------------------- */
+    const INTRO_CARDS = [
+      { bodyId: 'introBody', btnId: 'introMoreAbout' },
+      { bodyId: 'howtoBody', btnId: 'introMoreHowto' },
+    ];
+
+    let _introPrevFocus = null;
+
+    // Collapse both cards back to their opening lines. Called on every
+    // opening so the popup always presents the same way, and after a
+    // language change so the new text is not left mid-expansion.
+    function resetIntroCards() {
+      const ui = uiStrings();
+      INTRO_CARDS.forEach(({ bodyId, btnId }) => {
+        const body = document.getElementById(bodyId);
+        const btn = document.getElementById(btnId);
+        if (!body || !btn) return;
+        body.classList.add('clamped');
+        btn.setAttribute('aria-expanded', 'false');
+        btn.textContent = ui.readMore;
+        // A card whose text is short enough to show whole needs no control.
+        // Only measurable while the popup is on screen: a hidden dialog
+        // reports zero for both heights, which would read as "nothing to
+        // expand" and hide the control for good.
+        if (body.offsetParent !== null) {
+          btn.hidden = body.scrollHeight <= body.clientHeight + 4;
+        }
       });
-    });
+    }
+
+    function openIntroModal(scrollToHowto) {
+      const modal = document.getElementById('introModal');
+      _introPrevFocus = document.activeElement;
+      // Unhide first: the cards can only be measured once they have a layout.
+      modal.hidden = false;
+      resetIntroCards();
+      document.getElementById('btnIntro').setAttribute('aria-expanded', 'true');
+      document.getElementById('introModalClose').focus();
+      if (scrollToHowto) {
+        const btn = document.getElementById('introMoreHowto');
+        if (btn && !btn.hidden) btn.click();
+        const card = document.getElementById('introCardHowto');
+        if (card) card.scrollIntoView({ behavior: 'auto', block: 'start' });
+      } else {
+        document.getElementById('introModalBody').scrollTop = 0;
+      }
+    }
+
+    function closeIntroModal() {
+      document.getElementById('introModal').hidden = true;
+      document.getElementById('btnIntro').setAttribute('aria-expanded', 'false');
+      if (_introPrevFocus && _introPrevFocus.focus) {
+        try { _introPrevFocus.focus(); } catch (_) { }
+        _introPrevFocus = null;
+      }
+    }
+
+    (function initIntroModal() {
+      const modal = document.getElementById('introModal');
+      document.getElementById('btnIntro').addEventListener('click', () => openIntroModal(false));
+      document.getElementById('introModalClose').addEventListener('click', closeIntroModal);
+      // A tap on the backdrop itself — anywhere outside the panel — dismisses.
+      modal.addEventListener('click', e => { if (e.target === modal) closeIntroModal(); });
+
+      INTRO_CARDS.forEach(({ bodyId, btnId }) => {
+        const body = document.getElementById(bodyId);
+        const btn = document.getElementById(btnId);
+        if (!body || !btn) return;
+        btn.addEventListener('click', () => {
+          const expanded = !body.classList.toggle('clamped');
+          btn.setAttribute('aria-expanded', String(expanded));
+          btn.textContent = expanded ? uiStrings().readLess : uiStrings().readMore;
+          if (!expanded) btn.scrollIntoView({ behavior: scrollBehavior(), block: 'nearest' });
+        });
+      });
+    })();
 
     function preparePrintHeader() {
       const titleEl = document.getElementById('printDocTitle'); titleEl.innerHTML = '';
@@ -23054,11 +23729,9 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
         try { _onboardingPrevFocus.focus(); } catch (_) { }
         _onboardingPrevFocus = null;
       }
-      if (showHowto) {
-        const body = document.getElementById('howtoBody');
-        if (!body.classList.contains('visible')) document.getElementById('howtoToggle').click();
-        document.getElementById('howtoToggle').scrollIntoView({ behavior: scrollBehavior(), block: 'center' });
-      }
+      // "How to use" hands straight over to the Introduction popup, opened on
+      // its How-to card rather than at the top.
+      if (showHowto) openIntroModal(true);
     }
 
     (function initOnboarding() {
@@ -23087,7 +23760,9 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
       // "show the welcome screen again" link is handled by delegation.
       document.getElementById('howtoBody').addEventListener('click', e => {
         const a = e.target.closest('[data-action="show-onboarding"]');
-        if (a) { e.preventDefault(); openOnboarding(); }
+        // The link now lives inside the Introduction popup, which stacks above
+        // the welcome screen — so step out of it before showing that screen.
+        if (a) { e.preventDefault(); closeIntroModal(); openOnboarding(); }
       });
     })();
 
@@ -23187,6 +23862,21 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
       const aboutLabel = document.getElementById('aboutLabel');
       if (aboutLabel) aboutLabel.textContent = ui.aboutToggle;
 
+      const btnIntro = document.getElementById('btnIntro');
+      if (btnIntro) btnIntro.title = ui.introBtnTitle;
+
+      const introBtnLabel = document.getElementById('introBtnLabel');
+      if (introBtnLabel) introBtnLabel.textContent = ui.introBtn;
+
+      const introModalTitle = document.getElementById('introModalTitle');
+      if (introModalTitle) introModalTitle.textContent = ui.introBtn;
+
+      const introModalClose = document.getElementById('introModalClose');
+      if (introModalClose) {
+        introModalClose.setAttribute('aria-label', ui.introClose);
+        introModalClose.title = ui.introClose;
+      }
+
       const btnPrint = document.getElementById('btnPrint');
       if (btnPrint) btnPrint.textContent = ui.printBtn;
 
@@ -23205,8 +23895,10 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
       const rootTextLabel = document.getElementById('rootTextLabel');
       if (rootTextLabel) rootTextLabel.textContent = ui.rootText;
 
+      // The header carries the app's own name; appSubtitle stays the full
+      // descriptive title, which the print header still needs.
       const appSubtitle = document.getElementById('appSubtitle');
-      if (appSubtitle) appSubtitle.textContent = ui.appSubtitle;
+      if (appSubtitle) appSubtitle.textContent = ui.appTitle;
 
       const expandBtns = ['btnTreeExpandAll', 'btnRootExpandAll'];
       expandBtns.forEach(id => {
@@ -23237,6 +23929,12 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
       if (howtoBody) {
         howtoBody.innerHTML = HOWTO_CONTENT[lang] || HOWTO_CONTENT['en'];
       }
+
+      // Both cards just took on new text, so re-clamp them and relabel their
+      // controls rather than leaving the previous language's expansion behind.
+      // Guarded: updateUILanguage also runs during the first render, before
+      // the popup's own wiring exists.
+      if (typeof resetIntroCards === 'function') resetIntroCards();
 
       // Reading-position bar chip reuses the "back to outline" wording.
       const anbHintLabel = document.getElementById('anbHintLabel');
@@ -23667,11 +24365,10 @@ Skarbnica Cennych Właściwości zwana „Deszczem Radości” ułożona został
         { sel: '#btnSizeUp', labelKey: 'helpLargerLabel', zone: 'chrome' },
         { sel: '#btnTheme', labelKey: 'helpThemeLabel', zone: 'chrome' },
         { sel: '#btnPrint', labelKey: 'printBtn', zone: 'chrome' },
+        { sel: '#btnIntro', labelKey: 'introBtn', zone: 'chrome' },
         { sel: '#btnHelp', labelKey: 'helpSelfLabel', zone: 'chrome' },
         { sel: '#activeNodeBar', labelKey: 'helpPlaceLabel', zone: 'chrome' },
         // Section bars, which stay sharp while their bodies recede.
-        { sel: '#introToggle', labelKey: 'aboutToggle', zone: 'intro' },
-        { sel: '#howtoToggle', labelKey: 'howtoToggle', zone: 'howto' },
         { sel: '#treeSectionToggle', labelKey: 'structuralOutline', zone: 'tree' },
         { sel: '#btnMillerToggle', labelKey: 'millerToggle', zone: 'tree' },
         { sel: '#btnTreeExpandAll', labelKey: 'expandAll', zone: 'tree' },
